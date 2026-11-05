@@ -141,3 +141,4 @@ async def get_support_ticket(
         created_at=ticket.created_at,
         updated_at=ticket.updated_at,
     )
+

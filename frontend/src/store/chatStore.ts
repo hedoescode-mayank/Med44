@@ -31,6 +31,7 @@ interface ChatState {
   emergencyDetected: boolean
   createSession: () => string
   setActiveSession: (id: string) => void
+  deleteSession: (id: string) => void
   addMessage: (sessionId: string, message: Message) => void
   setMode: (mode: ChatMode) => void
   setLanguage: (lang: Language) => void
@@ -65,6 +66,18 @@ export const useChatStore = create<ChatState>()(
       },
 
       setActiveSession: (id) => set({ activeSessionId: id }),
+
+      deleteSession: (id) =>
+        set((state) => {
+          const filtered = state.sessions.filter((s) => s.id !== id)
+          return {
+            sessions: filtered,
+            activeSessionId:
+              state.activeSessionId === id
+                ? filtered[0]?.id || null
+                : state.activeSessionId,
+          }
+        }),
 
       addMessage: (sessionId, message) =>
         set((state) => ({

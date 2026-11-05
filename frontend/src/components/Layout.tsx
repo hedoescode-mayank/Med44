@@ -62,8 +62,10 @@ export default function Layout({ children }: LayoutProps) {
     return 'Patient Dashboard'
   }
 
+  const isChat = location.pathname.includes('/chat')
+
   return (
-    <div className="min-h-screen bg-background flex flex-col lg:flex-row font-sans">
+    <div className="h-screen w-screen overflow-hidden bg-background flex flex-col lg:flex-row font-sans select-none-safe">
       {/* Mobile Drawer Overlay */}
       <AnimatePresence>
         {sidebarOpen && (
@@ -82,10 +84,10 @@ export default function Layout({ children }: LayoutProps) {
         initial={false}
         animate={{ x: sidebarOpen ? 0 : -320 }}
         transition={{ type: 'spring', damping: 25, stiffness: 280 }}
-        className="fixed left-0 top-0 bottom-0 z-50 w-72 flex flex-col bg-surface border-r border-borderSoft shadow-xl lg:hidden"
+        className="fixed left-0 top-0 bottom-0 z-50 w-72 flex flex-col bg-surface border-r border-borderSoft shadow-xl lg:hidden h-full"
       >
         {/* Mobile Sidebar Header */}
-        <div className="flex items-center justify-between p-6 border-b border-borderSoft">
+        <div className="flex items-center justify-between p-5 border-b border-borderSoft flex-shrink-0">
           <div className="h-10 w-36 flex items-center">
             <img
               src="/logo.jpg"
@@ -102,7 +104,7 @@ export default function Layout({ children }: LayoutProps) {
         </div>
 
         {/* Mobile Navigation */}
-        <nav className="flex-1 p-4 space-y-1.5 overflow-y-auto">
+        <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
           {navItems.map(({ to, icon: Icon, label }) => (
             <NavLink
               key={to}
@@ -117,7 +119,7 @@ export default function Layout({ children }: LayoutProps) {
         </nav>
 
         {/* Mobile User Card */}
-        <div className="p-4 border-t border-borderSoft bg-surfaceSoft/50">
+        <div className="p-4 border-t border-borderSoft bg-surfaceSoft/50 flex-shrink-0">
           <div className="flex items-center gap-3 p-3 rounded-lg bg-surface border border-borderSoft">
             <UserAvatar type={user?.avatar || user?.gender} className="w-10 h-10" />
             <div className="flex-1 min-w-0">
@@ -135,10 +137,10 @@ export default function Layout({ children }: LayoutProps) {
         </div>
       </motion.aside>
 
-      {/* Desktop Persistent Sidebar */}
-      <aside className="hidden lg:flex flex-col w-64 bg-surface border-r border-borderSoft flex-shrink-0 min-h-screen sticky top-0 h-screen">
-        {/* Logo container: fixed 44px height, object-contain, never clipped */}
-        <div className="h-20 px-6 flex items-center border-b border-borderSoft">
+      {/* Desktop Persistent Sidebar (Fixed Frame - never shakes or scrolls with page) */}
+      <aside className="hidden lg:flex flex-col w-64 h-full bg-surface border-r border-borderSoft flex-shrink-0 z-40">
+        {/* Logo container: fixed 80px height, object-contain, never clipped */}
+        <div className="h-20 px-6 flex items-center border-b border-borderSoft flex-shrink-0">
           <div className="h-11 w-full max-w-[190px] flex items-center">
             <img
               src="/logo.jpg"
@@ -148,8 +150,8 @@ export default function Layout({ children }: LayoutProps) {
           </div>
         </div>
 
-        {/* Navigation list */}
-        <nav className="flex-1 px-4 py-6 space-y-1.5 overflow-y-auto">
+        {/* Navigation list: dedicated smooth scroll */}
+        <nav className="flex-1 px-4 py-4 space-y-1 overflow-y-auto">
           {navItems.map(({ to, icon: Icon, label }) => (
             <NavLink
               key={to}
@@ -163,7 +165,7 @@ export default function Layout({ children }: LayoutProps) {
         </nav>
 
         {/* Survey Badge if not 100% complete */}
-        <div className="px-4 pb-2">
+        <div className="px-4 pb-2 flex-shrink-0">
           <div className="p-3 rounded-lg bg-gradient-to-r from-primary-light/40 to-accent-light/40 border border-primary/20 flex items-center gap-2.5">
             <Sparkles size={16} className="text-primary flex-shrink-0" />
             <div className="text-xs">
@@ -174,7 +176,7 @@ export default function Layout({ children }: LayoutProps) {
         </div>
 
         {/* Bottom User Card */}
-        <div className="p-4 border-t border-borderSoft bg-surfaceSoft/40">
+        <div className="p-4 border-t border-borderSoft bg-surfaceSoft/40 flex-shrink-0">
           <div
             onClick={() => navigate('/profile')}
             className="flex items-center gap-3 p-2.5 rounded-lg bg-surface border border-borderSoft hover:border-primary/40 cursor-pointer transition-all shadow-soft"
@@ -195,10 +197,10 @@ export default function Layout({ children }: LayoutProps) {
         </div>
       </aside>
 
-      {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0 min-h-screen">
-        {/* Unified Top Baseline Header (Desktop & Tablet) */}
-        <header className="h-20 bg-surface/90 backdrop-blur-md border-b border-borderSoft px-6 lg:px-8 flex items-center justify-between sticky top-0 z-30">
+      {/* Main Content Area - 100% Fixed Frame */}
+      <div className="flex-1 h-full flex flex-col min-w-0 overflow-hidden">
+        {/* FIXED Top Baseline Header: ALWAYS fixed, never jumps or scrolls */}
+        <header className="h-20 bg-surface/95 backdrop-blur-md border-b border-borderSoft px-6 lg:px-8 flex items-center justify-between flex-shrink-0 z-30">
           {/* Left section: mobile hamburger + title */}
           <div className="flex items-center gap-4">
             <button
@@ -249,10 +251,20 @@ export default function Layout({ children }: LayoutProps) {
           </div>
         </header>
 
-        {/* Page Content Body */}
-        <main className="flex-1 p-6 lg:p-8 max-w-[1240px] w-full mx-auto">
-          {children}
-        </main>
+        {/* Page Content Body: When chat, takes 100% height without double-scrollbar */}
+        {isChat ? (
+          <main className="flex-1 overflow-hidden p-3 sm:p-5 h-[calc(100vh-5rem)]">
+            <div className="h-full w-full max-w-[1360px] mx-auto">
+              {children}
+            </div>
+          </main>
+        ) : (
+          <main className="flex-1 overflow-y-auto overflow-x-hidden p-6 lg:p-8">
+            <div className="max-w-[1240px] w-full mx-auto">
+              {children}
+            </div>
+          </main>
+        )}
       </div>
     </div>
   )

@@ -425,3 +425,4 @@ python -m pytest backend/tests/ -v
 
 ---
 *Med44 — Built for Patient Safety, Accessibility, and Transparent Administrative Navigation.*
+

@@ -493,3 +493,4 @@ export const JourneyPage: React.FC = () => {
 }
 
 export default JourneyPage
+

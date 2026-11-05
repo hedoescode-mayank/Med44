@@ -215,3 +215,4 @@ async def delete_document(
     await db.commit()
 
     return {"status": "deleted", "document_id": id}
+

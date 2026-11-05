@@ -161,3 +161,4 @@ async def get_facility_details(
         "latitude": f.latitude,
         "longitude": f.longitude,
     }
+
