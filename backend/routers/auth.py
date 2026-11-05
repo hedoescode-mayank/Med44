@@ -76,6 +76,25 @@ async def get_current_user(token: Optional[str] = Depends(oauth2_scheme), db: As
     return res.scalar_one_or_none()
 
 
+async def get_current_patient(
+    current_user: Optional[Patient] = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+) -> Patient:
+    """Retrieve the logged in patient, or fall back to the active local demo patient."""
+    if current_user:
+        return current_user
+
+    stmt = select(Patient).where(Patient.email == "demo@med44.ai")
+    res = await db.execute(stmt)
+    patient = res.scalar_one_or_none()
+    if not patient:
+        stmt2 = select(Patient).limit(1)
+        patient = (await db.execute(stmt2)).scalar_one_or_none()
+    if not patient:
+        raise HTTPException(status_code=401, detail="Patient authentication required")
+    return patient
+
+
 @router.post("/register", response_model=TokenResponse)
 async def register(req: RegisterRequest, db: AsyncSession = Depends(get_db)):
     stmt = select(Patient).where(Patient.email == req.email)
