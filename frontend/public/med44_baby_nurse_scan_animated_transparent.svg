@@ -1,0 +1,137 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 560" role="img" aria-labelledby="title desc">
+  <title id="title">Med44 animated baby nurse scanner</title>
+  <desc id="desc">A cute baby nurse mascot waves a glowing medical scanner while a pink and green scan beam and gentle particles animate around her.</desc>
+  <defs>
+    <linearGradient id="uniform" x1="0" y1="0" x2="0.9" y2="1">
+      <stop stop-color="#E5F7EA"/>
+      <stop offset="1" stop-color="#9BD8B2"/>
+    </linearGradient>
+    <linearGradient id="scan" x1="0" y1="0" x2="1" y2="0">
+      <stop stop-color="#F28DB3" stop-opacity="0"/>
+      <stop offset=".5" stop-color="#F28DB3" stop-opacity=".8"/>
+      <stop offset="1" stop-color="#F28DB3" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="glow">
+      <stop stop-color="#F7A9C6" stop-opacity=".42"/>
+      <stop offset="1" stop-color="#F7A9C6" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="softShadow" x="-30%" y="-30%" width="160%" height="170%">
+      <feDropShadow dx="0" dy="12" stdDeviation="12" flood-color="#527B61" flood-opacity=".14"/>
+    </filter>
+  </defs>
+
+  <circle cx="320" cy="260" r="205" fill="url(#glow)"/>
+
+  <!-- orbiting medical sparkles -->
+  <g fill="none" stroke-linecap="round">
+    <g class="orbit orbit-a">
+      <path d="M110 185h22m-11-11v22" stroke="#E98CAE" stroke-width="5"/>
+      <circle cx="478" cy="150" r="7" fill="#9BD8B2" stroke="none"/>
+      <path d="M500 350h18m-9-9v18" stroke="#8CC9A1" stroke-width="4"/>
+    </g>
+    <g class="orbit orbit-b">
+      <circle cx="150" cy="350" r="5" fill="#E98CAE" stroke="none"/>
+      <path d="M480 245l7 7m0-7-7 7" stroke="#E98CAE" stroke-width="4"/>
+      <circle cx="390" cy="105" r="4" fill="#8CC9A1" stroke="none"/>
+    </g>
+  </g>
+
+  <!-- scan halo -->
+  <ellipse cx="320" cy="300" rx="174" ry="196" fill="none" stroke="#A9DDBA" stroke-width="2.5" stroke-dasharray="7 13" opacity=".65">
+    <animateTransform attributeName="transform" type="rotate" from="0 320 300" to="360 320 300" dur="28s" repeatCount="indefinite"/>
+  </ellipse>
+  <ellipse cx="320" cy="300" rx="188" ry="210" fill="none" stroke="#F2B4CA" stroke-width="2" stroke-dasharray="3 17" opacity=".6">
+    <animateTransform attributeName="transform" type="rotate" from="360 320 300" to="0 320 300" dur="34s" repeatCount="indefinite"/>
+  </ellipse>
+
+  <!-- nurse character -->
+  <g filter="url(#softShadow)">
+    <!-- body -->
+    <path d="M205 468c8-89 46-132 115-132s107 43 115 132c-55 29-175 29-230 0Z" fill="url(#uniform)" stroke="#438C60" stroke-width="5"/>
+    <path d="M277 340c4 24 82 24 86 0v39c-16 21-70 21-86 0Z" fill="#FFD8C9"/>
+    <path d="M276 366l44 42 44-42" fill="#fff" opacity=".9"/>
+    <path d="M320 408v61" stroke="#6CB487" stroke-width="4" stroke-linecap="round"/>
+    <!-- left arm -->
+    <path d="M216 382c-28 8-42 34-35 61 4 17 22 23 35 10l22-34" fill="#FFD9CB" stroke="#B77A70" stroke-width="5" stroke-linecap="round"/>
+    <!-- waving right arm -->
+    <g class="wave-arm">
+      <path d="M421 383c26-12 38-35 31-57-5-17-22-22-35-8l-19 27" fill="#FFD9CB" stroke="#B77A70" stroke-width="5" stroke-linecap="round"/>
+      <path d="M443 326c-5-20 0-35 12-43 9-6 19 1 16 12l-4 15c12-15 24-16 29-7 5 10-5 20-18 28l-19 14" fill="#FFD9CB" stroke="#B77A70" stroke-width="5" stroke-linejoin="round"/>
+    </g>
+    <!-- ears -->
+    <ellipse cx="205" cy="238" rx="25" ry="34" fill="#FFD8C9" stroke="#B77A70" stroke-width="4"/>
+    <ellipse cx="435" cy="238" rx="25" ry="34" fill="#FFD8C9" stroke="#B77A70" stroke-width="4"/>
+    <!-- face -->
+    <ellipse cx="320" cy="235" rx="116" ry="128" fill="#FFE0D2" stroke="#B77A70" stroke-width="5"/>
+    <!-- hair cap -->
+    <path d="M207 225c-20-79 28-144 108-149 83-6 139 53 118 151-15-33-31-51-51-66-43 24-103 25-145 4-7 24-17 44-30 60Z" fill="#59403F"/>
+    <path d="M208 222c-18 34-12 74 12 91l9-66-21-25Zm224 0c18 34 12 74-12 91l-9-66 21-25Z" fill="#59403F"/>
+    <!-- nurse cap -->
+    <path d="M216 139c10-46 48-70 104-70s94 24 104 70l-13 29H229l-13-29Z" fill="#F8C8D9" stroke="#C97998" stroke-width="5"/>
+    <path d="M229 157h182" stroke="#C97998" stroke-width="4"/>
+    <rect x="311" y="95" width="18" height="49" rx="5" fill="#fff"/>
+    <rect x="295" y="111" width="50" height="18" rx="5" fill="#fff"/>
+    <!-- eyes blink -->
+    <g class="eyes">
+      <ellipse cx="279" cy="244" rx="10" ry="14" fill="#493331"/>
+      <ellipse cx="361" cy="244" rx="10" ry="14" fill="#493331"/>
+      <circle cx="282" cy="239" r="3.5" fill="#fff"/>
+      <circle cx="364" cy="239" r="3.5" fill="#fff"/>
+    </g>
+    <path class="closed-eyes" d="M266 245q13 12 26 0m56 0q13 12 26 0" fill="none" stroke="#493331" stroke-width="5" stroke-linecap="round"/>
+    <!-- cheeks and smile -->
+    <ellipse cx="245" cy="278" rx="20" ry="10" fill="#F29DB6" opacity=".7"/>
+    <ellipse cx="395" cy="278" rx="20" ry="10" fill="#F29DB6" opacity=".7"/>
+    <path d="M302 291q18 19 36 0" fill="none" stroke="#A85E64" stroke-width="5" stroke-linecap="round"/>
+    <!-- uniform cross -->
+    <circle cx="320" cy="392" r="23" fill="#fff" opacity=".95"/>
+    <path d="M320 379v26m-13-13h26" stroke="#E978A0" stroke-width="7" stroke-linecap="round"/>
+    <!-- stethoscope -->
+    <path d="M273 354v24c0 24 18 40 47 40s47-16 47-40v-24" fill="none" stroke="#287B55" stroke-width="6" stroke-linecap="round"/>
+    <circle cx="320" cy="418" r="11" fill="#F6C5D7" stroke="#287B55" stroke-width="5"/>
+  </g>
+
+  <!-- handheld scanner wand -->
+  <g class="scanner">
+    <path d="M453 288l35-29" stroke="#27845A" stroke-width="11" stroke-linecap="round"/>
+    <rect x="477" y="246" width="35" height="22" rx="8" transform="rotate(-40 477 246)" fill="#F3A5C0" stroke="#C66D91" stroke-width="3"/>
+    <circle cx="496" cy="250" r="5" fill="#fff"/>
+  </g>
+
+  <!-- animated scan beam sweeps over character -->
+  <g class="scan-beam">
+    <rect x="142" y="0" width="356" height="8" rx="4" fill="url(#scan)"/>
+    <path d="M160 0h320" stroke="#F08DB2" stroke-width="2" opacity=".65"/>
+  </g>
+
+  <!-- floating scan particles -->
+  <g class="particles">
+    <circle cx="180" cy="215" r="5" fill="#F08FB1"/>
+    <circle cx="455" cy="185" r="4" fill="#78BF91"/>
+    <circle cx="165" cy="320" r="4" fill="#78BF91"/>
+    <circle cx="460" cy="350" r="6" fill="#F08FB1"/>
+    <path d="M170 265h16m-8-8v16M456 295h14m-7-7v14" stroke="#E98CAE" stroke-width="3" stroke-linecap="round"/>
+  </g>
+
+  <style>
+    .wave-arm { transform-box: fill-box; transform-origin: 20% 85%; animation: wave 2.4s ease-in-out infinite; }
+    @keyframes wave { 0%,100%{transform:rotate(0)} 30%{transform:rotate(-13deg)} 60%{transform:rotate(5deg)} }
+    .eyes { animation: blink 4s infinite; transform-origin:center; }
+    .closed-eyes { opacity:0; animation: blinkLine 4s infinite; }
+    @keyframes blink { 0%,44%,48%,100%{opacity:1} 46%{opacity:0} }
+    @keyframes blinkLine { 0%,44%,48%,100%{opacity:0} 46%{opacity:1} }
+    .scan-beam { animation: scan 2.8s ease-in-out infinite; }
+    @keyframes scan { 0%{transform:translateY(145px);opacity:0} 12%{opacity:.85} 85%{opacity:.85} 100%{transform:translateY(430px);opacity:0} }
+    .particles { animation: float 3s ease-in-out infinite alternate; }
+    @keyframes float { from{transform:translateY(8px);opacity:.55} to{transform:translateY(-13px);opacity:1} }
+    .orbit-a { animation: drift 8s linear infinite; transform-origin:320px 280px; }
+    .orbit-b { animation: drift 11s linear infinite reverse; transform-origin:320px 280px; }
+    @keyframes drift { to{transform:rotate(360deg)} }
+    .scanner { animation: scannerGlow 1.6s ease-in-out infinite alternate; transform-origin:490px 260px; }
+    @keyframes scannerGlow { from{filter:drop-shadow(0 0 1px #F28DB3)} to{filter:drop-shadow(0 0 9px #F28DB3)} }
+    @media (prefers-reduced-motion: reduce) {
+      *,*::before,*::after { animation-duration:.01ms !important; animation-iteration-count:1 !important; }
+    }
+  </style>
+</svg>
+

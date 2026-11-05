@@ -1,0 +1,5187 @@
+{
+  "dataset_metadata": {
+    "product": "Med44",
+    "dataset_id": "MED44-OFFLINE-CLINICAL-KB-001",
+    "version": "1.0.0",
+    "created_date": "2026-11-04",
+    "languages": [
+      "English",
+      "Hindi",
+      "Hinglish"
+    ],
+    "coverage": {
+      "symptoms": 80,
+      "conditions": 20,
+      "intake_questions": 17,
+      "red_flag_rules": 12
+    },
+    "purpose": "Offline symptom terminology normalization, structured intake, red-flag routing and educational summaries.",
+    "review_status": "DRAFT — MUST BE REVIEWED BY A REGISTERED MEDICAL PRACTITIONER BEFORE CLINICAL DEPLOYMENT",
+    "jurisdiction_target": "India"
+  },
+  "safety_policy": {
+    "not_for": [
+      "Autonomous diagnosis",
+      "Prescribing medicines or doses",
+      "Replacing a doctor",
+      "Ruling out serious illness"
+    ],
+    "priority_order": [
+      "red_flag_detection",
+      "age_and_special_population_checks",
+      "structured_intake",
+      "non_diagnostic_summary",
+      "clinician_guidance"
+    ],
+    "hard_rules": [
+      "Run red-flag detection before the first question and after every patient answer.",
+      "Emergency red flags immediately stop routine questions and show emergency guidance.",
+      "Never say a disease is confirmed from symptom matching.",
+      "Do not calculate disease probabilities; no validated likelihood model is included.",
+      "Unknown or ambiguous phrases must trigger clarification, not a guessed match.",
+      "Never recommend prescription drugs, antibiotics, steroids or individualized doses.",
+      "Never advise stopping prescribed medication.",
+      "Use extra caution for infants, children, pregnancy, older adults and immunocompromised patients.",
+      "Absence of a red-flag phrase does not prove that the patient is safe.",
+      "Clinician review is mandatory before real-world clinical use."
+    ]
+  },
+  "symptom_dictionary": [
+    {
+      "id": "SYM001",
+      "canonical_name": "Fever",
+      "display_hi": "बुखार",
+      "display_hinglish": "bukhar",
+      "search_terms": [
+        "fever",
+        "बुखार",
+        "bukhar",
+        "pyrexia",
+        "high temperature"
+      ],
+      "normalization_key": "symptom_001",
+      "intake_prompts": [
+        {
+          "id": "SYM001_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM001_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM001_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM002",
+      "canonical_name": "Chills",
+      "display_hi": "ठंड लगना",
+      "display_hinglish": "thand lagna",
+      "search_terms": [
+        "chills",
+        "ठंड लगना",
+        "thand lagna",
+        "shivering",
+        "rigors"
+      ],
+      "normalization_key": "symptom_002",
+      "intake_prompts": [
+        {
+          "id": "SYM002_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM002_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM002_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM003",
+      "canonical_name": "Cough",
+      "display_hi": "खाँसी",
+      "display_hinglish": "khansi",
+      "search_terms": [
+        "cough",
+        "खाँसी",
+        "khansi",
+        "dry cough",
+        "wet cough"
+      ],
+      "normalization_key": "symptom_003",
+      "intake_prompts": [
+        {
+          "id": "SYM003_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM003_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM003_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM004",
+      "canonical_name": "Sore throat",
+      "display_hi": "गले में दर्द",
+      "display_hinglish": "gale mein dard",
+      "search_terms": [
+        "sore throat",
+        "गले में दर्द",
+        "gale mein dard",
+        "throat pain"
+      ],
+      "normalization_key": "symptom_004",
+      "intake_prompts": [
+        {
+          "id": "SYM004_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM004_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM004_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM005",
+      "canonical_name": "Runny nose",
+      "display_hi": "नाक बहना",
+      "display_hinglish": "naak behna",
+      "search_terms": [
+        "runny nose",
+        "नाक बहना",
+        "naak behna",
+        "rhinorrhea"
+      ],
+      "normalization_key": "symptom_005",
+      "intake_prompts": [
+        {
+          "id": "SYM005_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM005_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM005_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM006",
+      "canonical_name": "Blocked nose",
+      "display_hi": "नाक बंद",
+      "display_hinglish": "naak band",
+      "search_terms": [
+        "blocked nose",
+        "नाक बंद",
+        "naak band",
+        "nasal congestion",
+        "stuffy nose"
+      ],
+      "normalization_key": "symptom_006",
+      "intake_prompts": [
+        {
+          "id": "SYM006_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM006_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM006_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM007",
+      "canonical_name": "Sneezing",
+      "display_hi": "छींक",
+      "display_hinglish": "cheenk",
+      "search_terms": [
+        "sneezing",
+        "छींक",
+        "cheenk",
+        "repeated sneezing"
+      ],
+      "normalization_key": "symptom_007",
+      "intake_prompts": [
+        {
+          "id": "SYM007_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM007_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM007_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM008",
+      "canonical_name": "Shortness of breath",
+      "display_hi": "साँस फूलना",
+      "display_hinglish": "saans phoolna",
+      "search_terms": [
+        "shortness of breath",
+        "साँस फूलना",
+        "saans phoolna",
+        "breathlessness",
+        "dyspnea"
+      ],
+      "normalization_key": "symptom_008",
+      "intake_prompts": [
+        {
+          "id": "SYM008_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM008_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM008_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM009",
+      "canonical_name": "Wheezing",
+      "display_hi": "साँस में सीटी",
+      "display_hinglish": "saans mein seeti",
+      "search_terms": [
+        "wheezing",
+        "साँस में सीटी",
+        "saans mein seeti",
+        "whistling breath"
+      ],
+      "normalization_key": "symptom_009",
+      "intake_prompts": [
+        {
+          "id": "SYM009_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM009_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM009_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM010",
+      "canonical_name": "Chest pain",
+      "display_hi": "सीने में दर्द",
+      "display_hinglish": "seene mein dard",
+      "search_terms": [
+        "chest pain",
+        "सीने में दर्द",
+        "seene mein dard",
+        "chest pressure",
+        "chest discomfort"
+      ],
+      "normalization_key": "symptom_010",
+      "intake_prompts": [
+        {
+          "id": "SYM010_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM010_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM010_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM011",
+      "canonical_name": "Chest tightness",
+      "display_hi": "सीने में जकड़न",
+      "display_hinglish": "seene mein jakdan",
+      "search_terms": [
+        "chest tightness",
+        "सीने में जकड़न",
+        "seene mein jakdan",
+        "tight chest"
+      ],
+      "normalization_key": "symptom_011",
+      "intake_prompts": [
+        {
+          "id": "SYM011_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM011_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM011_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM012",
+      "canonical_name": "Headache",
+      "display_hi": "सिरदर्द",
+      "display_hinglish": "sirdard",
+      "search_terms": [
+        "headache",
+        "सिरदर्द",
+        "sirdard",
+        "head pain",
+        "cephalalgia"
+      ],
+      "normalization_key": "symptom_012",
+      "intake_prompts": [
+        {
+          "id": "SYM012_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM012_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM012_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM013",
+      "canonical_name": "Throbbing headache",
+      "display_hi": "धड़कता सिरदर्द",
+      "display_hinglish": "dhadakta sirdard",
+      "search_terms": [
+        "throbbing headache",
+        "धड़कता सिरदर्द",
+        "dhadakta sirdard",
+        "pulsating headache"
+      ],
+      "normalization_key": "symptom_013",
+      "intake_prompts": [
+        {
+          "id": "SYM013_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM013_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM013_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM014",
+      "canonical_name": "Dizziness",
+      "display_hi": "चक्कर",
+      "display_hinglish": "chakkar",
+      "search_terms": [
+        "dizziness",
+        "चक्कर",
+        "chakkar",
+        "lightheadedness",
+        "giddiness"
+      ],
+      "normalization_key": "symptom_014",
+      "intake_prompts": [
+        {
+          "id": "SYM014_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM014_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM014_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM015",
+      "canonical_name": "Vertigo",
+      "display_hi": "कमरा घूमना",
+      "display_hinglish": "kamra ghoomna",
+      "search_terms": [
+        "vertigo",
+        "कमरा घूमना",
+        "kamra ghoomna",
+        "spinning sensation"
+      ],
+      "normalization_key": "symptom_015",
+      "intake_prompts": [
+        {
+          "id": "SYM015_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM015_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM015_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM016",
+      "canonical_name": "Fainting",
+      "display_hi": "बेहोशी",
+      "display_hinglish": "behoshi",
+      "search_terms": [
+        "fainting",
+        "बेहोशी",
+        "behoshi",
+        "syncope",
+        "blackout"
+      ],
+      "normalization_key": "symptom_016",
+      "intake_prompts": [
+        {
+          "id": "SYM016_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM016_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM016_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM017",
+      "canonical_name": "Fatigue",
+      "display_hi": "थकान",
+      "display_hinglish": "thakan",
+      "search_terms": [
+        "fatigue",
+        "थकान",
+        "thakan",
+        "tiredness",
+        "exhaustion"
+      ],
+      "normalization_key": "symptom_017",
+      "intake_prompts": [
+        {
+          "id": "SYM017_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM017_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM017_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM018",
+      "canonical_name": "Body aches",
+      "display_hi": "बदन दर्द",
+      "display_hinglish": "badan dard",
+      "search_terms": [
+        "body aches",
+        "बदन दर्द",
+        "badan dard",
+        "myalgia",
+        "body pain"
+      ],
+      "normalization_key": "symptom_018",
+      "intake_prompts": [
+        {
+          "id": "SYM018_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM018_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM018_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM019",
+      "canonical_name": "Joint pain",
+      "display_hi": "जोड़ों में दर्द",
+      "display_hinglish": "jodon mein dard",
+      "search_terms": [
+        "joint pain",
+        "जोड़ों में दर्द",
+        "jodon mein dard",
+        "arthralgia"
+      ],
+      "normalization_key": "symptom_019",
+      "intake_prompts": [
+        {
+          "id": "SYM019_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM019_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM019_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM020",
+      "canonical_name": "Muscle pain",
+      "display_hi": "मांसपेशियों में दर्द",
+      "display_hinglish": "manspeshiyon mein dard",
+      "search_terms": [
+        "muscle pain",
+        "मांसपेशियों में दर्द",
+        "manspeshiyon mein dard",
+        "muscle soreness"
+      ],
+      "normalization_key": "symptom_020",
+      "intake_prompts": [
+        {
+          "id": "SYM020_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM020_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM020_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM021",
+      "canonical_name": "Back pain",
+      "display_hi": "पीठ दर्द",
+      "display_hinglish": "peeth dard",
+      "search_terms": [
+        "back pain",
+        "पीठ दर्द",
+        "peeth dard",
+        "lower back pain"
+      ],
+      "normalization_key": "symptom_021",
+      "intake_prompts": [
+        {
+          "id": "SYM021_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM021_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM021_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM022",
+      "canonical_name": "Neck pain",
+      "display_hi": "गर्दन दर्द",
+      "display_hinglish": "gardan dard",
+      "search_terms": [
+        "neck pain",
+        "गर्दन दर्द",
+        "gardan dard",
+        "stiff neck"
+      ],
+      "normalization_key": "symptom_022",
+      "intake_prompts": [
+        {
+          "id": "SYM022_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM022_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM022_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM023",
+      "canonical_name": "Abdominal pain",
+      "display_hi": "पेट दर्द",
+      "display_hinglish": "pet dard",
+      "search_terms": [
+        "abdominal pain",
+        "पेट दर्द",
+        "pet dard",
+        "stomach pain",
+        "belly ache"
+      ],
+      "normalization_key": "symptom_023",
+      "intake_prompts": [
+        {
+          "id": "SYM023_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM023_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM023_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM024",
+      "canonical_name": "Upper abdominal pain",
+      "display_hi": "ऊपरी पेट में दर्द",
+      "display_hinglish": "upar pet mein dard",
+      "search_terms": [
+        "upper abdominal pain",
+        "ऊपरी पेट में दर्द",
+        "upar pet mein dard",
+        "epigastric pain"
+      ],
+      "normalization_key": "symptom_024",
+      "intake_prompts": [
+        {
+          "id": "SYM024_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM024_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM024_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM025",
+      "canonical_name": "Lower abdominal pain",
+      "display_hi": "निचले पेट में दर्द",
+      "display_hinglish": "neeche pet mein dard",
+      "search_terms": [
+        "lower abdominal pain",
+        "निचले पेट में दर्द",
+        "neeche pet mein dard",
+        "lower belly pain"
+      ],
+      "normalization_key": "symptom_025",
+      "intake_prompts": [
+        {
+          "id": "SYM025_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM025_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM025_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM026",
+      "canonical_name": "Nausea",
+      "display_hi": "जी मिचलाना",
+      "display_hinglish": "jee michlana",
+      "search_terms": [
+        "nausea",
+        "जी मिचलाना",
+        "jee michlana",
+        "queasiness",
+        "feeling sick"
+      ],
+      "normalization_key": "symptom_026",
+      "intake_prompts": [
+        {
+          "id": "SYM026_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM026_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM026_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM027",
+      "canonical_name": "Vomiting",
+      "display_hi": "उल्टी",
+      "display_hinglish": "ulti",
+      "search_terms": [
+        "vomiting",
+        "उल्टी",
+        "ulti",
+        "emesis",
+        "being sick"
+      ],
+      "normalization_key": "symptom_027",
+      "intake_prompts": [
+        {
+          "id": "SYM027_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM027_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM027_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM028",
+      "canonical_name": "Diarrhea",
+      "display_hi": "दस्त",
+      "display_hinglish": "dast",
+      "search_terms": [
+        "diarrhea",
+        "दस्त",
+        "dast",
+        "loose motions",
+        "watery stool"
+      ],
+      "normalization_key": "symptom_028",
+      "intake_prompts": [
+        {
+          "id": "SYM028_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM028_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM028_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM029",
+      "canonical_name": "Constipation",
+      "display_hi": "कब्ज",
+      "display_hinglish": "kabz",
+      "search_terms": [
+        "constipation",
+        "कब्ज",
+        "kabz",
+        "hard stool",
+        "straining"
+      ],
+      "normalization_key": "symptom_029",
+      "intake_prompts": [
+        {
+          "id": "SYM029_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM029_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM029_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM030",
+      "canonical_name": "Bloating",
+      "display_hi": "पेट फूलना",
+      "display_hinglish": "pet phoolna",
+      "search_terms": [
+        "bloating",
+        "पेट फूलना",
+        "pet phoolna",
+        "abdominal distension"
+      ],
+      "normalization_key": "symptom_030",
+      "intake_prompts": [
+        {
+          "id": "SYM030_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM030_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM030_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM031",
+      "canonical_name": "Gas and belching",
+      "display_hi": "गैस / डकार",
+      "display_hinglish": "gas;dakar",
+      "search_terms": [
+        "gas and belching",
+        "गैस / डकार",
+        "gas;dakar",
+        "flatulence",
+        "burping"
+      ],
+      "normalization_key": "symptom_031",
+      "intake_prompts": [
+        {
+          "id": "SYM031_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM031_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM031_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM032",
+      "canonical_name": "Heartburn",
+      "display_hi": "सीने में जलन",
+      "display_hinglish": "seene mein jalan",
+      "search_terms": [
+        "heartburn",
+        "सीने में जलन",
+        "seene mein jalan",
+        "acid burn"
+      ],
+      "normalization_key": "symptom_032",
+      "intake_prompts": [
+        {
+          "id": "SYM032_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM032_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM032_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM033",
+      "canonical_name": "Acid reflux",
+      "display_hi": "खट्टा पानी आना",
+      "display_hinglish": "khatta pani aana",
+      "search_terms": [
+        "acid reflux",
+        "खट्टा पानी आना",
+        "khatta pani aana",
+        "acid regurgitation",
+        "sour taste"
+      ],
+      "normalization_key": "symptom_033",
+      "intake_prompts": [
+        {
+          "id": "SYM033_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM033_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM033_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM034",
+      "canonical_name": "Loss of appetite",
+      "display_hi": "भूख कम",
+      "display_hinglish": "bhook kam",
+      "search_terms": [
+        "loss of appetite",
+        "भूख कम",
+        "bhook kam",
+        "poor appetite"
+      ],
+      "normalization_key": "symptom_034",
+      "intake_prompts": [
+        {
+          "id": "SYM034_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM034_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM034_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM035",
+      "canonical_name": "Excessive thirst",
+      "display_hi": "बहुत प्यास",
+      "display_hinglish": "bahut pyas",
+      "search_terms": [
+        "excessive thirst",
+        "बहुत प्यास",
+        "bahut pyas",
+        "polydipsia"
+      ],
+      "normalization_key": "symptom_035",
+      "intake_prompts": [
+        {
+          "id": "SYM035_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM035_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM035_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM036",
+      "canonical_name": "Frequent urination",
+      "display_hi": "बार-बार पेशाब",
+      "display_hinglish": "baar baar peshab",
+      "search_terms": [
+        "frequent urination",
+        "बार-बार पेशाब",
+        "baar baar peshab",
+        "urinary frequency",
+        "polyuria"
+      ],
+      "normalization_key": "symptom_036",
+      "intake_prompts": [
+        {
+          "id": "SYM036_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM036_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM036_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM037",
+      "canonical_name": "Painful urination",
+      "display_hi": "पेशाब में जलन",
+      "display_hinglish": "peshab mein jalan",
+      "search_terms": [
+        "painful urination",
+        "पेशाब में जलन",
+        "peshab mein jalan",
+        "dysuria",
+        "burning urine"
+      ],
+      "normalization_key": "symptom_037",
+      "intake_prompts": [
+        {
+          "id": "SYM037_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM037_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM037_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM038",
+      "canonical_name": "Urinary urgency",
+      "display_hi": "पेशाब की तेज इच्छा",
+      "display_hinglish": "peshab ki tez ichha",
+      "search_terms": [
+        "urinary urgency",
+        "पेशाब की तेज इच्छा",
+        "peshab ki tez ichha",
+        "urgent urination"
+      ],
+      "normalization_key": "symptom_038",
+      "intake_prompts": [
+        {
+          "id": "SYM038_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM038_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM038_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM039",
+      "canonical_name": "Blood in urine",
+      "display_hi": "पेशाब में खून",
+      "display_hinglish": "peshab mein khoon",
+      "search_terms": [
+        "blood in urine",
+        "पेशाब में खून",
+        "peshab mein khoon",
+        "hematuria",
+        "red urine"
+      ],
+      "normalization_key": "symptom_039",
+      "intake_prompts": [
+        {
+          "id": "SYM039_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM039_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM039_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM040",
+      "canonical_name": "Flank pain",
+      "display_hi": "कमर के एक तरफ दर्द",
+      "display_hinglish": "kamar ke ek taraf dard",
+      "search_terms": [
+        "flank pain",
+        "कमर के एक तरफ दर्द",
+        "kamar ke ek taraf dard",
+        "side pain",
+        "kidney area pain"
+      ],
+      "normalization_key": "symptom_040",
+      "intake_prompts": [
+        {
+          "id": "SYM040_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM040_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM040_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM041",
+      "canonical_name": "Skin rash",
+      "display_hi": "त्वचा पर दाने",
+      "display_hinglish": "twacha par dane",
+      "search_terms": [
+        "skin rash",
+        "त्वचा पर दाने",
+        "twacha par dane",
+        "eruption",
+        "spots"
+      ],
+      "normalization_key": "symptom_041",
+      "intake_prompts": [
+        {
+          "id": "SYM041_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM041_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM041_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM042",
+      "canonical_name": "Itching",
+      "display_hi": "खुजली",
+      "display_hinglish": "khujli",
+      "search_terms": [
+        "itching",
+        "खुजली",
+        "khujli",
+        "pruritus",
+        "itchy skin"
+      ],
+      "normalization_key": "symptom_042",
+      "intake_prompts": [
+        {
+          "id": "SYM042_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM042_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM042_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM043",
+      "canonical_name": "Hives",
+      "display_hi": "उभरे खुजली वाले चकत्ते",
+      "display_hinglish": "ubhre chakatte",
+      "search_terms": [
+        "hives",
+        "उभरे खुजली वाले चकत्ते",
+        "ubhre chakatte",
+        "urticaria",
+        "welts"
+      ],
+      "normalization_key": "symptom_043",
+      "intake_prompts": [
+        {
+          "id": "SYM043_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM043_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM043_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM044",
+      "canonical_name": "Face or lip swelling",
+      "display_hi": "चेहरे / होंठों में सूजन",
+      "display_hinglish": "chehre hothon mein sujan",
+      "search_terms": [
+        "face or lip swelling",
+        "चेहरे / होंठों में सूजन",
+        "chehre hothon mein sujan",
+        "angioedema"
+      ],
+      "normalization_key": "symptom_044",
+      "intake_prompts": [
+        {
+          "id": "SYM044_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM044_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM044_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM045",
+      "canonical_name": "Red eye",
+      "display_hi": "आँख लाल",
+      "display_hinglish": "aankh laal",
+      "search_terms": [
+        "red eye",
+        "आँख लाल",
+        "aankh laal",
+        "eye redness"
+      ],
+      "normalization_key": "symptom_045",
+      "intake_prompts": [
+        {
+          "id": "SYM045_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM045_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM045_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM046",
+      "canonical_name": "Itchy eyes",
+      "display_hi": "आँखों में खुजली",
+      "display_hinglish": "aankhon mein khujli",
+      "search_terms": [
+        "itchy eyes",
+        "आँखों में खुजली",
+        "aankhon mein khujli",
+        "ocular itching"
+      ],
+      "normalization_key": "symptom_046",
+      "intake_prompts": [
+        {
+          "id": "SYM046_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM046_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM046_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM047",
+      "canonical_name": "Watery eyes",
+      "display_hi": "आँखों से पानी",
+      "display_hinglish": "aankhon se pani",
+      "search_terms": [
+        "watery eyes",
+        "आँखों से पानी",
+        "aankhon se pani",
+        "tearing",
+        "lacrimation"
+      ],
+      "normalization_key": "symptom_047",
+      "intake_prompts": [
+        {
+          "id": "SYM047_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM047_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM047_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM048",
+      "canonical_name": "Eye discharge",
+      "display_hi": "आँखों से चिपचिपा पानी",
+      "display_hinglish": "aankh chipakna",
+      "search_terms": [
+        "eye discharge",
+        "आँखों से चिपचिपा पानी",
+        "aankh chipakna",
+        "sticky eyes",
+        "mucus"
+      ],
+      "normalization_key": "symptom_048",
+      "intake_prompts": [
+        {
+          "id": "SYM048_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM048_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM048_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM049",
+      "canonical_name": "Blurred vision",
+      "display_hi": "धुंधला दिखना",
+      "display_hinglish": "dhundhla dikhna",
+      "search_terms": [
+        "blurred vision",
+        "धुंधला दिखना",
+        "dhundhla dikhna",
+        "blurry vision"
+      ],
+      "normalization_key": "symptom_049",
+      "intake_prompts": [
+        {
+          "id": "SYM049_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM049_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM049_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM050",
+      "canonical_name": "Ear pain",
+      "display_hi": "कान दर्द",
+      "display_hinglish": "kaan dard",
+      "search_terms": [
+        "ear pain",
+        "कान दर्द",
+        "kaan dard",
+        "earache",
+        "otalgia"
+      ],
+      "normalization_key": "symptom_050",
+      "intake_prompts": [
+        {
+          "id": "SYM050_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM050_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM050_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM051",
+      "canonical_name": "Hearing difficulty",
+      "display_hi": "कम सुनाई देना",
+      "display_hinglish": "kam sunai dena",
+      "search_terms": [
+        "hearing difficulty",
+        "कम सुनाई देना",
+        "kam sunai dena",
+        "hearing loss"
+      ],
+      "normalization_key": "symptom_051",
+      "intake_prompts": [
+        {
+          "id": "SYM051_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM051_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM051_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM052",
+      "canonical_name": "Ringing in ears",
+      "display_hi": "कान में घंटी",
+      "display_hinglish": "kaan mein ghanti",
+      "search_terms": [
+        "ringing in ears",
+        "कान में घंटी",
+        "kaan mein ghanti",
+        "tinnitus",
+        "buzzing"
+      ],
+      "normalization_key": "symptom_052",
+      "intake_prompts": [
+        {
+          "id": "SYM052_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM052_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM052_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM053",
+      "canonical_name": "Toothache",
+      "display_hi": "दाँत दर्द",
+      "display_hinglish": "daant dard",
+      "search_terms": [
+        "toothache",
+        "दाँत दर्द",
+        "daant dard",
+        "dental pain"
+      ],
+      "normalization_key": "symptom_053",
+      "intake_prompts": [
+        {
+          "id": "SYM053_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM053_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM053_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM054",
+      "canonical_name": "Mouth ulcers",
+      "display_hi": "मुँह में छाले",
+      "display_hinglish": "munh mein chhale",
+      "search_terms": [
+        "mouth ulcers",
+        "मुँह में छाले",
+        "munh mein chhale",
+        "oral ulcers",
+        "canker sores"
+      ],
+      "normalization_key": "symptom_054",
+      "intake_prompts": [
+        {
+          "id": "SYM054_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM054_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM054_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM055",
+      "canonical_name": "Difficulty swallowing",
+      "display_hi": "निगलने में कठिनाई",
+      "display_hinglish": "nigalne mein dikkat",
+      "search_terms": [
+        "difficulty swallowing",
+        "निगलने में कठिनाई",
+        "nigalne mein dikkat",
+        "dysphagia"
+      ],
+      "normalization_key": "symptom_055",
+      "intake_prompts": [
+        {
+          "id": "SYM055_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM055_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM055_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM056",
+      "canonical_name": "Swollen glands",
+      "display_hi": "गले की ग्रंथियों में सूजन",
+      "display_hinglish": "glands mein sujan",
+      "search_terms": [
+        "swollen glands",
+        "गले की ग्रंथियों में सूजन",
+        "glands mein sujan",
+        "lymphadenopathy"
+      ],
+      "normalization_key": "symptom_056",
+      "intake_prompts": [
+        {
+          "id": "SYM056_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM056_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM056_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM057",
+      "canonical_name": "Night sweats",
+      "display_hi": "रात में पसीना",
+      "display_hinglish": "raat mein pasina",
+      "search_terms": [
+        "night sweats",
+        "रात में पसीना",
+        "raat mein pasina",
+        "nocturnal sweating"
+      ],
+      "normalization_key": "symptom_057",
+      "intake_prompts": [
+        {
+          "id": "SYM057_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM057_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM057_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM058",
+      "canonical_name": "Unintentional weight loss",
+      "display_hi": "बिना कोशिश वजन घटना",
+      "display_hinglish": "bina koshish wazan ghatna",
+      "search_terms": [
+        "unintentional weight loss",
+        "बिना कोशिश वजन घटना",
+        "bina koshish wazan ghatna",
+        "unexpected weight loss"
+      ],
+      "normalization_key": "symptom_058",
+      "intake_prompts": [
+        {
+          "id": "SYM058_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM058_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM058_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM059",
+      "canonical_name": "Unexpected weight gain",
+      "display_hi": "अचानक वजन बढ़ना",
+      "display_hinglish": "achanak wazan badhna",
+      "search_terms": [
+        "unexpected weight gain",
+        "अचानक वजन बढ़ना",
+        "achanak wazan badhna",
+        "unintentional weight gain"
+      ],
+      "normalization_key": "symptom_059",
+      "intake_prompts": [
+        {
+          "id": "SYM059_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM059_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM059_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM060",
+      "canonical_name": "Leg or ankle swelling",
+      "display_hi": "पैरों में सूजन",
+      "display_hinglish": "pairon mein sujan",
+      "search_terms": [
+        "leg or ankle swelling",
+        "पैरों में सूजन",
+        "pairon mein sujan",
+        "edema",
+        "swollen ankles"
+      ],
+      "normalization_key": "symptom_060",
+      "intake_prompts": [
+        {
+          "id": "SYM060_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM060_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM060_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM061",
+      "canonical_name": "Palpitations",
+      "display_hi": "दिल की धड़कन तेज",
+      "display_hinglish": "dil ki dhadkan tez",
+      "search_terms": [
+        "palpitations",
+        "दिल की धड़कन तेज",
+        "dil ki dhadkan tez",
+        "racing heart",
+        "irregular heartbeat"
+      ],
+      "normalization_key": "symptom_061",
+      "intake_prompts": [
+        {
+          "id": "SYM061_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM061_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM061_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM062",
+      "canonical_name": "Numbness or tingling",
+      "display_hi": "सुन्नपन / झनझनाहट",
+      "display_hinglish": "sunnpan jhanjhanahat",
+      "search_terms": [
+        "numbness or tingling",
+        "सुन्नपन / झनझनाहट",
+        "sunnpan jhanjhanahat",
+        "pins and needles",
+        "paresthesia"
+      ],
+      "normalization_key": "symptom_062",
+      "intake_prompts": [
+        {
+          "id": "SYM062_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM062_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM062_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM063",
+      "canonical_name": "One-sided weakness",
+      "display_hi": "एक तरफ कमजोरी",
+      "display_hinglish": "ek taraf kamzori",
+      "search_terms": [
+        "one-sided weakness",
+        "एक तरफ कमजोरी",
+        "ek taraf kamzori",
+        "unilateral weakness"
+      ],
+      "normalization_key": "symptom_063",
+      "intake_prompts": [
+        {
+          "id": "SYM063_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM063_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM063_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM064",
+      "canonical_name": "Speech difficulty",
+      "display_hi": "बोलने में परेशानी",
+      "display_hinglish": "bolne mein dikkat",
+      "search_terms": [
+        "speech difficulty",
+        "बोलने में परेशानी",
+        "bolne mein dikkat",
+        "slurred speech",
+        "aphasia"
+      ],
+      "normalization_key": "symptom_064",
+      "intake_prompts": [
+        {
+          "id": "SYM064_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM064_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM064_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM065",
+      "canonical_name": "Confusion",
+      "display_hi": "अचानक भ्रम",
+      "display_hinglish": "achanak confusion",
+      "search_terms": [
+        "confusion",
+        "अचानक भ्रम",
+        "achanak confusion",
+        "disorientation",
+        "altered mental status"
+      ],
+      "normalization_key": "symptom_065",
+      "intake_prompts": [
+        {
+          "id": "SYM065_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM065_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM065_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM066",
+      "canonical_name": "Seizure",
+      "display_hi": "दौरा",
+      "display_hinglish": "daura",
+      "search_terms": [
+        "seizure",
+        "दौरा",
+        "daura",
+        "fit",
+        "convulsion"
+      ],
+      "normalization_key": "symptom_066",
+      "intake_prompts": [
+        {
+          "id": "SYM066_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM066_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM066_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM067",
+      "canonical_name": "Light sensitivity",
+      "display_hi": "रोशनी से परेशानी",
+      "display_hinglish": "roshni se pareshani",
+      "search_terms": [
+        "light sensitivity",
+        "रोशनी से परेशानी",
+        "roshni se pareshani",
+        "photophobia"
+      ],
+      "normalization_key": "symptom_067",
+      "intake_prompts": [
+        {
+          "id": "SYM067_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM067_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM067_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM068",
+      "canonical_name": "Sound sensitivity",
+      "display_hi": "आवाज़ से परेशानी",
+      "display_hinglish": "awaaz se pareshani",
+      "search_terms": [
+        "sound sensitivity",
+        "आवाज़ से परेशानी",
+        "awaaz se pareshani",
+        "phonophobia"
+      ],
+      "normalization_key": "symptom_068",
+      "intake_prompts": [
+        {
+          "id": "SYM068_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM068_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM068_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM069",
+      "canonical_name": "Sleep difficulty",
+      "display_hi": "नींद न आना",
+      "display_hinglish": "neend na aana",
+      "search_terms": [
+        "sleep difficulty",
+        "नींद न आना",
+        "neend na aana",
+        "insomnia"
+      ],
+      "normalization_key": "symptom_069",
+      "intake_prompts": [
+        {
+          "id": "SYM069_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM069_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM069_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM070",
+      "canonical_name": "Anxiety or panic",
+      "display_hi": "घबराहट",
+      "display_hinglish": "ghabrahat",
+      "search_terms": [
+        "anxiety or panic",
+        "घबराहट",
+        "ghabrahat",
+        "anxious feeling",
+        "panic sensation"
+      ],
+      "normalization_key": "symptom_070",
+      "intake_prompts": [
+        {
+          "id": "SYM070_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM070_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM070_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM071",
+      "canonical_name": "Low mood",
+      "display_hi": "मन उदास",
+      "display_hinglish": "mann udaas",
+      "search_terms": [
+        "low mood",
+        "मन उदास",
+        "mann udaas",
+        "sadness",
+        "depressed mood"
+      ],
+      "normalization_key": "symptom_071",
+      "intake_prompts": [
+        {
+          "id": "SYM071_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM071_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM071_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM072",
+      "canonical_name": "Menstrual cramps",
+      "display_hi": "पीरियड में ऐंठन",
+      "display_hinglish": "period mein ainthan",
+      "search_terms": [
+        "menstrual cramps",
+        "पीरियड में ऐंठन",
+        "period mein ainthan",
+        "period pain",
+        "dysmenorrhea"
+      ],
+      "normalization_key": "symptom_072",
+      "intake_prompts": [
+        {
+          "id": "SYM072_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM072_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM072_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM073",
+      "canonical_name": "Heavy menstrual bleeding",
+      "display_hi": "पीरियड में ज्यादा खून",
+      "display_hinglish": "period mein zyada bleeding",
+      "search_terms": [
+        "heavy menstrual bleeding",
+        "पीरियड में ज्यादा खून",
+        "period mein zyada bleeding",
+        "heavy periods",
+        "menorrhagia"
+      ],
+      "normalization_key": "symptom_073",
+      "intake_prompts": [
+        {
+          "id": "SYM073_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM073_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM073_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM074",
+      "canonical_name": "Vaginal discharge",
+      "display_hi": "योनि से स्राव",
+      "display_hinglish": "yoni se srav",
+      "search_terms": [
+        "vaginal discharge",
+        "योनि से स्राव",
+        "yoni se srav",
+        "discharge",
+        "leucorrhea"
+      ],
+      "normalization_key": "symptom_074",
+      "intake_prompts": [
+        {
+          "id": "SYM074_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM074_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM074_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM075",
+      "canonical_name": "Pelvic pain",
+      "display_hi": "पेल्विक दर्द",
+      "display_hinglish": "pelvic dard",
+      "search_terms": [
+        "pelvic pain",
+        "पेल्विक दर्द",
+        "pelvic dard",
+        "pelvic discomfort"
+      ],
+      "normalization_key": "symptom_075",
+      "intake_prompts": [
+        {
+          "id": "SYM075_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM075_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM075_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM076",
+      "canonical_name": "Pregnancy nausea",
+      "display_hi": "गर्भावस्था में जी मिचलाना",
+      "display_hinglish": "pregnancy mein nausea",
+      "search_terms": [
+        "pregnancy nausea",
+        "गर्भावस्था में जी मिचलाना",
+        "pregnancy mein nausea",
+        "morning sickness"
+      ],
+      "normalization_key": "symptom_076",
+      "intake_prompts": [
+        {
+          "id": "SYM076_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM076_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM076_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM077",
+      "canonical_name": "Pale skin",
+      "display_hi": "त्वचा फीकी पड़ना",
+      "display_hinglish": "rang feeka padna",
+      "search_terms": [
+        "pale skin",
+        "त्वचा फीकी पड़ना",
+        "rang feeka padna",
+        "pallor"
+      ],
+      "normalization_key": "symptom_077",
+      "intake_prompts": [
+        {
+          "id": "SYM077_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM077_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM077_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM078",
+      "canonical_name": "Hair loss",
+      "display_hi": "बाल झड़ना",
+      "display_hinglish": "baal jhadna",
+      "search_terms": [
+        "hair loss",
+        "बाल झड़ना",
+        "baal jhadna",
+        "hair shedding",
+        "alopecia symptom"
+      ],
+      "normalization_key": "symptom_078",
+      "intake_prompts": [
+        {
+          "id": "SYM078_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM078_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM078_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM079",
+      "canonical_name": "Dry mouth",
+      "display_hi": "मुँह सूखना",
+      "display_hinglish": "munh sookhna",
+      "search_terms": [
+        "dry mouth",
+        "मुँह सूखना",
+        "munh sookhna",
+        "xerostomia"
+      ],
+      "normalization_key": "symptom_079",
+      "intake_prompts": [
+        {
+          "id": "SYM079_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM079_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM079_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    },
+    {
+      "id": "SYM080",
+      "canonical_name": "Dehydration signs",
+      "display_hi": "पानी की कमी",
+      "display_hinglish": "pani ki kami",
+      "search_terms": [
+        "dehydration signs",
+        "पानी की कमी",
+        "pani ki kami",
+        "reduced urination",
+        "dry mouth"
+      ],
+      "normalization_key": "symptom_080",
+      "intake_prompts": [
+        {
+          "id": "SYM080_DURATION",
+          "question": "When did this symptom start?",
+          "type": "single_choice",
+          "options": [
+            "Today",
+            "1–3 days ago",
+            "4–7 days ago",
+            "1–4 weeks ago",
+            "More than a month ago"
+          ]
+        },
+        {
+          "id": "SYM080_SEVERITY",
+          "question": "How severe is it from 0 to 10?",
+          "type": "scale",
+          "min": 0,
+          "max": 10
+        },
+        {
+          "id": "SYM080_PATTERN",
+          "question": "Is it constant or does it come and go?",
+          "type": "single_choice",
+          "options": [
+            "Constant",
+            "Comes and goes",
+            "Triggered by activity or exposure",
+            "Not sure"
+          ]
+        }
+      ],
+      "clinical_note": "Patient-reported symptom term only; not a diagnosis."
+    }
+  ],
+  "common_conditions": [
+    {
+      "id": "CON001",
+      "name": "Common cold",
+      "name_hi": "सामान्य सर्दी",
+      "plain_language_summary": "Viral upper-respiratory illness; nasal and throat symptoms are common.",
+      "associated_symptom_ids": [
+        "SYM003",
+        "SYM004",
+        "SYM005",
+        "SYM006",
+        "SYM007",
+        "SYM001"
+      ],
+      "assessment_questions": [
+        {
+          "id": "CON001_Q1",
+          "question": "Which symptom is troubling you the most right now?",
+          "type": "single_choice",
+          "options": "select_from_reported_symptoms"
+        },
+        {
+          "id": "CON001_Q2",
+          "question": "Has this happened before, and was it assessed by a clinician?",
+          "type": "single_choice",
+          "options": [
+            "First time",
+            "Previously assessed",
+            "Previously not assessed",
+            "Not sure"
+          ]
+        },
+        {
+          "id": "CON001_Q3",
+          "question": "Any recent new medicine, food, exposure, travel, injury or illness?",
+          "type": "free_text"
+        }
+      ],
+      "result_label": "Possible pattern to discuss with a clinician — not a diagnosis",
+      "safe_next_step": "Arrange clinician assessment when symptoms are persistent, severe, recurrent or concerning. Do not self-diagnose from this association.",
+      "escalation_note": "Emergency symptoms override this condition profile.",
+      "source": {
+        "title": "Common cold — NHS/WHO/CDC reference",
+        "url": "https://www.nhs.uk/conditions/common-cold/"
+      },
+      "review_status": "REFERENCE_ONLY_NOT_CLINICALLY_VALIDATED"
+    },
+    {
+      "id": "CON002",
+      "name": "Influenza (flu)",
+      "name_hi": "फ्लू",
+      "plain_language_summary": "Often abrupt fever, aches, headache and cough; overlaps with other infections.",
+      "associated_symptom_ids": [
+        "SYM001",
+        "SYM002",
+        "SYM003",
+        "SYM012",
+        "SYM017",
+        "SYM018"
+      ],
+      "assessment_questions": [
+        {
+          "id": "CON002_Q1",
+          "question": "Which symptom is troubling you the most right now?",
+          "type": "single_choice",
+          "options": "select_from_reported_symptoms"
+        },
+        {
+          "id": "CON002_Q2",
+          "question": "Has this happened before, and was it assessed by a clinician?",
+          "type": "single_choice",
+          "options": [
+            "First time",
+            "Previously assessed",
+            "Previously not assessed",
+            "Not sure"
+          ]
+        },
+        {
+          "id": "CON002_Q3",
+          "question": "Any recent new medicine, food, exposure, travel, injury or illness?",
+          "type": "free_text"
+        }
+      ],
+      "result_label": "Possible pattern to discuss with a clinician — not a diagnosis",
+      "safe_next_step": "Arrange clinician assessment when symptoms are persistent, severe, recurrent or concerning. Do not self-diagnose from this association.",
+      "escalation_note": "Emergency symptoms override this condition profile.",
+      "source": {
+        "title": "Influenza (flu) — NHS/WHO/CDC reference",
+        "url": "https://www.cdc.gov/flu/signs-symptoms/index.html"
+      },
+      "review_status": "REFERENCE_ONLY_NOT_CLINICALLY_VALIDATED"
+    },
+    {
+      "id": "CON003",
+      "name": "COVID-19",
+      "name_hi": "कोविड-19",
+      "plain_language_summary": "Symptoms vary and overlap with flu and other respiratory infections; testing may be needed.",
+      "associated_symptom_ids": [
+        "SYM001",
+        "SYM003",
+        "SYM004",
+        "SYM005",
+        "SYM012",
+        "SYM017",
+        "SYM008"
+      ],
+      "assessment_questions": [
+        {
+          "id": "CON003_Q1",
+          "question": "Which symptom is troubling you the most right now?",
+          "type": "single_choice",
+          "options": "select_from_reported_symptoms"
+        },
+        {
+          "id": "CON003_Q2",
+          "question": "Has this happened before, and was it assessed by a clinician?",
+          "type": "single_choice",
+          "options": [
+            "First time",
+            "Previously assessed",
+            "Previously not assessed",
+            "Not sure"
+          ]
+        },
+        {
+          "id": "CON003_Q3",
+          "question": "Any recent new medicine, food, exposure, travel, injury or illness?",
+          "type": "free_text"
+        }
+      ],
+      "result_label": "Possible pattern to discuss with a clinician — not a diagnosis",
+      "safe_next_step": "Arrange clinician assessment when symptoms are persistent, severe, recurrent or concerning. Do not self-diagnose from this association.",
+      "escalation_note": "Emergency symptoms override this condition profile.",
+      "source": {
+        "title": "COVID-19 — NHS/WHO/CDC reference",
+        "url": "https://www.who.int/health-topics/coronavirus"
+      },
+      "review_status": "REFERENCE_ONLY_NOT_CLINICALLY_VALIDATED"
+    },
+    {
+      "id": "CON004",
+      "name": "Allergic rhinitis",
+      "name_hi": "एलर्जिक राइनाइटिस",
+      "plain_language_summary": "Sneezing, itchy nose or eyes and watery runny nose may follow an exposure.",
+      "associated_symptom_ids": [
+        "SYM005",
+        "SYM006",
+        "SYM007",
+        "SYM046",
+        "SYM047"
+      ],
+      "assessment_questions": [
+        {
+          "id": "CON004_Q1",
+          "question": "Which symptom is troubling you the most right now?",
+          "type": "single_choice",
+          "options": "select_from_reported_symptoms"
+        },
+        {
+          "id": "CON004_Q2",
+          "question": "Has this happened before, and was it assessed by a clinician?",
+          "type": "single_choice",
+          "options": [
+            "First time",
+            "Previously assessed",
+            "Previously not assessed",
+            "Not sure"
+          ]
+        },
+        {
+          "id": "CON004_Q3",
+          "question": "Any recent new medicine, food, exposure, travel, injury or illness?",
+          "type": "free_text"
+        }
+      ],
+      "result_label": "Possible pattern to discuss with a clinician — not a diagnosis",
+      "safe_next_step": "Arrange clinician assessment when symptoms are persistent, severe, recurrent or concerning. Do not self-diagnose from this association.",
+      "escalation_note": "Emergency symptoms override this condition profile.",
+      "source": {
+        "title": "Allergic rhinitis — NHS/WHO/CDC reference",
+        "url": "https://www.nhs.uk/conditions/allergic-rhinitis/"
+      },
+      "review_status": "REFERENCE_ONLY_NOT_CLINICALLY_VALIDATED"
+    },
+    {
+      "id": "CON005",
+      "name": "Acute bronchitis",
+      "name_hi": "एक्यूट ब्रोंकाइटिस",
+      "plain_language_summary": "Cough is prominent and may follow a respiratory infection.",
+      "associated_symptom_ids": [
+        "SYM003",
+        "SYM017",
+        "SYM004",
+        "SYM018",
+        "SYM008"
+      ],
+      "assessment_questions": [
+        {
+          "id": "CON005_Q1",
+          "question": "Which symptom is troubling you the most right now?",
+          "type": "single_choice",
+          "options": "select_from_reported_symptoms"
+        },
+        {
+          "id": "CON005_Q2",
+          "question": "Has this happened before, and was it assessed by a clinician?",
+          "type": "single_choice",
+          "options": [
+            "First time",
+            "Previously assessed",
+            "Previously not assessed",
+            "Not sure"
+          ]
+        },
+        {
+          "id": "CON005_Q3",
+          "question": "Any recent new medicine, food, exposure, travel, injury or illness?",
+          "type": "free_text"
+        }
+      ],
+      "result_label": "Possible pattern to discuss with a clinician — not a diagnosis",
+      "safe_next_step": "Arrange clinician assessment when symptoms are persistent, severe, recurrent or concerning. Do not self-diagnose from this association.",
+      "escalation_note": "Emergency symptoms override this condition profile.",
+      "source": {
+        "title": "Acute bronchitis — NHS/WHO/CDC reference",
+        "url": "https://www.nhs.uk/conditions/bronchitis/"
+      },
+      "review_status": "REFERENCE_ONLY_NOT_CLINICALLY_VALIDATED"
+    },
+    {
+      "id": "CON006",
+      "name": "Asthma",
+      "name_hi": "दमा / अस्थमा",
+      "plain_language_summary": "Variable wheeze, cough, chest tightness and breathlessness; clinical testing is needed.",
+      "associated_symptom_ids": [
+        "SYM003",
+        "SYM008",
+        "SYM009",
+        "SYM011"
+      ],
+      "assessment_questions": [
+        {
+          "id": "CON006_Q1",
+          "question": "Which symptom is troubling you the most right now?",
+          "type": "single_choice",
+          "options": "select_from_reported_symptoms"
+        },
+        {
+          "id": "CON006_Q2",
+          "question": "Has this happened before, and was it assessed by a clinician?",
+          "type": "single_choice",
+          "options": [
+            "First time",
+            "Previously assessed",
+            "Previously not assessed",
+            "Not sure"
+          ]
+        },
+        {
+          "id": "CON006_Q3",
+          "question": "Any recent new medicine, food, exposure, travel, injury or illness?",
+          "type": "free_text"
+        }
+      ],
+      "result_label": "Possible pattern to discuss with a clinician — not a diagnosis",
+      "safe_next_step": "Arrange clinician assessment when symptoms are persistent, severe, recurrent or concerning. Do not self-diagnose from this association.",
+      "escalation_note": "Emergency symptoms override this condition profile.",
+      "source": {
+        "title": "Asthma — NHS/WHO/CDC reference",
+        "url": "https://www.nhs.uk/conditions/asthma/"
+      },
+      "review_status": "REFERENCE_ONLY_NOT_CLINICALLY_VALIDATED"
+    },
+    {
+      "id": "CON007",
+      "name": "Pneumonia",
+      "name_hi": "निमोनिया",
+      "plain_language_summary": "Can cause cough, fever, chest discomfort and breathlessness; severity varies.",
+      "associated_symptom_ids": [
+        "SYM001",
+        "SYM003",
+        "SYM008",
+        "SYM010",
+        "SYM017"
+      ],
+      "assessment_questions": [
+        {
+          "id": "CON007_Q1",
+          "question": "Which symptom is troubling you the most right now?",
+          "type": "single_choice",
+          "options": "select_from_reported_symptoms"
+        },
+        {
+          "id": "CON007_Q2",
+          "question": "Has this happened before, and was it assessed by a clinician?",
+          "type": "single_choice",
+          "options": [
+            "First time",
+            "Previously assessed",
+            "Previously not assessed",
+            "Not sure"
+          ]
+        },
+        {
+          "id": "CON007_Q3",
+          "question": "Any recent new medicine, food, exposure, travel, injury or illness?",
+          "type": "free_text"
+        }
+      ],
+      "result_label": "Possible pattern to discuss with a clinician — not a diagnosis",
+      "safe_next_step": "Arrange clinician assessment when symptoms are persistent, severe, recurrent or concerning. Do not self-diagnose from this association.",
+      "escalation_note": "Emergency symptoms override this condition profile.",
+      "source": {
+        "title": "Pneumonia — NHS/WHO/CDC reference",
+        "url": "https://www.nhs.uk/conditions/pneumonia/"
+      },
+      "review_status": "REFERENCE_ONLY_NOT_CLINICALLY_VALIDATED"
+    },
+    {
+      "id": "CON008",
+      "name": "GERD / acid reflux",
+      "name_hi": "एसिड रिफ्लक्स",
+      "plain_language_summary": "May cause heartburn and sour fluid rising into the throat.",
+      "associated_symptom_ids": [
+        "SYM032",
+        "SYM033",
+        "SYM030",
+        "SYM026"
+      ],
+      "assessment_questions": [
+        {
+          "id": "CON008_Q1",
+          "question": "Which symptom is troubling you the most right now?",
+          "type": "single_choice",
+          "options": "select_from_reported_symptoms"
+        },
+        {
+          "id": "CON008_Q2",
+          "question": "Has this happened before, and was it assessed by a clinician?",
+          "type": "single_choice",
+          "options": [
+            "First time",
+            "Previously assessed",
+            "Previously not assessed",
+            "Not sure"
+          ]
+        },
+        {
+          "id": "CON008_Q3",
+          "question": "Any recent new medicine, food, exposure, travel, injury or illness?",
+          "type": "free_text"
+        }
+      ],
+      "result_label": "Possible pattern to discuss with a clinician — not a diagnosis",
+      "safe_next_step": "Arrange clinician assessment when symptoms are persistent, severe, recurrent or concerning. Do not self-diagnose from this association.",
+      "escalation_note": "Emergency symptoms override this condition profile.",
+      "source": {
+        "title": "GERD / acid reflux — NHS/WHO/CDC reference",
+        "url": "https://www.nhs.uk/conditions/heartburn-and-acid-reflux/"
+      },
+      "review_status": "REFERENCE_ONLY_NOT_CLINICALLY_VALIDATED"
+    },
+    {
+      "id": "CON009",
+      "name": "Dyspepsia / gastritis-like symptoms",
+      "name_hi": "अपच / गैस्ट्राइटिस जैसे लक्षण",
+      "plain_language_summary": "Upper abdominal discomfort, fullness or nausea have several possible causes.",
+      "associated_symptom_ids": [
+        "SYM024",
+        "SYM026",
+        "SYM030",
+        "SYM031",
+        "SYM034"
+      ],
+      "assessment_questions": [
+        {
+          "id": "CON009_Q1",
+          "question": "Which symptom is troubling you the most right now?",
+          "type": "single_choice",
+          "options": "select_from_reported_symptoms"
+        },
+        {
+          "id": "CON009_Q2",
+          "question": "Has this happened before, and was it assessed by a clinician?",
+          "type": "single_choice",
+          "options": [
+            "First time",
+            "Previously assessed",
+            "Previously not assessed",
+            "Not sure"
+          ]
+        },
+        {
+          "id": "CON009_Q3",
+          "question": "Any recent new medicine, food, exposure, travel, injury or illness?",
+          "type": "free_text"
+        }
+      ],
+      "result_label": "Possible pattern to discuss with a clinician — not a diagnosis",
+      "safe_next_step": "Arrange clinician assessment when symptoms are persistent, severe, recurrent or concerning. Do not self-diagnose from this association.",
+      "escalation_note": "Emergency symptoms override this condition profile.",
+      "source": {
+        "title": "Dyspepsia / gastritis-like symptoms — NHS/WHO/CDC reference",
+        "url": "https://www.nhs.uk/conditions/indigestion/"
+      },
+      "review_status": "REFERENCE_ONLY_NOT_CLINICALLY_VALIDATED"
+    },
+    {
+      "id": "CON010",
+      "name": "Acute gastroenteritis",
+      "name_hi": "पेट का संक्रमण",
+      "plain_language_summary": "Vomiting and/or diarrhea; hydration and severity assessment matter.",
+      "associated_symptom_ids": [
+        "SYM027",
+        "SYM028",
+        "SYM026",
+        "SYM023",
+        "SYM001",
+        "SYM080"
+      ],
+      "assessment_questions": [
+        {
+          "id": "CON010_Q1",
+          "question": "Which symptom is troubling you the most right now?",
+          "type": "single_choice",
+          "options": "select_from_reported_symptoms"
+        },
+        {
+          "id": "CON010_Q2",
+          "question": "Has this happened before, and was it assessed by a clinician?",
+          "type": "single_choice",
+          "options": [
+            "First time",
+            "Previously assessed",
+            "Previously not assessed",
+            "Not sure"
+          ]
+        },
+        {
+          "id": "CON010_Q3",
+          "question": "Any recent new medicine, food, exposure, travel, injury or illness?",
+          "type": "free_text"
+        }
+      ],
+      "result_label": "Possible pattern to discuss with a clinician — not a diagnosis",
+      "safe_next_step": "Arrange clinician assessment when symptoms are persistent, severe, recurrent or concerning. Do not self-diagnose from this association.",
+      "escalation_note": "Emergency symptoms override this condition profile.",
+      "source": {
+        "title": "Acute gastroenteritis — NHS/WHO/CDC reference",
+        "url": "https://www.nhs.uk/conditions/diarrhoea-and-vomiting/"
+      },
+      "review_status": "REFERENCE_ONLY_NOT_CLINICALLY_VALIDATED"
+    },
+    {
+      "id": "CON011",
+      "name": "Constipation",
+      "name_hi": "कब्ज",
+      "plain_language_summary": "Hard or infrequent stools, straining and bloating may occur.",
+      "associated_symptom_ids": [
+        "SYM029",
+        "SYM030",
+        "SYM023"
+      ],
+      "assessment_questions": [
+        {
+          "id": "CON011_Q1",
+          "question": "Which symptom is troubling you the most right now?",
+          "type": "single_choice",
+          "options": "select_from_reported_symptoms"
+        },
+        {
+          "id": "CON011_Q2",
+          "question": "Has this happened before, and was it assessed by a clinician?",
+          "type": "single_choice",
+          "options": [
+            "First time",
+            "Previously assessed",
+            "Previously not assessed",
+            "Not sure"
+          ]
+        },
+        {
+          "id": "CON011_Q3",
+          "question": "Any recent new medicine, food, exposure, travel, injury or illness?",
+          "type": "free_text"
+        }
+      ],
+      "result_label": "Possible pattern to discuss with a clinician — not a diagnosis",
+      "safe_next_step": "Arrange clinician assessment when symptoms are persistent, severe, recurrent or concerning. Do not self-diagnose from this association.",
+      "escalation_note": "Emergency symptoms override this condition profile.",
+      "source": {
+        "title": "Constipation — NHS/WHO/CDC reference",
+        "url": "https://www.nhs.uk/conditions/constipation/"
+      },
+      "review_status": "REFERENCE_ONLY_NOT_CLINICALLY_VALIDATED"
+    },
+    {
+      "id": "CON012",
+      "name": "Migraine",
+      "name_hi": "माइग्रेन",
+      "plain_language_summary": "Recurrent headache may be throbbing with nausea and light or sound sensitivity.",
+      "associated_symptom_ids": [
+        "SYM012",
+        "SYM013",
+        "SYM026",
+        "SYM067",
+        "SYM068"
+      ],
+      "assessment_questions": [
+        {
+          "id": "CON012_Q1",
+          "question": "Which symptom is troubling you the most right now?",
+          "type": "single_choice",
+          "options": "select_from_reported_symptoms"
+        },
+        {
+          "id": "CON012_Q2",
+          "question": "Has this happened before, and was it assessed by a clinician?",
+          "type": "single_choice",
+          "options": [
+            "First time",
+            "Previously assessed",
+            "Previously not assessed",
+            "Not sure"
+          ]
+        },
+        {
+          "id": "CON012_Q3",
+          "question": "Any recent new medicine, food, exposure, travel, injury or illness?",
+          "type": "free_text"
+        }
+      ],
+      "result_label": "Possible pattern to discuss with a clinician — not a diagnosis",
+      "safe_next_step": "Arrange clinician assessment when symptoms are persistent, severe, recurrent or concerning. Do not self-diagnose from this association.",
+      "escalation_note": "Emergency symptoms override this condition profile.",
+      "source": {
+        "title": "Migraine — NHS/WHO/CDC reference",
+        "url": "https://www.nhs.uk/conditions/migraine/"
+      },
+      "review_status": "REFERENCE_ONLY_NOT_CLINICALLY_VALIDATED"
+    },
+    {
+      "id": "CON013",
+      "name": "Tension-type headache",
+      "name_hi": "तनाव-प्रकार सिरदर्द",
+      "plain_language_summary": "Often pressure-like headache; pattern and other causes need consideration.",
+      "associated_symptom_ids": [
+        "SYM012",
+        "SYM022",
+        "SYM069"
+      ],
+      "assessment_questions": [
+        {
+          "id": "CON013_Q1",
+          "question": "Which symptom is troubling you the most right now?",
+          "type": "single_choice",
+          "options": "select_from_reported_symptoms"
+        },
+        {
+          "id": "CON013_Q2",
+          "question": "Has this happened before, and was it assessed by a clinician?",
+          "type": "single_choice",
+          "options": [
+            "First time",
+            "Previously assessed",
+            "Previously not assessed",
+            "Not sure"
+          ]
+        },
+        {
+          "id": "CON013_Q3",
+          "question": "Any recent new medicine, food, exposure, travel, injury or illness?",
+          "type": "free_text"
+        }
+      ],
+      "result_label": "Possible pattern to discuss with a clinician — not a diagnosis",
+      "safe_next_step": "Arrange clinician assessment when symptoms are persistent, severe, recurrent or concerning. Do not self-diagnose from this association.",
+      "escalation_note": "Emergency symptoms override this condition profile.",
+      "source": {
+        "title": "Tension-type headache — NHS/WHO/CDC reference",
+        "url": "https://www.nhs.uk/conditions/headaches/"
+      },
+      "review_status": "REFERENCE_ONLY_NOT_CLINICALLY_VALIDATED"
+    },
+    {
+      "id": "CON014",
+      "name": "Urinary tract infection (UTI)",
+      "name_hi": "मूत्र मार्ग संक्रमण",
+      "plain_language_summary": "Burning, urgency and frequency may occur; fever or flank pain can indicate more serious infection.",
+      "associated_symptom_ids": [
+        "SYM037",
+        "SYM038",
+        "SYM036",
+        "SYM025",
+        "SYM001"
+      ],
+      "assessment_questions": [
+        {
+          "id": "CON014_Q1",
+          "question": "Which symptom is troubling you the most right now?",
+          "type": "single_choice",
+          "options": "select_from_reported_symptoms"
+        },
+        {
+          "id": "CON014_Q2",
+          "question": "Has this happened before, and was it assessed by a clinician?",
+          "type": "single_choice",
+          "options": [
+            "First time",
+            "Previously assessed",
+            "Previously not assessed",
+            "Not sure"
+          ]
+        },
+        {
+          "id": "CON014_Q3",
+          "question": "Any recent new medicine, food, exposure, travel, injury or illness?",
+          "type": "free_text"
+        }
+      ],
+      "result_label": "Possible pattern to discuss with a clinician — not a diagnosis",
+      "safe_next_step": "Arrange clinician assessment when symptoms are persistent, severe, recurrent or concerning. Do not self-diagnose from this association.",
+      "escalation_note": "Emergency symptoms override this condition profile.",
+      "source": {
+        "title": "Urinary tract infection (UTI) — NHS/WHO/CDC reference",
+        "url": "https://www.nhs.uk/conditions/urinary-tract-infections-utis/"
+      },
+      "review_status": "REFERENCE_ONLY_NOT_CLINICALLY_VALIDATED"
+    },
+    {
+      "id": "CON015",
+      "name": "Kidney stones",
+      "name_hi": "किडनी स्टोन",
+      "plain_language_summary": "May cause severe side pain, sometimes in waves, nausea or blood in urine.",
+      "associated_symptom_ids": [
+        "SYM040",
+        "SYM039",
+        "SYM026",
+        "SYM027"
+      ],
+      "assessment_questions": [
+        {
+          "id": "CON015_Q1",
+          "question": "Which symptom is troubling you the most right now?",
+          "type": "single_choice",
+          "options": "select_from_reported_symptoms"
+        },
+        {
+          "id": "CON015_Q2",
+          "question": "Has this happened before, and was it assessed by a clinician?",
+          "type": "single_choice",
+          "options": [
+            "First time",
+            "Previously assessed",
+            "Previously not assessed",
+            "Not sure"
+          ]
+        },
+        {
+          "id": "CON015_Q3",
+          "question": "Any recent new medicine, food, exposure, travel, injury or illness?",
+          "type": "free_text"
+        }
+      ],
+      "result_label": "Possible pattern to discuss with a clinician — not a diagnosis",
+      "safe_next_step": "Arrange clinician assessment when symptoms are persistent, severe, recurrent or concerning. Do not self-diagnose from this association.",
+      "escalation_note": "Emergency symptoms override this condition profile.",
+      "source": {
+        "title": "Kidney stones — NHS/WHO/CDC reference",
+        "url": "https://www.nhs.uk/conditions/kidney-stones/"
+      },
+      "review_status": "REFERENCE_ONLY_NOT_CLINICALLY_VALIDATED"
+    },
+    {
+      "id": "CON016",
+      "name": "Eczema / atopic dermatitis",
+      "name_hi": "एक्जिमा",
+      "plain_language_summary": "Dry, itchy, inflamed skin can flare; examination may be needed.",
+      "associated_symptom_ids": [
+        "SYM042",
+        "SYM041"
+      ],
+      "assessment_questions": [
+        {
+          "id": "CON016_Q1",
+          "question": "Which symptom is troubling you the most right now?",
+          "type": "single_choice",
+          "options": "select_from_reported_symptoms"
+        },
+        {
+          "id": "CON016_Q2",
+          "question": "Has this happened before, and was it assessed by a clinician?",
+          "type": "single_choice",
+          "options": [
+            "First time",
+            "Previously assessed",
+            "Previously not assessed",
+            "Not sure"
+          ]
+        },
+        {
+          "id": "CON016_Q3",
+          "question": "Any recent new medicine, food, exposure, travel, injury or illness?",
+          "type": "free_text"
+        }
+      ],
+      "result_label": "Possible pattern to discuss with a clinician — not a diagnosis",
+      "safe_next_step": "Arrange clinician assessment when symptoms are persistent, severe, recurrent or concerning. Do not self-diagnose from this association.",
+      "escalation_note": "Emergency symptoms override this condition profile.",
+      "source": {
+        "title": "Eczema / atopic dermatitis — NHS/WHO/CDC reference",
+        "url": "https://www.nhs.uk/conditions/atopic-eczema/"
+      },
+      "review_status": "REFERENCE_ONLY_NOT_CLINICALLY_VALIDATED"
+    },
+    {
+      "id": "CON017",
+      "name": "Conjunctivitis",
+      "name_hi": "कंजंक्टिवाइटिस",
+      "plain_language_summary": "Redness, watering or discharge; causes may be viral, bacterial or allergic.",
+      "associated_symptom_ids": [
+        "SYM045",
+        "SYM047",
+        "SYM048",
+        "SYM046"
+      ],
+      "assessment_questions": [
+        {
+          "id": "CON017_Q1",
+          "question": "Which symptom is troubling you the most right now?",
+          "type": "single_choice",
+          "options": "select_from_reported_symptoms"
+        },
+        {
+          "id": "CON017_Q2",
+          "question": "Has this happened before, and was it assessed by a clinician?",
+          "type": "single_choice",
+          "options": [
+            "First time",
+            "Previously assessed",
+            "Previously not assessed",
+            "Not sure"
+          ]
+        },
+        {
+          "id": "CON017_Q3",
+          "question": "Any recent new medicine, food, exposure, travel, injury or illness?",
+          "type": "free_text"
+        }
+      ],
+      "result_label": "Possible pattern to discuss with a clinician — not a diagnosis",
+      "safe_next_step": "Arrange clinician assessment when symptoms are persistent, severe, recurrent or concerning. Do not self-diagnose from this association.",
+      "escalation_note": "Emergency symptoms override this condition profile.",
+      "source": {
+        "title": "Conjunctivitis — NHS/WHO/CDC reference",
+        "url": "https://www.nhs.uk/conditions/conjunctivitis/"
+      },
+      "review_status": "REFERENCE_ONLY_NOT_CLINICALLY_VALIDATED"
+    },
+    {
+      "id": "CON018",
+      "name": "Iron-deficiency anaemia",
+      "name_hi": "आयरन की कमी से एनीमिया",
+      "plain_language_summary": "Can cause tiredness, pallor, reduced exercise tolerance; blood tests are needed.",
+      "associated_symptom_ids": [
+        "SYM017",
+        "SYM077",
+        "SYM008",
+        "SYM014",
+        "SYM061"
+      ],
+      "assessment_questions": [
+        {
+          "id": "CON018_Q1",
+          "question": "Which symptom is troubling you the most right now?",
+          "type": "single_choice",
+          "options": "select_from_reported_symptoms"
+        },
+        {
+          "id": "CON018_Q2",
+          "question": "Has this happened before, and was it assessed by a clinician?",
+          "type": "single_choice",
+          "options": [
+            "First time",
+            "Previously assessed",
+            "Previously not assessed",
+            "Not sure"
+          ]
+        },
+        {
+          "id": "CON018_Q3",
+          "question": "Any recent new medicine, food, exposure, travel, injury or illness?",
+          "type": "free_text"
+        }
+      ],
+      "result_label": "Possible pattern to discuss with a clinician — not a diagnosis",
+      "safe_next_step": "Arrange clinician assessment when symptoms are persistent, severe, recurrent or concerning. Do not self-diagnose from this association.",
+      "escalation_note": "Emergency symptoms override this condition profile.",
+      "source": {
+        "title": "Iron-deficiency anaemia — NHS/WHO/CDC reference",
+        "url": "https://www.nhs.uk/conditions/iron-deficiency-anaemia/"
+      },
+      "review_status": "REFERENCE_ONLY_NOT_CLINICALLY_VALIDATED"
+    },
+    {
+      "id": "CON019",
+      "name": "Hypertension",
+      "name_hi": "उच्च रक्तचाप",
+      "plain_language_summary": "Often has no noticeable symptoms; diagnosis needs correctly measured repeat BP readings.",
+      "associated_symptom_ids": [],
+      "assessment_questions": [
+        {
+          "id": "CON019_Q1",
+          "question": "Which symptom is troubling you the most right now?",
+          "type": "single_choice",
+          "options": "select_from_reported_symptoms"
+        },
+        {
+          "id": "CON019_Q2",
+          "question": "Has this happened before, and was it assessed by a clinician?",
+          "type": "single_choice",
+          "options": [
+            "First time",
+            "Previously assessed",
+            "Previously not assessed",
+            "Not sure"
+          ]
+        },
+        {
+          "id": "CON019_Q3",
+          "question": "Any recent new medicine, food, exposure, travel, injury or illness?",
+          "type": "free_text"
+        }
+      ],
+      "result_label": "Possible pattern to discuss with a clinician — not a diagnosis",
+      "safe_next_step": "Arrange clinician assessment when symptoms are persistent, severe, recurrent or concerning. Do not self-diagnose from this association.",
+      "escalation_note": "Emergency symptoms override this condition profile.",
+      "source": {
+        "title": "Hypertension — NHS/WHO/CDC reference",
+        "url": "https://www.who.int/news-room/fact-sheets/detail/hypertension"
+      },
+      "review_status": "REFERENCE_ONLY_NOT_CLINICALLY_VALIDATED"
+    },
+    {
+      "id": "CON020",
+      "name": "Type 2 diabetes",
+      "name_hi": "टाइप 2 डायबिटीज",
+      "plain_language_summary": "May be asymptomatic or cause thirst, frequent urination and fatigue; blood testing confirms.",
+      "associated_symptom_ids": [
+        "SYM035",
+        "SYM036",
+        "SYM017",
+        "SYM058",
+        "SYM049"
+      ],
+      "assessment_questions": [
+        {
+          "id": "CON020_Q1",
+          "question": "Which symptom is troubling you the most right now?",
+          "type": "single_choice",
+          "options": "select_from_reported_symptoms"
+        },
+        {
+          "id": "CON020_Q2",
+          "question": "Has this happened before, and was it assessed by a clinician?",
+          "type": "single_choice",
+          "options": [
+            "First time",
+            "Previously assessed",
+            "Previously not assessed",
+            "Not sure"
+          ]
+        },
+        {
+          "id": "CON020_Q3",
+          "question": "Any recent new medicine, food, exposure, travel, injury or illness?",
+          "type": "free_text"
+        }
+      ],
+      "result_label": "Possible pattern to discuss with a clinician — not a diagnosis",
+      "safe_next_step": "Arrange clinician assessment when symptoms are persistent, severe, recurrent or concerning. Do not self-diagnose from this association.",
+      "escalation_note": "Emergency symptoms override this condition profile.",
+      "source": {
+        "title": "Type 2 diabetes — NHS/WHO/CDC reference",
+        "url": "https://www.who.int/news-room/fact-sheets/detail/diabetes"
+      },
+      "review_status": "REFERENCE_ONLY_NOT_CLINICALLY_VALIDATED"
+    }
+  ],
+  "patient_intake_questionnaire": {
+    "id": "MED44_GENERAL_INTAKE_V1",
+    "title": "Patient Symptom Assessment",
+    "intro": "I’ll ask a few questions to understand what you are experiencing. This is not a medical diagnosis.",
+    "questions": [
+      {
+        "id": "Q001",
+        "stage": "safety_gate",
+        "text": "Are you having severe difficulty breathing, severe chest pain, fainting, or sudden weakness on one side?",
+        "translations": {
+          "hi": "क्या साँस लेने में बहुत कठिनाई, तेज़ सीने में दर्द, बेहोशी या शरीर के एक तरफ अचानक कमजोरी है?",
+          "hinglish": "क्या साँस लेने में बहुत कठिनाई, तेज़ सीने में दर्द, बेहोशी या शरीर के एक तरफ अचानक कमजोरी है?"
+        },
+        "type": "single_choice",
+        "required": true,
+        "options": [
+          "Yes",
+          "No",
+          "Not sure"
+        ]
+      },
+      {
+        "id": "Q002",
+        "stage": "patient_basics",
+        "text": "Who is experiencing the symptoms?",
+        "translations": {
+          "hi": "लक्षण किसे हो रहे हैं?",
+          "hinglish": "लक्षण किसे हो रहे हैं?"
+        },
+        "type": "single_choice",
+        "required": true,
+        "options": [
+          "Myself",
+          "Child under 5",
+          "Child 5–17",
+          "Adult 18–64",
+          "Adult 65+"
+        ]
+      },
+      {
+        "id": "Q003",
+        "stage": "patient_basics",
+        "text": "What is the person's age?",
+        "translations": {
+          "hi": "व्यक्ति की उम्र कितनी है?",
+          "hinglish": "व्यक्ति की उम्र कितनी है?"
+        },
+        "type": "number",
+        "required": true,
+        "min": 0,
+        "max": 120
+      },
+      {
+        "id": "Q004",
+        "stage": "patient_basics",
+        "text": "Is pregnancy possible or are you currently pregnant?",
+        "translations": {
+          "hi": "क्या गर्भावस्था संभव है या आप गर्भवती हैं?",
+          "hinglish": "क्या गर्भावस्था संभव है या आप गर्भवती हैं?"
+        },
+        "type": "single_choice",
+        "required": false,
+        "options": [
+          "Yes",
+          "No",
+          "Not applicable",
+          "Prefer not to say"
+        ]
+      },
+      {
+        "id": "Q005",
+        "stage": "symptom_history",
+        "text": "Which symptoms are you experiencing? Select all that apply.",
+        "translations": {
+          "hi": "आपको कौन-कौन से लक्षण हैं? सभी चुनें।",
+          "hinglish": "आपको कौन-कौन से लक्षण हैं? सभी चुनें।"
+        },
+        "type": "multi_select",
+        "required": true,
+        "options": [
+          "Load symptom dictionary"
+        ],
+        "source": "symptom_dictionary"
+      },
+      {
+        "id": "Q006",
+        "stage": "symptom_history",
+        "text": "When did the symptoms start?",
+        "translations": {
+          "hi": "लक्षण कब शुरू हुए?",
+          "hinglish": "लक्षण कब शुरू हुए?"
+        },
+        "type": "single_choice",
+        "required": true,
+        "options": [
+          "Today",
+          "1–3 days ago",
+          "4–7 days ago",
+          "1–4 weeks ago",
+          "More than a month ago",
+          "Not sure"
+        ]
+      },
+      {
+        "id": "Q007",
+        "stage": "symptom_history",
+        "text": "Are symptoms getting better, staying the same, or worsening?",
+        "translations": {
+          "hi": "लक्षण बेहतर हो रहे हैं, वैसे ही हैं या बढ़ रहे हैं?",
+          "hinglish": "लक्षण बेहतर हो रहे हैं, वैसे ही हैं या बढ़ रहे हैं?"
+        },
+        "type": "single_choice",
+        "required": true,
+        "options": [
+          "Getting better",
+          "About the same",
+          "Getting worse",
+          "Come and go"
+        ]
+      },
+      {
+        "id": "Q008",
+        "stage": "symptom_history",
+        "text": "How severe is the main symptom right now?",
+        "translations": {
+          "hi": "अभी मुख्य लक्षण कितना गंभीर है?",
+          "hinglish": "अभी मुख्य लक्षण कितना गंभीर है?"
+        },
+        "type": "scale",
+        "required": true,
+        "options": [
+          "0–10"
+        ],
+        "min": 0,
+        "max": 10,
+        "anchors": {
+          "0": "No discomfort",
+          "10": "Worst imaginable"
+        }
+      },
+      {
+        "id": "Q009",
+        "stage": "symptom_history",
+        "text": "Where exactly do you feel the symptom?",
+        "translations": {
+          "hi": "लक्षण शरीर के किस हिस्से में है?",
+          "hinglish": "लक्षण शरीर के किस हिस्से में है?"
+        },
+        "type": "body_location",
+        "required": false
+      },
+      {
+        "id": "Q010",
+        "stage": "symptom_history",
+        "text": "Is the symptom constant or does it come and go?",
+        "translations": {
+          "hi": "लक्षण लगातार है या आता-जाता है?",
+          "hinglish": "लक्षण लगातार है या आता-जाता है?"
+        },
+        "type": "single_choice",
+        "required": false,
+        "options": [
+          "Constant",
+          "Comes and goes",
+          "Only during activity",
+          "Mostly at night",
+          "Not sure"
+        ]
+      },
+      {
+        "id": "Q011",
+        "stage": "associated_symptoms",
+        "text": "Do you have any other symptoms along with this?",
+        "translations": {
+          "hi": "इसके साथ कोई और लक्षण भी हैं?",
+          "hinglish": "इसके साथ कोई और लक्षण भी हैं?"
+        },
+        "type": "multi_select",
+        "required": false,
+        "options": [
+          "Load symptom dictionary"
+        ],
+        "source": "symptom_dictionary"
+      },
+      {
+        "id": "Q012",
+        "stage": "medical_history",
+        "text": "Do you have any long-term medical conditions?",
+        "translations": {
+          "hi": "क्या आपको पहले से कोई बीमारी है?",
+          "hinglish": "क्या आपको पहले से कोई बीमारी है?"
+        },
+        "type": "multi_select",
+        "required": false,
+        "options": [
+          "Diabetes",
+          "High blood pressure",
+          "Asthma/COPD",
+          "Heart disease",
+          "Kidney disease",
+          "Liver disease",
+          "Immunocompromised",
+          "None",
+          "Other"
+        ]
+      },
+      {
+        "id": "Q013",
+        "stage": "medical_history",
+        "text": "Are you taking any medicines or supplements?",
+        "translations": {
+          "hi": "क्या आप कोई दवा या सप्लीमेंट ले रहे हैं?",
+          "hinglish": "क्या आप कोई दवा या सप्लीमेंट ले रहे हैं?"
+        },
+        "type": "free_text",
+        "required": false
+      },
+      {
+        "id": "Q014",
+        "stage": "medical_history",
+        "text": "Do you have any known allergies, especially to medicines?",
+        "translations": {
+          "hi": "क्या आपको किसी दवा या चीज़ से एलर्जी है?",
+          "hinglish": "क्या आपको किसी दवा या चीज़ से एलर्जी है?"
+        },
+        "type": "free_text",
+        "required": false
+      },
+      {
+        "id": "Q015",
+        "stage": "exposure",
+        "text": "Has anyone around you had a similar illness recently?",
+        "translations": {
+          "hi": "क्या आसपास किसी को हाल में ऐसे लक्षण हुए हैं?",
+          "hinglish": "क्या आसपास किसी को हाल में ऐसे लक्षण हुए हैं?"
+        },
+        "type": "single_choice",
+        "required": false,
+        "options": [
+          "Yes",
+          "No",
+          "Not sure"
+        ]
+      },
+      {
+        "id": "Q016",
+        "stage": "impact",
+        "text": "Are you able to eat, drink, sleep and do usual activities?",
+        "translations": {
+          "hi": "क्या आप खाना, पानी, नींद और रोज़ के काम सामान्य रूप से कर पा रहे हैं?",
+          "hinglish": "क्या आप खाना, पानी, नींद और रोज़ के काम सामान्य रूप से कर पा रहे हैं?"
+        },
+        "type": "multi_select",
+        "required": true,
+        "options": [
+          "All normal",
+          "Eating affected",
+          "Drinking affected",
+          "Sleep affected",
+          "Daily activities affected",
+          "Unable to keep fluids down"
+        ]
+      },
+      {
+        "id": "Q017",
+        "stage": "closing",
+        "text": "Is there anything else a clinician should know?",
+        "translations": {
+          "hi": "क्या कोई और बात है जो डॉक्टर को पता होनी चाहिए?",
+          "hinglish": "क्या कोई और बात है जो डॉक्टर को पता होनी चाहिए?"
+        },
+        "type": "free_text",
+        "required": false
+      }
+    ]
+  },
+  "red_flag_rules": [
+    {
+      "id": "RF001",
+      "trigger_terms": [
+        "severe difficulty breathing",
+        "cannot breathe",
+        "gasping",
+        "saans nahi aa rahi"
+      ],
+      "action": "EMERGENCY_NOW",
+      "message": "Severe breathing difficulty can be an emergency. Seek emergency medical help now."
+    },
+    {
+      "id": "RF002",
+      "trigger_terms": [
+        "severe chest pain",
+        "chest pressure",
+        "crushing chest pain",
+        "seene mein tez dard"
+      ],
+      "action": "EMERGENCY_NOW",
+      "message": "Severe or pressure-like chest pain can be an emergency. Seek emergency medical help now."
+    },
+    {
+      "id": "RF003",
+      "trigger_terms": [
+        "face drooping",
+        "one sided weakness",
+        "slurred speech",
+        "sudden vision loss",
+        "ek taraf achanak kamzori"
+      ],
+      "action": "EMERGENCY_NOW",
+      "message": "Possible stroke warning signs require immediate emergency assessment. Note when symptoms began."
+    },
+    {
+      "id": "RF004",
+      "trigger_terms": [
+        "unconscious",
+        "not waking",
+        "repeated fainting",
+        "behosh"
+      ],
+      "action": "EMERGENCY_NOW",
+      "message": "Reduced consciousness or repeated fainting requires emergency help."
+    },
+    {
+      "id": "RF005",
+      "trigger_terms": [
+        "seizure",
+        "convulsion",
+        "daura"
+      ],
+      "action": "URGENT_EMERGENCY_ASSESSMENT",
+      "message": "A first, prolonged or repeated seizure, injury, pregnancy, or failure to recover requires emergency help. Do not restrain or put anything in the mouth."
+    },
+    {
+      "id": "RF006",
+      "trigger_terms": [
+        "vomiting blood",
+        "coughing blood",
+        "black tarry stool",
+        "khoon ki ulti"
+      ],
+      "action": "URGENT_EMERGENCY_ASSESSMENT",
+      "message": "Bleeding of this type needs urgent in-person assessment."
+    },
+    {
+      "id": "RF007",
+      "trigger_terms": [
+        "swollen tongue",
+        "throat swelling",
+        "lip swelling with breathing difficulty",
+        "jeebh mein sujan"
+      ],
+      "action": "EMERGENCY_NOW",
+      "message": "Possible severe allergic reaction. Seek emergency help immediately."
+    },
+    {
+      "id": "RF008",
+      "trigger_terms": [
+        "sudden worst headache",
+        "worst headache of life"
+      ],
+      "action": "EMERGENCY_NOW",
+      "message": "A sudden, extremely severe headache needs emergency assessment."
+    },
+    {
+      "id": "RF009",
+      "trigger_terms": [
+        "new confusion",
+        "sudden confusion",
+        "achanak confusion"
+      ],
+      "action": "URGENT_EMERGENCY_ASSESSMENT",
+      "message": "New or sudden confusion can indicate a serious condition and needs urgent assessment."
+    },
+    {
+      "id": "RF010",
+      "trigger_terms": [
+        "unable to keep fluids down",
+        "no urine",
+        "severe dehydration"
+      ],
+      "action": "URGENT_ASSESSMENT",
+      "message": "Possible significant dehydration needs prompt assessment, especially in children and older adults."
+    },
+    {
+      "id": "RF011",
+      "trigger_terms": [
+        "pregnant with severe abdominal pain",
+        "pregnancy with heavy bleeding"
+      ],
+      "action": "URGENT_EMERGENCY_ASSESSMENT",
+      "message": "Severe pain or heavy bleeding during pregnancy requires urgent in-person assessment."
+    },
+    {
+      "id": "RF012",
+      "trigger_terms": [
+        "suicidal thoughts",
+        "want to kill myself",
+        "self harm plan",
+        "khud ko nuksan"
+      ],
+      "action": "CRISIS_SUPPORT_NOW",
+      "message": "Stay with a trusted person, move away from means of harm, and contact local emergency or crisis support now."
+    }
+  ],
+  "assessment_result_template": {
+    "title": "Your symptom assessment summary",
+    "sections": [
+      {
+        "label": "What you reported",
+        "fields": [
+          "age",
+          "reported_symptoms",
+          "onset",
+          "duration",
+          "severity",
+          "progression",
+          "associated_symptoms"
+        ]
+      },
+      {
+        "label": "Possible patterns to discuss with a clinician",
+        "fields": [
+          "non_exclusive_associated_conditions"
+        ],
+        "disclaimer": "These are possible associations only. Symptoms overlap across many conditions. This is not a diagnosis or probability ranking."
+      },
+      {
+        "label": "Suggested care pathway",
+        "fields": [
+          "red_flag_status",
+          "urgency_category",
+          "reason",
+          "recommended_timeframe"
+        ],
+        "allowed_categories": [
+          "EMERGENCY_NOW",
+          "URGENT_SAME_DAY_CLINICIAN_REVIEW",
+          "PROMPT_CLINICIAN_REVIEW",
+          "ROUTINE_CLINICIAN_REVIEW",
+          "GENERAL_INFORMATION_ONLY"
+        ]
+      },
+      {
+        "label": "Next steps",
+        "fields": [
+          "safe_general_information",
+          "what_to_monitor",
+          "when_to_escalate",
+          "questions_for_clinician"
+        ]
+      }
+    ],
+    "footer": "Med44 provides health information and structured intake support. It does not diagnose, prescribe or replace a qualified healthcare professional."
+  },
+  "offline_matching_policy": {
+    "normalization": [
+      "lowercase",
+      "unicode_normalization",
+      "trim_whitespace",
+      "collapse_repeated_spaces",
+      "curated_alias_match",
+      "Hindi_and_Hinglish_alias_match"
+    ],
+    "matching_order": [
+      "exact_canonical_match",
+      "exact_alias_match",
+      "curated_phrase_match",
+      "ask_user_to_clarify_ambiguous_term"
+    ],
+    "negation": "Detect negation such as 'no fever' and 'bukhar nahi' before recording a symptom.",
+    "multi_symptom": "Store each symptom independently; do not force one condition.",
+    "unknown_input": "I’m not confident I understood that symptom. Can you describe where you feel it and what it feels like?",
+    "confidence": "Do not expose text-similarity scores as clinical confidence."
+  },
+  "references": [
+    {
+      "title": "NHS Symptoms A to Z",
+      "url": "https://www.nhs.uk/symptoms/"
+    },
+    {
+      "title": "NHS Conditions A to Z",
+      "url": "https://www.nhs.uk/health-a-to-z/conditions/"
+    },
+    {
+      "title": "MedlinePlus Symptoms",
+      "url": "https://medlineplus.gov/symptoms.html"
+    },
+    {
+      "title": "MedlinePlus Recognizing Medical Emergencies",
+      "url": "https://medlineplus.gov/ency/article/001927.htm"
+    },
+    {
+      "title": "AHA / American Red Cross 2024 First Aid Guidelines",
+      "url": "https://cpr.heart.org/en/resuscitation-science/2024-first-aid-guidelines"
+    },
+    {
+      "title": "WHO Stroke Fact Sheet",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/stroke"
+    },
+    {
+      "title": "WHO Hypertension Fact Sheet",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/hypertension"
+    },
+    {
+      "title": "WHO Diabetes Fact Sheet",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/diabetes"
+    }
+  ],
+  "implementation_notes": {
+    "database": "Import into SQLite as versioned reference tables. Preserve dataset version and source URL.",
+    "audit": "Log dataset version, matched IDs, red-flag triggers and care-pathway label; minimize sensitive free text.",
+    "privacy": "Obtain consent, minimize data, encrypt records, define retention/deletion and restrict access.",
+    "tests": [
+      "Hindi/Hinglish aliases",
+      "Negation",
+      "Ambiguous phrases",
+      "Multiple symptoms",
+      "Red flags",
+      "Pediatric and pregnancy flags",
+      "Unknown input",
+      "Offline persistence"
+    ]
+  }
+}
