@@ -131,7 +131,7 @@ export default function Layout({ children }: LayoutProps) {
 
       {/* Shared Global Top Header (Sticky top-0, z-50, h-16, bg-white, border-b) */}
       <header className="sticky top-0 z-50 h-16 bg-white border-b border-borderSoft w-full shadow-sm">
-        <div className="max-w-[1400px] w-full mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center justify-between gap-4">
+        <div className="max-w-7xl xl:max-w-[1536px] w-full mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center justify-between gap-4">
           {/* Left: Med44 Logo (same as login, h-8 w-auto, click to dashboard) + Mobile hamburger */}
           <div className="flex items-center gap-3">
             <button
@@ -199,11 +199,11 @@ export default function Layout({ children }: LayoutProps) {
 
       {/* Main Page Content Body */}
       {isChat ? (
-        <main className="flex-1 w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-3 h-[calc(100vh-4rem)]">
+        <main className="flex-1 w-full max-w-7xl xl:max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 py-3 h-[calc(100vh-4rem)]">
           {children}
         </main>
       ) : (
-        <main className="flex-1 w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <main className="flex-1 w-full max-w-7xl xl:max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
           {children}
         </main>
       )}

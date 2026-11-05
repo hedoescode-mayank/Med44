@@ -28,7 +28,44 @@ async def get_db():
 async def init_db():
     # Import models so metadata is populated before create_all
     from backend.db import models  # noqa: F401
+    from sqlalchemy import text
 
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
+
+        # Run safe auto-migrations for SQLite to ensure all model columns exist
+        def _migrate(sync_conn):
+            import sqlite3
+            cursor = sync_conn.connection.cursor()
+            cols_map = {
+                "appointments": [
+                    ("facility_id", "INTEGER"),
+                    ("facility_name", "VARCHAR(200)"),
+                    ("queue_token", "VARCHAR(50)"),
+                    ("is_simulated", "BOOLEAN DEFAULT 1"),
+                ],
+                "patients": [
+                    ("height_cm", "FLOAT"),
+                    ("weight_kg", "FLOAT"),
+                    ("chronic_conditions", "TEXT"),
+                    ("past_surgeries", "TEXT"),
+                    ("family_history", "TEXT"),
+                    ("vaccinations", "TEXT"),
+                    ("current_medications", "TEXT"),
+                    ("lifestyle", "TEXT"),
+                    ("emergency_contact", "TEXT"),
+                    ("has_completed_survey", "BOOLEAN DEFAULT 0"),
+                    ("avatar", "VARCHAR(50)"),
+                ],
+            }
+            for table, cols in cols_map.items():
+                try:
+                    existing = [c[1] for c in cursor.execute(f"PRAGMA table_info({table})").fetchall()]
+                    for col_name, col_type in cols:
+                        if col_name not in existing:
+                            cursor.execute(f"ALTER TABLE {table} ADD COLUMN {col_name} {col_type}")
+                except Exception:
+                    pass
+
+        await conn.run_sync(_migrate)
 

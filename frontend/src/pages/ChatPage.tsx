@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Send,
@@ -14,6 +15,7 @@ import {
   Wifi,
   WifiOff,
   Cpu,
+  ChevronLeft,
 } from 'lucide-react'
 import { useChatStore, type Language, type Message } from '../store/chatStore'
 import { useAuthStore } from '../store/authStore'
@@ -41,6 +43,7 @@ const LANGUAGES: { code: Language; label: string; flag: string }[] = [
 ]
 
 export default function ChatPage() {
+  const navigate = useNavigate()
   const [input, setInput] = useState('')
   const [showReport, setShowReport] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
@@ -296,6 +299,14 @@ export default function ChatPage() {
         {/* Chat Top Header Bar (Fixed) */}
         <div className="p-3.5 px-5 border-b border-borderSoft flex items-center justify-between bg-surfaceSoft/30 flex-shrink-0">
           <div className="flex items-center gap-3">
+            <button
+              onClick={() => navigate('/dashboard')}
+              className="p-1.5 -ml-1 text-textSecondary hover:text-textDark hover:bg-surfaceSoft rounded-lg transition-colors flex items-center gap-1 text-xs font-semibold"
+              title="Back to Dashboard"
+            >
+              <ChevronLeft size={18} />
+              <span className="hidden sm:inline">Home</span>
+            </button>
             <div className="w-10 h-10 rounded-full bg-primary-light flex items-center justify-center border border-primary/20 shadow-soft">
               <BabyNurse size={36} />
             </div>

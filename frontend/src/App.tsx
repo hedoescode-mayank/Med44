@@ -16,15 +16,9 @@ import { useAuthStore } from './store/authStore'
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user } = useAuthStore()
-  const location = useLocation()
 
   if (!user) {
     return <Navigate to="/" replace />
-  }
-
-  // Force onboarding survey completion before accessing any protected pages
-  if (!user.hasCompletedSurvey && location.pathname !== '/survey') {
-    return <Navigate to="/survey" replace />
   }
 
   return <>{children}</>
