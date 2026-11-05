@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { journeyApi } from '../services/api'
 import {
   Compass,
@@ -55,6 +56,7 @@ interface JourneyProgress {
 }
 
 export const JourneyPage: React.FC = () => {
+  const navigate = useNavigate()
   const [templates, setTemplates] = useState<JourneyTemplate[]>([])
   const [activeTemplateId, setActiveTemplateId] = useState<string>('dental_care')
   const [activeTemplate, setActiveTemplate] = useState<JourneyTemplate | null>(null)
@@ -169,6 +171,12 @@ export const JourneyPage: React.FC = () => {
       {/* Top Header */}
       <div className="bg-white rounded-2xl border border-stone-200/80 p-6 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
+          <button
+            onClick={() => navigate('/dashboard')}
+            className="inline-flex items-center gap-1 text-xs font-semibold text-stone-500 hover:text-stone-900 mb-2 transition-colors"
+          >
+            <span>← Back to Dashboard</span>
+          </button>
           <div className="flex items-center gap-2">
             <span className="p-2 rounded-xl bg-emerald-50 text-emerald-700">
               <Compass className="w-6 h-6" />

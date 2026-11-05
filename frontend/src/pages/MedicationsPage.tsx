@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Search, Pill, Info, AlertTriangle, Plus } from 'lucide-react'
 import { useMedicationStore } from '../store/medicationStore'
@@ -33,6 +34,7 @@ const MEDICINE_DB: Record<string, { name: string; usage: string; sideEffects: st
 }
 
 export default function MedicationsPage() {
+  const navigate = useNavigate()
   const { medications, toggleReminder } = useMedicationStore()
   const [searchQuery, setSearchQuery] = useState('')
   const [expandedId, setExpandedId] = useState<string | number | null>(null)
@@ -57,11 +59,17 @@ export default function MedicationsPage() {
   const hasInteractions = medications.some((m) => m.interactions && m.interactions.length > 0)
 
   return (
-    <div className="mx-auto w-full max-w-6xl px-4 space-y-6">
+    <div className="max-w-[1400px] w-full mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div>
+            <button
+              onClick={() => navigate('/dashboard')}
+              className="inline-flex items-center gap-1 text-xs font-semibold text-textSecondary hover:text-textDark mb-1 transition-colors"
+            >
+              <span>← Back to Dashboard</span>
+            </button>
             <h1 className="text-3xl font-bold text-textDark">Medications</h1>
             <p className="text-textMuted mt-1">Manage your prescriptions and reminders</p>
           </div>

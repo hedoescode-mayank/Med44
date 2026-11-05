@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Search,
@@ -202,6 +203,7 @@ function downloadIcsFile(apt: {
 }
 
 export default function AppointmentsPage() {
+  const navigate = useNavigate()
   const { appointments, fetchAppointments, addAppointment, cancelAppointment } = useAppointmentStore()
   const [viewMode, setViewMode] = useState<'doctors' | 'facilities'>('doctors')
   const [doctors, setDoctors] = useState<Doctor[]>(DEFAULT_DOCTORS)
@@ -373,6 +375,12 @@ export default function AppointmentsPage() {
       {/* Top Title & Explanation */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
+          <button
+            onClick={() => navigate('/dashboard')}
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-textSecondary hover:text-textDark mb-1 transition-colors"
+          >
+            <span>← Back to Dashboard</span>
+          </button>
           <h1 className="text-2xl lg:text-3xl font-extrabold text-textDark tracking-tight">
             Doctor Discovery & Appointments
           </h1>

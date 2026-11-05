@@ -225,8 +225,22 @@ export default function SurveyPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background py-8 px-4 sm:px-6 lg:px-8 flex items-center justify-center font-sans">
-      <div className="w-full max-w-4xl grid grid-cols-1 md:grid-cols-12 gap-6 lg:gap-8 items-start">
+    <div className="min-h-screen bg-background py-8 px-4 sm:px-6 lg:px-8 flex flex-col items-center justify-center font-sans">
+      <div className="w-full max-w-[1200px] mb-4 flex items-center justify-between">
+        <button
+          type="button"
+          onClick={() => navigate('/dashboard')}
+          className="inline-flex items-center gap-1.5 text-xs font-bold text-textSecondary hover:text-textDark bg-surface hover:bg-surfaceSoft px-3.5 py-2 rounded-xl border border-borderSoft transition-colors shadow-soft"
+        >
+          <ChevronLeft size={16} />
+          <span>Back to Dashboard</span>
+        </button>
+        <span className="text-xs font-semibold text-textMuted">
+          Patient Intake & Clinical Baseline
+        </span>
+      </div>
+
+      <div className="w-full max-w-[1200px] grid grid-cols-1 md:grid-cols-12 gap-6 lg:gap-8 items-start">
         {/* Left Side: Mascot & Step Tracker */}
         <div className="md:col-span-4 card text-center border border-borderSoft bg-surface flex flex-col items-center p-6">
           <BabyNurse size={150} isScanning={step > 1} subtitle={`Step ${step} of 5`} />

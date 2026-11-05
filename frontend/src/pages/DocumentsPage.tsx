@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { documentApi } from '../services/api'
 import {
   FileText,
@@ -38,6 +39,7 @@ interface ReferralChecklistItem {
 }
 
 export const DocumentsPage: React.FC = () => {
+  const navigate = useNavigate()
   const [documents, setDocuments] = useState<DocumentItem[]>([])
   const [checklist, setChecklist] = useState<ReferralChecklistItem[]>([])
   const [loading, setLoading] = useState(true)
@@ -138,6 +140,12 @@ export const DocumentsPage: React.FC = () => {
       {/* Header */}
       <div className="bg-white rounded-2xl border border-stone-200/80 p-6 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
+          <button
+            onClick={() => navigate('/dashboard')}
+            className="inline-flex items-center gap-1 text-xs font-semibold text-stone-500 hover:text-stone-900 mb-2 transition-colors"
+          >
+            <span>← Back to Dashboard</span>
+          </button>
           <div className="flex items-center gap-2">
             <span className="p-2 rounded-xl bg-emerald-50 text-emerald-700">
               <FileCheck className="w-6 h-6" />

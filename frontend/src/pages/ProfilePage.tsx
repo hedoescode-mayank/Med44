@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import {
   Save,
@@ -25,6 +26,7 @@ const BLOOD_GROUPS = ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-']
 const GENDERS = ['Female', 'Male', 'Non-Binary', 'Prefer not to say']
 
 export default function ProfilePage() {
+  const navigate = useNavigate()
   const { user, updateUser } = useAuthStore()
   const [editing, setEditing] = useState(false)
   const [showReport, setShowReport] = useState(false)
@@ -120,10 +122,16 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="space-y-8 font-sans max-w-4xl mx-auto">
+    <div className="space-y-8 font-sans max-w-[1200px] w-full mx-auto">
       {/* Top Banner */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
+          <button
+            onClick={() => navigate('/dashboard')}
+            className="inline-flex items-center gap-1 text-xs font-semibold text-textSecondary hover:text-textDark mb-1 transition-colors"
+          >
+            <span>← Back to Dashboard</span>
+          </button>
           <h1 className="text-2xl lg:text-3xl font-extrabold text-textDark tracking-tight">
             Patient Health Profile
           </h1>

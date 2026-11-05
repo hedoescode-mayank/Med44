@@ -108,7 +108,7 @@ export default function Dashboard() {
   ]
 
   return (
-    <div className="mx-auto w-full max-w-6xl px-4 space-y-8">
+    <div className="max-w-[1400px] w-full mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
       <motion.div variants={container} initial="hidden" animate="show" className="space-y-8">
         {/* Welcome Hero Banner */}
         <motion.div
@@ -197,7 +197,7 @@ export default function Dashboard() {
               </p>
             </div>
             <button
-              onClick={() => navigate('/profile')}
+              onClick={() => navigate('/survey')}
               className="button-secondary text-xs px-4 py-2"
             >
               <ClipboardCheck size={14} />

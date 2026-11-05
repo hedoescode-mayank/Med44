@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { progressApi } from '../services/api'
 import {
   Activity,
@@ -52,6 +53,7 @@ const COMMON_SYMPTOMS = [
 ]
 
 export const ProgressPage: React.FC = () => {
+  const navigate = useNavigate()
   const [summary, setSummary] = useState<ProgressSummary | null>(null)
   const [loading, setLoading] = useState(true)
   const [submitting, setSubmitting] = useState(false)
@@ -129,6 +131,12 @@ export const ProgressPage: React.FC = () => {
       {/* Top Header */}
       <div className="bg-white rounded-2xl border border-stone-200/80 p-6 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
+          <button
+            onClick={() => navigate('/dashboard')}
+            className="inline-flex items-center gap-1 text-xs font-semibold text-stone-500 hover:text-stone-900 mb-2 transition-colors"
+          >
+            <span>← Back to Dashboard</span>
+          </button>
           <div className="flex items-center gap-2">
             <span className="p-2 rounded-xl bg-emerald-50 text-emerald-700">
               <Activity className="w-6 h-6" />

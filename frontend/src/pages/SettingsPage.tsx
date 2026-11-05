@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import {
   Key, Wifi, Bell, Database, Eye, EyeOff, RefreshCw, CheckCircle2, AlertCircle, Moon,
@@ -9,6 +10,7 @@ import { supportApi } from '../services/api'
 import toast from 'react-hot-toast'
 
 export default function SettingsPage() {
+  const navigate = useNavigate()
   const [groqKey, setGroqKey] = useState('')
   const [showKey, setShowKey] = useState(false)
   const [keySaved, setKeySaved] = useState(false)
@@ -98,7 +100,13 @@ export default function SettingsPage() {
   return (
     <div className="p-6 lg:p-8 max-w-3xl mx-auto">
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-        <div className="mb-8">
+        <div className="mb-6">
+          <button
+            onClick={() => navigate('/dashboard')}
+            className="inline-flex items-center gap-1 text-xs font-semibold text-textSecondary hover:text-textDark mb-1 transition-colors"
+          >
+            <span>← Back to Dashboard</span>
+          </button>
           <h1 className="text-3xl font-bold text-textDark">Settings</h1>
           <p className="text-textMuted mt-1">Configure your Med44 experience</p>
         </div>

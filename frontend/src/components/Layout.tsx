@@ -131,7 +131,7 @@ export default function Layout({ children }: LayoutProps) {
 
       {/* Shared Global Top Header (Sticky top-0, z-50, h-16, bg-white, border-b) */}
       <header className="sticky top-0 z-50 h-16 bg-white border-b border-borderSoft w-full shadow-sm">
-        <div className="max-w-6xl w-full mx-auto px-4 h-full flex items-center justify-between gap-4">
+        <div className="max-w-[1400px] w-full mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center justify-between gap-4">
           {/* Left: Med44 Logo (same as login, h-8 w-auto, click to dashboard) + Mobile hamburger */}
           <div className="flex items-center gap-3">
             <button
@@ -145,18 +145,18 @@ export default function Layout({ children }: LayoutProps) {
               src="/logo.jpg"
               alt="Med44 - Your AI Health Nurse"
               onClick={() => navigate('/dashboard')}
-              className="h-8 w-auto object-contain cursor-pointer"
+              className="h-8 w-auto object-contain cursor-pointer hover:opacity-90 transition-opacity"
             />
           </div>
 
           {/* Center: Existing App Nav Links */}
-          <nav className="hidden lg:flex items-center gap-1">
+          <nav className="hidden lg:flex items-center gap-1 xl:gap-2">
             {navItems.map(({ to, label }) => (
               <NavLink
                 key={to}
                 to={to}
                 className={({ isActive }) =>
-                  `px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
+                  `px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
                     isActive
                       ? 'bg-primary-light text-primary-dark font-bold'
                       : 'text-textSecondary hover:text-textDark hover:bg-surfaceSoft'
@@ -199,11 +199,11 @@ export default function Layout({ children }: LayoutProps) {
 
       {/* Main Page Content Body */}
       {isChat ? (
-        <main className="flex-1 w-full max-w-6xl mx-auto px-4 py-3 h-[calc(100vh-4rem)]">
+        <main className="flex-1 w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-3 h-[calc(100vh-4rem)]">
           {children}
         </main>
       ) : (
-        <main className="flex-1 w-full max-w-6xl mx-auto px-4 py-6">
+        <main className="flex-1 w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
           {children}
         </main>
       )}
