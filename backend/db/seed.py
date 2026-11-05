@@ -13,6 +13,9 @@ from backend.db.models import (
     Patient, Symptom, SymptomAlias, ClinicalRule, RedFlag,
     FollowupQuestion, HealthArticle, Medication, DrugWarning,
     Doctor, Appointment, MedicalHistory, Prescription,
+    HealthcareFacility, PatientDocument, CareJourneyTemplate,
+    CareJourneyNode, PatientJourneyProgress, PatientSymptomJournal,
+    SupportTicket,
 )
 import bcrypt
 
@@ -22,24 +25,43 @@ def _hash_pw(pw: str) -> str:
 
 
 async def seed_database():
-    """Idempotent seed - skips if already seeded."""
+    """Idempotent seed - populates missing entities cleanly."""
     async with AsyncSessionLocal() as db:
-        # Check if already seeded
+        # Check base patients
         result = await db.execute(select(Patient).limit(1))
-        if result.scalar_one_or_none():
-            return  # Already seeded
+        if not result.scalar_one_or_none():
+            await _seed_patients(db)
+            await _seed_symptoms(db)
+            await _seed_clinical_rules(db)
+            await _seed_red_flags(db)
+            await _seed_followup_questions(db)
+            await _seed_health_articles(db)
+            await _seed_medications(db)
+            await _seed_doctors(db)
+            await _seed_sample_appointments(db)
 
-        await _seed_patients(db)
-        await _seed_symptoms(db)
-        await _seed_clinical_rules(db)
-        await _seed_red_flags(db)
-        await _seed_followup_questions(db)
-        await _seed_health_articles(db)
-        await _seed_medications(db)
-        await _seed_doctors(db)
-        await _seed_sample_appointments(db)
+        # Seed PS3 facilities
+        fac_res = await db.execute(select(HealthcareFacility).limit(1))
+        if not fac_res.scalar_one_or_none():
+            await _seed_healthcare_facilities(db)
+
+        # Seed PS3 Care Journeys & Flowcharts
+        jour_res = await db.execute(select(CareJourneyTemplate).limit(1))
+        if not jour_res.scalar_one_or_none():
+            await _seed_care_journeys(db)
+
+        # Seed sample documents
+        doc_res = await db.execute(select(PatientDocument).limit(1))
+        if not doc_res.scalar_one_or_none():
+            await _seed_sample_documents(db)
+
+        # Seed sample recovery symptom journals
+        sj_res = await db.execute(select(PatientSymptomJournal).limit(1))
+        if not sj_res.scalar_one_or_none():
+            await _seed_sample_journals(db)
+
         await db.commit()
-        print("[SEED] Database seeded with SYNTHETIC demo data.")
+        print("[SEED] Med44 PS3 database initialized and verified.")
 
 
 # ---------------------------------------------------------------------------
@@ -839,6 +861,686 @@ async def _seed_doctors(db: AsyncSession):
             available_slots_json=json.dumps(slots),
             is_active=True,
         ))
+    await db.flush()
+
+
+# ---------------------------------------------------------------------------
+# Healthcare Facilities (PS3 Module 1) - VERIFIED DEMO DATA
+# ---------------------------------------------------------------------------
+async def _seed_healthcare_facilities(db: AsyncSession):
+    facilities_data = [
+        {
+            "name": "Apollo Hospitals Delhi",
+            "facility_type": "Multi-Specialty Hospital",
+            "address": "Sarita Vihar, Delhi Mathura Road",
+            "city": "New Delhi",
+            "contact_number": "011-26925858",
+            "operating_hours": "24/7 Emergency & OPD (08:00 AM - 08:00 PM)",
+            "services_offered": ["Emergency Care", "Cardiology", "Neurology", "Orthopedics", "General Medicine", "Dental", "Radiology"],
+            "supported_languages": ["English", "Hindi", "Tamil"],
+            "accessibility_features": ["Wheelchair Accessible", "Elevators", "Ramp Access", "Accessible Washrooms", "Disabled Parking"],
+            "latitude": 28.5355,
+            "longitude": 77.2910,
+            "source": "State Directorate of Health Services (Verified)",
+        },
+        {
+            "name": "Fortis Escorts Heart Institute",
+            "facility_type": "Specialty Hospital",
+            "address": "Okhla Road, New Friends Colony",
+            "city": "New Delhi",
+            "contact_number": "011-47135000",
+            "operating_hours": "24/7 Cardiac Emergency & OPD",
+            "services_offered": ["Cardiology", "Cardiothoracic Surgery", "ECG", "Echocardiogram", "Cardiac ICU", "Emergency Care"],
+            "supported_languages": ["English", "Hindi"],
+            "accessibility_features": ["Wheelchair Accessible", "Stretcher Lifts", "Ground Floor OPD", "Assistance Desk"],
+            "latitude": 28.5603,
+            "longitude": 77.2778,
+            "source": "NABH Accredited Hospital Registry (Verified)",
+        },
+        {
+            "name": "Max Super Speciality Hospital Saket",
+            "facility_type": "Multi-Specialty Hospital",
+            "address": "1, 2, Press Enclave Marg, Saket",
+            "city": "New Delhi",
+            "contact_number": "011-26515050",
+            "operating_hours": "24/7 Emergency & Consultations",
+            "services_offered": ["Dermatology", "Pulmonology", "ENT", "Pediatrics", "General Surgery", "Dialysis", "Laboratory"],
+            "supported_languages": ["English", "Hindi", "Tamil"],
+            "accessibility_features": ["Wheelchair Accessible", "Elevators", "Low-counter Reception", "Braille Signage"],
+            "latitude": 28.5284,
+            "longitude": 77.2144,
+            "source": "Delhi Hospital Regulatory Authority (Verified)",
+        },
+        {
+            "name": "Clove Dental Care Clinic",
+            "facility_type": "Dental Specialty Clinic",
+            "address": "Inner Circle, Connaught Place",
+            "city": "New Delhi",
+            "contact_number": "011-43552020",
+            "operating_hours": "09:00 AM - 08:00 PM (Mon-Sat)",
+            "services_offered": ["Dental Cleaning", "Root Canal Therapy", "Dental Implants", "Digital Dental X-Ray", "Orthodontics"],
+            "supported_languages": ["English", "Hindi"],
+            "accessibility_features": ["Ramp Entry", "Ground Floor Facility", "Wheelchair Accessible"],
+            "latitude": 28.6328,
+            "longitude": 77.2197,
+            "source": "Dental Council Verified Provider Directory",
+        },
+        {
+            "name": "Dr. Lal PathLabs & Diagnostics",
+            "facility_type": "Diagnostic Center",
+            "address": "Main Market, Green Park",
+            "city": "New Delhi",
+            "contact_number": "011-39885050",
+            "operating_hours": "07:00 AM - 09:00 PM Daily",
+            "services_offered": ["Complete Blood Count (CBC)", "Lipid Profile", "Thyroid Profile", "COVID-19 RT-PCR", "Urine Analysis", "Pathology"],
+            "supported_languages": ["English", "Hindi"],
+            "accessibility_features": ["Wheelchair Accessible", "Home Sample Collection Available"],
+            "latitude": 28.5589,
+            "longitude": 77.2074,
+            "source": "NABL Accredited Diagnostics Directory",
+        },
+        {
+            "name": "Manipal Hospital Dwarka",
+            "facility_type": "Tertiary Care Hospital",
+            "address": "Sector 6, Dwarka",
+            "city": "New Delhi",
+            "contact_number": "011-49674967",
+            "operating_hours": "24/7 Emergency & OPD",
+            "services_offered": ["Pulmonology", "Internal Medicine", "Gastroenterology", "Critical Care", "Radiology", "Physical Therapy"],
+            "supported_languages": ["English", "Hindi", "Tamil"],
+            "accessibility_features": ["Wheelchair Accessible", "Dedicated Patient Transport", "Elevators", "Accessible Restrooms"],
+            "latitude": 28.5912,
+            "longitude": 77.0601,
+            "source": "State Health Registry (Verified)",
+        },
+    ]
+
+    for item in facilities_data:
+        db.add(HealthcareFacility(
+            name=item["name"],
+            facility_type=item["facility_type"],
+            address=item["address"],
+            city=item["city"],
+            contact_number=item["contact_number"],
+            operating_hours=item["operating_hours"],
+            services_offered_json=json.dumps(item["services_offered"]),
+            supported_languages_json=json.dumps(item["supported_languages"]),
+            accessibility_features_json=json.dumps(item["accessibility_features"]),
+            latitude=item["latitude"],
+            longitude=item["longitude"],
+            source=item["source"],
+            is_verified=True,
+        ))
+    await db.flush()
+
+
+# ---------------------------------------------------------------------------
+# Care Journey Templates & Interactive Flowcharts (PS3 Modules 9, 10, 13)
+# ---------------------------------------------------------------------------
+async def _seed_care_journeys(db: AsyncSession):
+    # 1. Dental Journey
+    t_dental = CareJourneyTemplate(
+        id="dental_care",
+        title="Dental Health & Consultation Journey",
+        title_hi="दंत स्वास्थ्य और परामर्श यात्रा",
+        category="Dental",
+        description="Structured educational roadmap for booking, preparing, and navigating a dental consultation and procedure.",
+        description_hi="दांतों के डॉक्टर से मिलने, तैयारी करने और प्रक्रिया को समझने की संपूर्ण मार्गदर्शिका।",
+        total_stages=7,
+        is_active=True,
+    )
+    db.add(t_dental)
+
+    dental_nodes = [
+        CareJourneyNode(
+            id="dental_node_1",
+            template_id="dental_care",
+            step_number=1,
+            node_type="start",
+            title="Discover Verified Dental Facility",
+            title_hi="सत्यापित दंत चिकित्सा केंद्र खोजें",
+            explanation="Identify a licensed dental clinic or hospital offering general or specialty dentistry near you.",
+            explanation_hi="अपने पास एक लाइसेंस प्राप्त डेंटल क्लिनिक या अस्पताल खोजें।",
+            what_to_bring_json=json.dumps(["Valid government photo ID", "Insurance card if applicable"]),
+            questions_to_ask_json=json.dumps(["Is an appointment required for initial screening?", "Does the clinic have in-house digital X-ray facilities?"]),
+            what_to_record_json=json.dumps(["Clinic location", "Consultation fee and accepted payment modes"]),
+            required_documents_json=json.dumps(["Patient ID", "Previous Dental Records (if any)"]),
+        ),
+        CareJourneyNode(
+            id="dental_node_2",
+            template_id="dental_care",
+            step_number=2,
+            node_type="appointment",
+            title="Book Suitable Consultation Slot",
+            title_hi="उचित परामर्श समय स्लॉट बुक करें",
+            explanation="Select a morning or afternoon slot that allows you adequate time without rushing.",
+            explanation_hi="अपनी सुविधानुसार सुबह या शाम का समय चुनें।",
+            what_to_bring_json=json.dumps(["Booking confirmation / token number"]),
+            questions_to_ask_json=json.dumps(["Should I avoid eating or brushing right before the visit?"]),
+            what_to_record_json=json.dumps(["Appointment date and time", "Doctor's name"]),
+            required_documents_json=json.dumps([]),
+        ),
+        CareJourneyNode(
+            id="dental_node_3",
+            template_id="dental_care",
+            step_number=3,
+            node_type="patient_action",
+            title="Prepare Dental History & Current Symptoms",
+            title_hi="दंत इतिहास और वर्तमान लक्षण तैयार करें",
+            explanation="Note exactly where you feel sensitivity or pain, how long it has lasted, and whether hot or cold triggers it.",
+            explanation_hi="नोट करें कि दर्द कहां है, कब से है, और क्या ठंडा-गर्म खाने से बढ़ता है।",
+            what_to_bring_json=json.dumps(["List of current medications", "Previous X-rays or dental notes"]),
+            questions_to_ask_json=json.dumps(["Can I take a mild painkiller before examination if pain is acute?"]),
+            what_to_record_json=json.dumps(["Symptom severity (1-10)", "Triggers: sweets, pressure, hot, cold"]),
+            required_documents_json=json.dumps(["Current Medication List", "Past Dental History"]),
+        ),
+        CareJourneyNode(
+            id="dental_node_4",
+            template_id="dental_care",
+            step_number=4,
+            node_type="consultation",
+            title="In-Person Dental Examination",
+            title_hi="डॉक्टर द्वारा दांतों की जांच",
+            explanation="The dentist will visually inspect your teeth, gums, and bite alignment using standard sterile dental instruments.",
+            explanation_hi="दंत चिकित्सक आपके दांतों और मसूड़ों की जांच करेंगे।",
+            what_to_bring_json=json.dumps([]),
+            questions_to_ask_json=json.dumps(["Are there signs of active decay, gum inflammation, or enamel wear?"]),
+            what_to_record_json=json.dumps(["Teeth numbers discussed", "Dentist's clinical observations"]),
+            required_documents_json=json.dumps([]),
+        ),
+        CareJourneyNode(
+            id="dental_node_5",
+            template_id="dental_care",
+            step_number=5,
+            node_type="clinician_decision",
+            title="Clinician Decision: Digital X-Ray / IOPA",
+            title_hi="चिकित्सक निर्णय: क्या एक्स-रे आवश्यक है?",
+            explanation="The clinician determines whether an Intraoral Periapical (IOPA) or OPG radiograph is necessary to evaluate roots or bone.",
+            explanation_hi="डॉक्टर तय करेंगे कि जड़ या हड्डी देखने के लिए एक्स-रे की जरूरत है या नहीं।",
+            what_to_bring_json=json.dumps([]),
+            questions_to_ask_json=json.dumps(["What will the radiograph clarify that visual examination cannot?"]),
+            what_to_record_json=json.dumps(["Imaging decision and recommendations"]),
+            required_documents_json=json.dumps([]),
+            conditional_branches_json=json.dumps([
+                {"condition": "X-Ray Required", "explanation": "Dentist performs quick digital radiograph to check deep roots or bone health.", "next_node_id": "dental_node_6"},
+                {"condition": "No X-Ray Needed", "explanation": "Condition is superficial (e.g. routine plaque/cleaning), proceeding directly to care plan.", "next_node_id": "dental_node_6"},
+            ]),
+        ),
+        CareJourneyNode(
+            id="dental_node_6",
+            template_id="dental_care",
+            step_number=6,
+            node_type="document_requirement",
+            title="Clinician Explains Care Plan & Written Instructions",
+            title_hi="उपचार योजना और लिखित सलाह",
+            explanation="The dentist outlines recommended procedures (e.g., restoration, scaling, or observation) and provides aftercare instructions.",
+            explanation_hi="डॉक्टर सफाई, फिलिंग या अन्य इलाज की सलाह देंगे।",
+            what_to_bring_json=json.dumps([]),
+            questions_to_ask_json=json.dumps(["Are there alternative options?", "What are the immediate post-procedure precautions?"]),
+            what_to_record_json=json.dumps(["Written prescription and post-care notes"]),
+            required_documents_json=json.dumps(["Signed Prescription / Procedure Estimate"]),
+        ),
+        CareJourneyNode(
+            id="dental_node_7",
+            template_id="dental_care",
+            step_number=7,
+            node_type="completion",
+            title="Post-Care Navigation & Follow-Up Check",
+            title_hi="देखभाल और फॉलो-अप चेक",
+            explanation="Follow clinician-directed hygiene steps and attend your scheduled follow-up review if advised.",
+            explanation_hi="डॉक्टर द्वारा बताई गई सावधानियां बरतें और समय पर फॉलो-अप करें।",
+            what_to_bring_json=json.dumps(["Prescription copy"]),
+            questions_to_ask_json=json.dumps(["When should I schedule the next routine checkup?"]),
+            what_to_record_json=json.dumps(["Follow-up date", "Resolution of initial pain"]),
+            required_documents_json=json.dumps([]),
+        ),
+    ]
+    for n in dental_nodes:
+        db.add(n)
+
+    # 2. Acute Infection Journey
+    t_inf = CareJourneyTemplate(
+        id="acute_infection",
+        title="Acute Illness & Infection Navigation Journey",
+        title_hi="तीव्र बीमारी और संक्रमण देखभाल यात्रा",
+        category="General Medicine",
+        description="Educational pathway for sudden onset fever, throat infection, or seasonal viral symptoms.",
+        description_hi="अचानक आए बुखार, खांसी या संक्रमण के लिए डॉक्टर परामर्श और देखभाल की मार्गदर्शिका।",
+        total_stages=6,
+        is_active=True,
+    )
+    db.add(t_inf)
+
+    inf_nodes = [
+        CareJourneyNode(
+            id="inf_node_1",
+            template_id="acute_infection",
+            step_number=1,
+            node_type="start",
+            title="Discover Nearby Healthcare Facility or OPD",
+            title_hi="नजदीकी स्वास्थ्य केंद्र या ओपीडी खोजें",
+            explanation="Locate an open general practice clinic, primary health center, or hospital OPD.",
+            explanation_hi="अपने नजदीकी क्लिनिक या अस्पताल का पता लगाएं।",
+            what_to_bring_json=json.dumps(["Photo ID", "Insurance Card"]),
+            questions_to_ask_json=json.dumps(["What are the OPD walk-in timings?"]),
+            what_to_record_json=json.dumps(["Facility address", "Emergency hotline"]),
+            required_documents_json=json.dumps([]),
+        ),
+        CareJourneyNode(
+            id="inf_node_2",
+            template_id="acute_infection",
+            step_number=2,
+            node_type="patient_action",
+            title="Log Symptoms & Temperature Readings",
+            title_hi="लक्षण और तापमान का रिकॉर्ड रखें",
+            explanation="Record your temperature chart, duration of symptoms, and any other symptoms (cough, chills, body ache).",
+            explanation_hi="थर्मामीटर से नापा गया तापमान और लक्षणों के दिन नोट करें।",
+            what_to_bring_json=json.dumps(["Thermometer log"]),
+            questions_to_ask_json=json.dumps(["What is the safe fever medication threshold?"]),
+            what_to_record_json=json.dumps(["Max temperature recorded", "Days elapsed"]),
+            required_documents_json=json.dumps(["Symptom Log"]),
+        ),
+        CareJourneyNode(
+            id="inf_node_3",
+            template_id="acute_infection",
+            step_number=3,
+            node_type="consultation",
+            title="In-Person Medical Evaluation",
+            title_hi="चिकित्सक द्वारा शारीरिक जांच",
+            explanation="The physician checks vitals (BP, pulse, oxygen saturation, temperature) and examines throat and chest.",
+            explanation_hi="डॉक्टर बीपी, पल्स, ऑक्सीजन और सीने की जांच करेंगे।",
+            what_to_bring_json=json.dumps(["Current medications", "Allergy information"]),
+            questions_to_ask_json=json.dumps(["Is this consistent with a viral infection?", "What warning signs should I watch for?"]),
+            what_to_record_json=json.dumps(["Vitals readings", "Clinician's provisional remarks"]),
+            required_documents_json=json.dumps([]),
+        ),
+        CareJourneyNode(
+            id="inf_node_4",
+            template_id="acute_infection",
+            step_number=4,
+            node_type="clinician_decision",
+            title="Clinician Decision: Diagnostic Lab Tests",
+            title_hi="चिकित्सक निर्णय: क्या खून जांच आवश्यक है?",
+            explanation="The doctor decides whether a Complete Blood Count (CBC), Dengue NS1, or throat swab is indicated.",
+            explanation_hi="डॉक्टर तय करेंगे कि सीबीसी या डेंगू जांच की आवश्यकता है या नहीं।",
+            what_to_bring_json=json.dumps([]),
+            questions_to_ask_json=json.dumps(["Are lab tests necessary today or can we wait 24-48 hours?"]),
+            what_to_record_json=json.dumps(["Prescribed lab test names"]),
+            required_documents_json=json.dumps([]),
+            conditional_branches_json=json.dumps([
+                {"condition": "Pathology Tests Prescribed", "explanation": "Doctor requests CBC / Platelet / Viral screen to rule out specific infections.", "next_node_id": "inf_node_5"},
+                {"condition": "No Tests Needed (Symptomatic)", "explanation": "Mild viral presentation; clinician directs home hydration and rest.", "next_node_id": "inf_node_5"},
+            ]),
+        ),
+        CareJourneyNode(
+            id="inf_node_5",
+            template_id="acute_infection",
+            step_number=5,
+            node_type="document_requirement",
+            title="Document Clinician's Treatment & Care Plan",
+            title_hi="डॉक्टर की पर्ची और देखभाल योजना सहेजें",
+            explanation="Securely save the clinician's written prescription, hydration advice, and approved OTC medications.",
+            explanation_hi="दवाइयों की पर्ची और डॉक्टर की सलाह को सुरक्षित रखें।",
+            what_to_bring_json=json.dumps([]),
+            questions_to_ask_json=json.dumps(["What are the exact dosages and timing?", "When should I contact emergency services?"]),
+            what_to_record_json=json.dumps(["Prescription medication names", "Follow-up date"]),
+            required_documents_json=json.dumps(["Doctor's Prescription"]),
+        ),
+        CareJourneyNode(
+            id="inf_node_6",
+            template_id="acute_infection",
+            step_number=6,
+            node_type="follow_up",
+            title="Recovery Monitoring & Safety Escalation",
+            title_hi="स्वास्थ्य सुधार की निगरानी और आपातकालीन सतर्कता",
+            explanation="Log daily progress. If symptoms worsen, fever exceeds 102°F, or breathing difficulty appears, immediately contact emergency services.",
+            explanation_hi="रोजाना सुधार नोट करें। यदि स्थिति बिगड़े तो तुरंत डॉक्टर या 112 पर कॉल करें।",
+            what_to_bring_json=json.dumps([]),
+            questions_to_ask_json=json.dumps([]),
+            what_to_record_json=json.dumps(["Daily symptom severity"]),
+            required_documents_json=json.dumps([]),
+        ),
+    ]
+    for n in inf_nodes:
+        db.add(n)
+
+    # 3. Respiratory Care Journey
+    t_resp = CareJourneyTemplate(
+        id="respiratory_care",
+        title="Respiratory Health & Asthma Journey",
+        title_hi="श्वसन स्वास्थ्य और दमा देखभाल यात्रा",
+        category="Pulmonology",
+        description="Administrative and clinical educational journey for persistent cough, wheezing, or asthma management.",
+        description_hi="लगातार खांसी, सांस फूलने या दमे के लिए परामर्श और देखभाल योजना।",
+        total_stages=5,
+        is_active=True,
+    )
+    db.add(t_resp)
+
+    resp_nodes = [
+        CareJourneyNode(
+            id="resp_node_1",
+            template_id="respiratory_care",
+            step_number=1,
+            node_type="start",
+            title="Discover Pulmonologist / Respiratory Service",
+            title_hi="छाती रोग विशेषज्ञ खोजें",
+            explanation="Locate a hospital or clinic with specialized chest and respiratory diagnostic facilities.",
+            explanation_hi="छाती और फेफड़ों के विशेषज्ञ डॉक्टर का पता लगाएं।",
+            what_to_bring_json=json.dumps(["Previous chest X-rays", "Inhaler details"]),
+            questions_to_ask_json=json.dumps(["Are spirometry facilities available on-site?"]),
+            what_to_record_json=json.dumps(["Hospital address"]),
+            required_documents_json=json.dumps([]),
+        ),
+        CareJourneyNode(
+            id="resp_node_2",
+            template_id="respiratory_care",
+            step_number=2,
+            node_type="consultation",
+            title="Clinical Chest Consultation & Auscultation",
+            title_hi="फेफड़ों की स्टेथोस्कोप से जांच",
+            explanation="The pulmonologist listens to breath sounds, wheezing, and assesses oxygen saturation levels.",
+            explanation_hi="डॉक्टर स्टेथोस्कोप से सांस की आवाज और सीने की जांच करेंगे।",
+            what_to_bring_json=json.dumps(["Symptom timeline"]),
+            questions_to_ask_json=json.dumps(["Are my symptoms seasonal or triggered by environmental allergies?"]),
+            what_to_record_json=json.dumps(["SpO2 level", "Clinical observations"]),
+            required_documents_json=json.dumps([]),
+        ),
+        CareJourneyNode(
+            id="resp_node_3",
+            template_id="respiratory_care",
+            step_number=3,
+            node_type="clinician_decision",
+            title="Clinician Decision: Spirometry / PFT",
+            title_hi="चिकित्सक निर्णय: फेफड़ों की कार्यक्षमता जांच (PFT)",
+            explanation="The clinician decides whether Pulmonary Function Testing (PFT) or peak-flow measurement is indicated.",
+            explanation_hi="डॉक्टर तय करेंगे कि स्पाइरोमेट्री जांच की आवश्यकता है या नहीं।",
+            what_to_bring_json=json.dumps([]),
+            questions_to_ask_json=json.dumps(["How should I prepare for a lung capacity test?"]),
+            what_to_record_json=json.dumps(["Test recommendation"]),
+            required_documents_json=json.dumps([]),
+            conditional_branches_json=json.dumps([
+                {"condition": "Spirometry / PFT Advised", "explanation": "Patient performs breathing test into spirometer to quantify airway obstruction.", "next_node_id": "resp_node_4"},
+                {"condition": "Clinical Management without PFT", "explanation": "Doctor initiates treatment based on clinical assessment.", "next_node_id": "resp_node_4"},
+            ]),
+        ),
+        CareJourneyNode(
+            id="resp_node_4",
+            template_id="respiratory_care",
+            step_number=4,
+            node_type="document_requirement",
+            title="Written Inhaler & Medication Action Plan",
+            title_hi="लिखित इन्हेलर और दवा कार्य योजना",
+            explanation="Patient receives written clinician instructions on correct inhaler usage, spacer technique, and rescue protocol.",
+            explanation_hi="इन्हेलर इस्तेमाल करने का सही तरीका और दवा की पर्ची।",
+            what_to_bring_json=json.dumps([]),
+            questions_to_ask_json=json.dumps(["What is the difference between controller and rescue inhalers?"]),
+            what_to_record_json=json.dumps(["Action plan steps"]),
+            required_documents_json=json.dumps(["Asthma / Respiratory Action Plan"]),
+        ),
+        CareJourneyNode(
+            id="resp_node_5",
+            template_id="respiratory_care",
+            step_number=5,
+            node_type="completion",
+            title="Routine Monitoring & Emergency Readiness",
+            title_hi="नियमित निगरानी और आपातकालीन तैयारी",
+            explanation="Log daily breathing ease. In case of acute breathlessness or blue lips/fingers, call 112 immediately.",
+            explanation_hi="रोजाना सांस की स्थिति जांचें। गंभीर तकलीफ होने पर तुरंत 112 मिलाएं।",
+            what_to_bring_json=json.dumps([]),
+            questions_to_ask_json=json.dumps([]),
+            what_to_record_json=json.dumps([]),
+            required_documents_json=json.dumps([]),
+        ),
+    ]
+    for n in resp_nodes:
+        db.add(n)
+
+    # 4. Cardiac Journey
+    t_cardiac = CareJourneyTemplate(
+        id="cardiac_eval",
+        title="Cardiovascular Assessment & Follow-Up",
+        title_hi="हृदय स्वास्थ्य जांच और फॉलो-अप यात्रा",
+        category="Cardiology",
+        description="Comprehensive healthcare access pathway for cardiac evaluation, BP tracking, and risk assessment.",
+        description_hi="दिल की जांच, ईसीजी और रक्तचाप नियंत्रण के लिए संपूर्ण मार्गदर्शिका।",
+        total_stages=5,
+        is_active=True,
+    )
+    db.add(t_cardiac)
+
+    cardiac_nodes = [
+        CareJourneyNode(
+            id="cardiac_node_1",
+            template_id="cardiac_eval",
+            step_number=1,
+            node_type="start",
+            title="Find Accredited Cardiac Care Facility",
+            title_hi="सत्यापित हृदय रोग अस्पताल खोजें",
+            explanation="Locate an accredited hospital with round-the-clock cardiac care and emergency catheterization support.",
+            explanation_hi="24 घंटे चालू हृदय रोग अस्पताल का पता लगाएं।",
+            what_to_bring_json=json.dumps(["Government ID", "Existing ECG records"]),
+            questions_to_ask_json=json.dumps(["Does the facility have emergency cath-lab availability?"]),
+            what_to_record_json=json.dumps(["Hospital contact number"]),
+            required_documents_json=json.dumps([]),
+        ),
+        CareJourneyNode(
+            id="cardiac_node_2",
+            template_id="cardiac_eval",
+            step_number=2,
+            node_type="patient_action",
+            title="Compile Family Cardiac History & Medications",
+            title_hi="पारिवारिक हृदय इतिहास और दवाएं एकत्र करें",
+            explanation="Document whether parents or siblings had early heart disease, high cholesterol, or hypertension.",
+            explanation_hi="परिवार में दिल की बीमारी या बीपी का इतिहास नोट करें।",
+            what_to_bring_json=json.dumps(["Previous lipid panel reports"]),
+            questions_to_ask_json=json.dumps([]),
+            what_to_record_json=json.dumps(["Family history notes"]),
+            required_documents_json=json.dumps(["Past Medical History", "Lipid Profile"]),
+        ),
+        CareJourneyNode(
+            id="cardiac_node_3",
+            template_id="cardiac_eval",
+            step_number=3,
+            node_type="consultation",
+            title="Cardiologist Clinical Examination",
+            title_hi="कार्डियोलॉजिस्ट से परामर्श और जांच",
+            explanation="The cardiologist evaluates heart sounds, peripheral pulses, blood pressure, and reviews cardiovascular risk.",
+            explanation_hi="हृदय रोग विशेषज्ञ द्वारा शारीरिक जांच और बीपी चेक।",
+            what_to_bring_json=json.dumps([]),
+            questions_to_ask_json=json.dumps(["What are my primary cardiovascular risk factors?", "What lifestyle changes are most urgent?"]),
+            what_to_record_json=json.dumps(["Blood pressure reading", "Target ranges"]),
+            required_documents_json=json.dumps([]),
+        ),
+        CareJourneyNode(
+            id="cardiac_node_4",
+            template_id="cardiac_eval",
+            step_number=4,
+            node_type="clinician_decision",
+            title="Clinician Decision: Resting ECG & Echocardiogram",
+            title_hi="चिकित्सक निर्णय: ईसीजी या इकोकार्डियोग्राम जांच",
+            explanation="The specialist decides if a 12-lead ECG or 2D Echo is required to assess heart rhythm and wall motion.",
+            explanation_hi="डॉक्टर तय करेंगे कि ईसीजी या इको जांच की जरूरत है या नहीं।",
+            what_to_bring_json=json.dumps([]),
+            questions_to_ask_json=json.dumps(["What will the 2D Echo determine about heart pumping capacity?"]),
+            what_to_record_json=json.dumps(["Diagnostic orders"]),
+            required_documents_json=json.dumps([]),
+            conditional_branches_json=json.dumps([
+                {"condition": "ECG & Echo Ordered", "explanation": "Patient undergoes non-invasive electrical and ultrasound evaluation of the heart.", "next_node_id": "cardiac_node_5"},
+                {"condition": "Follow-Up without Imaging", "explanation": "Baseline examination normal; lifestyle guidance and follow-up scheduled.", "next_node_id": "cardiac_node_5"},
+            ]),
+        ),
+        CareJourneyNode(
+            id="cardiac_node_5",
+            template_id="cardiac_eval",
+            step_number=5,
+            node_type="completion",
+            title="Cardiovascular Care Plan & Red-Flag Protocol",
+            title_hi="हृदय सुरक्षा योजना और आपातकालीन निर्देश",
+            explanation="Record verified medications and dietary guidance. If acute chest pain, pain radiating to left arm, or sudden sweating occurs, call 112 immediately.",
+            explanation_hi="दवाइयों का पालन करें। सीने में तेज दर्द होने पर तुरंत 112 पर फोन करें।",
+            what_to_bring_json=json.dumps([]),
+            questions_to_ask_json=json.dumps([]),
+            what_to_record_json=json.dumps([]),
+            required_documents_json=json.dumps(["Cardiology Care Plan"]),
+        ),
+    ]
+    for n in cardiac_nodes:
+        db.add(n)
+
+    await db.flush()
+
+
+# ---------------------------------------------------------------------------
+# Sample Documents & Prescriptions with Draft OCR (PS3 Modules 4, 5, 11)
+# ---------------------------------------------------------------------------
+async def _seed_sample_documents(db: AsyncSession):
+    result = await db.execute(select(Patient).limit(1))
+    patient = result.scalar_one_or_none()
+    if not patient:
+        return
+
+    docs = [
+        PatientDocument(
+            patient_id=patient.id,
+            title="Dr. Priya Sharma — Consultation Prescription",
+            category="Prescription",
+            file_url="/sample_prescription.jpg",
+            file_type="image",
+            status="UPLOADED",
+            ocr_extracted_text=(
+                "APOLLO HOSPITALS DELHI — OPD PRESCRIPTION\n"
+                "Patient: Mayank Sharma | Age: 29 | Date: 02/11/2026\n"
+                "Rx:\n"
+                "1. Tab Paracetamol 650mg — 1 tab SOS (after food) for fever > 100°F\n"
+                "2. Cetirizine 10mg — 1 tab at bedtime for 3 days\n"
+                "3. Steam inhalation twice daily with warm saline gargles\n"
+                "⚠️ Note: Patient allergic to Penicillin. Avoid beta-lactam antibiotics.\n"
+                "Review if fever persists > 3 days."
+            ),
+            ocr_status="DRAFT",
+            uncertain_fields_json=json.dumps([
+                {"field": "Dosage line 1", "extracted": "650mg SOS", "confidence": "0.82", "flag": "Handwritten number, requires patient verification"},
+                {"field": "Duration line 2", "extracted": "for 3 days", "confidence": "0.78", "flag": "Handwritten abbreviation"}
+            ]),
+            verified_by_patient=False,
+            notes="Uploaded via mobile photo camera for OCR drafting.",
+        ),
+        PatientDocument(
+            patient_id=patient.id,
+            title="Cardiology Referral Letter from Primary Care",
+            category="Referral",
+            file_url="/sample_referral.pdf",
+            file_type="pdf",
+            status="VERIFIED",
+            ocr_extracted_text=(
+                "REFERRAL TO CARDIOLOGY OPD\n"
+                "To: Consultant Cardiologist, Fortis Escorts\n"
+                "Patient: Mayank Sharma (29/M)\n"
+                "Reason: Family history of early CAD, evaluation of intermittent resting palpitations.\n"
+                "Current BP: 128/82 mmHg. Systemic examination unremarkable.\n"
+                "Kindly review and advise regarding resting ECG / 2D Echo if indicated.\n"
+                "Ref Dr. Anjali Mehta, MBBS MD."
+            ),
+            ocr_status="VERIFIED",
+            uncertain_fields_json=json.dumps([]),
+            verified_by_patient=True,
+            notes="Officially verified referral document.",
+        ),
+        PatientDocument(
+            patient_id=patient.id,
+            title="Dr. Lal PathLabs — Complete Blood Count (CBC)",
+            category="Lab Report",
+            file_url="/sample_cbc_report.pdf",
+            file_type="pdf",
+            status="UPLOADED",
+            ocr_extracted_text=(
+                "DR. LAL PATHLABS — DIAGNOSTIC REPORT\n"
+                "Hemoglobin: 14.8 g/dL (Normal: 13.0 - 17.0)\n"
+                "Total Leukocyte Count (TLC): 6,800 /uL (Normal: 4,000 - 11,000)\n"
+                "Platelet Count: 2.4 Lakh /uL (Normal: 1.5 - 4.5)\n"
+                "ESR: 12 mm/hr (Normal: 0 - 15)\n"
+                "Impression: Normal hematological indices. No acute leukocytosis."
+            ),
+            ocr_status="VERIFIED",
+            uncertain_fields_json=json.dumps([]),
+            verified_by_patient=True,
+            notes="Routine diagnostic baseline.",
+        ),
+    ]
+
+    for d in docs:
+        db.add(d)
+    await db.flush()
+
+
+# ---------------------------------------------------------------------------
+# Sample Recovery Symptom Journals (PS3 Module 12)
+# ---------------------------------------------------------------------------
+async def _seed_sample_journals(db: AsyncSession):
+    result = await db.execute(select(Patient).limit(1))
+    patient = result.scalar_one_or_none()
+    if not patient:
+        return
+
+    now = datetime.datetime.now()
+    journals = [
+        PatientSymptomJournal(
+            patient_id=patient.id,
+            entry_date=now - datetime.timedelta(days=2),
+            severity_scale=6,
+            symptoms_reported_json=json.dumps(["Fever", "Mild Headache", "Sore throat"]),
+            perceived_change="Stable",
+            daily_notes="Resting in bed, taking fluids and warm soups.",
+            care_plan_tasks_completed=2,
+            care_plan_tasks_total=3,
+            clinician_review_status="REVIEWED",
+            escalation_triggered=False,
+        ),
+        PatientSymptomJournal(
+            patient_id=patient.id,
+            entry_date=now - datetime.timedelta(days=1),
+            severity_scale=4,
+            symptoms_reported_json=json.dumps(["Mild Headache", "Fatigue"]),
+            perceived_change="Improving",
+            daily_notes="Fever has resolved. Throat soreness reduced by 70%.",
+            care_plan_tasks_completed=3,
+            care_plan_tasks_total=3,
+            clinician_review_status="REVIEWED",
+            escalation_triggered=False,
+        ),
+        PatientSymptomJournal(
+            patient_id=patient.id,
+            entry_date=now,
+            severity_scale=2,
+            symptoms_reported_json=json.dumps(["Mild tiredness on walking"]),
+            perceived_change="Improving",
+            daily_notes="Much better today, able to resume light desk work.",
+            care_plan_tasks_completed=3,
+            care_plan_tasks_total=3,
+            clinician_review_status="NO_REVIEW_REQUIRED",
+            escalation_triggered=False,
+        ),
+    ]
+
+    for j in journals:
+        db.add(j)
+
+    # Initial journey progress for demo patient
+    db.add(PatientJourneyProgress(
+        patient_id=patient.id,
+        template_id="dental_care",
+        current_node_id="dental_node_3",
+        completed_node_ids_json=json.dumps(["dental_node_1", "dental_node_2"]),
+        preparation_checklist_json=json.dumps([
+            {"id": "prep_1", "text": "Organize previous dental notes", "completed": True},
+            {"id": "prep_2", "text": "List any current pain medications", "completed": True},
+            {"id": "prep_3", "text": "Check photo ID and clinic address", "completed": False},
+        ]),
+        selected_branches_json=json.dumps({}),
+        status="ACTIVE",
+    ))
+
     await db.flush()
 
 

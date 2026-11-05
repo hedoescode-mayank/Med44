@@ -36,6 +36,10 @@ class Patient(Base):
     appointments = relationship("Appointment", back_populates="patient")
     conversations = relationship("Conversation", back_populates="patient")
     audit_logs = relationship("AuditLog", back_populates="patient")
+    documents = relationship("PatientDocument", back_populates="patient")
+    symptom_journals = relationship("PatientSymptomJournal", back_populates="patient")
+    journey_progress = relationship("PatientJourneyProgress", back_populates="patient")
+    support_tickets = relationship("SupportTicket", back_populates="patient")
 
 
 # ---------------------------------------------------------------------------
@@ -206,16 +210,21 @@ class Appointment(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     patient_id = Column(Integer, ForeignKey("patients.id"), nullable=False)
+    facility_id = Column(Integer, ForeignKey("healthcare_facilities.id"), nullable=True)
+    facility_name = Column(String(200), nullable=True)
     doctor_name = Column(String(150), nullable=False)
     specialty = Column(String(100), nullable=True)
     appointment_date = Column(DateTime, nullable=False)
     slot_time = Column(String(20), nullable=True)
     status = Column(String(20), default="PENDING")  # PENDING / CONFIRMED / CANCELLED
+    queue_token = Column(String(50), nullable=True)
+    is_simulated = Column(Boolean, default=True)
     notes = Column(Text, nullable=True)
     is_synced = Column(Boolean, default=False)
     created_at = Column(DateTime, default=func.now())
 
     patient = relationship("Patient", back_populates="appointments")
+    facility = relationship("HealthcareFacility", back_populates="appointments")
 
 
 # ---------------------------------------------------------------------------
@@ -275,7 +284,157 @@ class Doctor(Base):
     specialty = Column(String(100), nullable=False)
     rating = Column(Float, default=4.0)
     hospital = Column(String(200), nullable=True)
+    facility_id = Column(Integer, ForeignKey("healthcare_facilities.id"), nullable=True)
     location = Column(String(200), nullable=True)
     available_slots_json = Column(Text, nullable=True)  # JSON list of slot strings
     is_active = Column(Boolean, default=True)
+
+    facility = relationship("HealthcareFacility", back_populates="doctors")
+
+
+# ---------------------------------------------------------------------------
+# Healthcare Facilities (PS3 Module 1)
+# ---------------------------------------------------------------------------
+class HealthcareFacility(Base):
+    __tablename__ = "healthcare_facilities"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String(200), nullable=False, index=True)
+    facility_type = Column(String(80), nullable=False, default="Hospital")  # Hospital, Clinic, Diagnostic Lab, Specialty
+    address = Column(String(250), nullable=False)
+    city = Column(String(100), nullable=False, default="New Delhi")
+    contact_number = Column(String(30), nullable=False)
+    operating_hours = Column(String(100), default="24/7 or 08:00 AM - 08:00 PM")
+    services_offered_json = Column(Text, nullable=False)        # JSON list of service strings
+    supported_languages_json = Column(Text, nullable=False)     # JSON list: ["English", "Hindi", "Tamil"]
+    accessibility_features_json = Column(Text, nullable=False)  # JSON list: ["Wheelchair Accessible", "Ramp Entry", "Elevators"]
+    latitude = Column(Float, nullable=True)
+    longitude = Column(Float, nullable=True)
+    source = Column(String(200), default="State Health Registry (Verified)")
+    last_verified = Column(DateTime, default=func.now())
+    is_verified = Column(Boolean, default=True)
+
+    doctors = relationship("Doctor", back_populates="facility")
+    appointments = relationship("Appointment", back_populates="facility")
+
+
+# ---------------------------------------------------------------------------
+# Patient Documents & Prescriptions OCR (PS3 Module 4, 5, 11)
+# ---------------------------------------------------------------------------
+class PatientDocument(Base):
+    __tablename__ = "patient_documents"
+
+    id = Column(Integer, primary_key=True, index=True)
+    patient_id = Column(Integer, ForeignKey("patients.id"), nullable=False)
+    title = Column(String(200), nullable=False)
+    category = Column(String(50), nullable=False)  # Prescription, Referral, Lab Report, Discharge Summary, Insurance
+    file_url = Column(String(500), nullable=True)
+    file_type = Column(String(20), default="image")
+    status = Column(String(30), default="UPLOADED")  # PENDING, UPLOADED, VERIFIED, FLAGGED_FOR_REVIEW
+    ocr_extracted_text = Column(Text, nullable=True)
+    ocr_status = Column(String(30), default="NOT_PROCESSED")  # NOT_PROCESSED, DRAFT, VERIFIED
+    uncertain_fields_json = Column(Text, nullable=True)       # JSON list of handwritten/uncertain terms
+    verified_by_patient = Column(Boolean, default=False)
+    notes = Column(Text, nullable=True)
+    uploaded_at = Column(DateTime, default=func.now())
+    verified_at = Column(DateTime, nullable=True)
+
+    patient = relationship("Patient", back_populates="documents")
+
+
+# ---------------------------------------------------------------------------
+# Care Journey Templates & Interactive Flowcharts (PS3 Module 9, 10, 13)
+# ---------------------------------------------------------------------------
+class CareJourneyTemplate(Base):
+    __tablename__ = "care_journey_templates"
+
+    id = Column(String(50), primary_key=True)  # e.g. "dental_care", "acute_infection", "respiratory_care", "cardiac_eval"
+    title = Column(String(200), nullable=False)
+    title_hi = Column(String(200), nullable=True)
+    category = Column(String(100), nullable=False)
+    description = Column(Text, nullable=False)
+    description_hi = Column(Text, nullable=True)
+    total_stages = Column(Integer, default=5)
+    is_active = Column(Boolean, default=True)
+
+    nodes = relationship("CareJourneyNode", back_populates="template", order_by="CareJourneyNode.step_number")
+
+
+class CareJourneyNode(Base):
+    __tablename__ = "care_journey_nodes"
+
+    id = Column(String(50), primary_key=True)  # e.g. "dental_step_1"
+    template_id = Column(String(50), ForeignKey("care_journey_templates.id"), nullable=False)
+    step_number = Column(Integer, nullable=False)
+    node_type = Column(String(50), nullable=False)  # start, patient_action, appointment, consultation, document_requirement, clinician_decision, possible_investigation, follow_up, completion
+    title = Column(String(200), nullable=False)
+    title_hi = Column(String(200), nullable=True)
+    explanation = Column(Text, nullable=False)
+    explanation_hi = Column(Text, nullable=True)
+    what_to_bring_json = Column(Text, nullable=True)          # JSON list of items to bring
+    questions_to_ask_json = Column(Text, nullable=True)       # JSON list of questions for clinician
+    what_to_record_json = Column(Text, nullable=True)         # JSON list
+    required_documents_json = Column(Text, nullable=True)     # JSON list
+    conditional_branches_json = Column(Text, nullable=True)   # JSON list of branches with choices
+
+    template = relationship("CareJourneyTemplate", back_populates="nodes")
+
+
+class PatientJourneyProgress(Base):
+    __tablename__ = "patient_journey_progress"
+
+    id = Column(Integer, primary_key=True, index=True)
+    patient_id = Column(Integer, ForeignKey("patients.id"), nullable=False)
+    template_id = Column(String(50), ForeignKey("care_journey_templates.id"), nullable=False)
+    current_node_id = Column(String(50), nullable=True)
+    completed_node_ids_json = Column(Text, default="[]")       # JSON list of completed node IDs
+    preparation_checklist_json = Column(Text, default="[]")    # JSON list of checklist items with status
+    selected_branches_json = Column(Text, default="{}")        # JSON map of branch choices
+    status = Column(String(30), default="ACTIVE")              # ACTIVE, COMPLETED, ON_HOLD
+    updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
+
+    patient = relationship("Patient", back_populates="journey_progress")
+
+
+# ---------------------------------------------------------------------------
+# Daily Symptom Journal & Patient Recovery Tracker (PS3 Module 12)
+# ---------------------------------------------------------------------------
+class PatientSymptomJournal(Base):
+    __tablename__ = "patient_symptom_journals"
+
+    id = Column(Integer, primary_key=True, index=True)
+    patient_id = Column(Integer, ForeignKey("patients.id"), nullable=False)
+    entry_date = Column(DateTime, default=func.now())
+    severity_scale = Column(Integer, nullable=False)           # 1 to 10
+    symptoms_reported_json = Column(Text, nullable=False)      # JSON list of symptom strings
+    perceived_change = Column(String(50), default="Stable")    # Improving, Stable, Worsening, Significantly Worsened
+    daily_notes = Column(Text, nullable=True)
+    care_plan_tasks_completed = Column(Integer, default=0)
+    care_plan_tasks_total = Column(Integer, default=3)
+    clinician_review_status = Column(String(40), default="PENDING_REVIEW")  # PENDING_REVIEW, REVIEWED, NO_REVIEW_REQUIRED
+    escalation_triggered = Column(Boolean, default=False)
+    created_at = Column(DateTime, default=func.now())
+
+    patient = relationship("Patient", back_populates="symptom_journals")
+
+
+# ---------------------------------------------------------------------------
+# Human Escalation & Facility Inaccuracy Reporting (PS3 Module 8)
+# ---------------------------------------------------------------------------
+class SupportTicket(Base):
+    __tablename__ = "support_tickets"
+
+    id = Column(Integer, primary_key=True, index=True)
+    patient_id = Column(Integer, ForeignKey("patients.id"), nullable=False)
+    facility_id = Column(Integer, ForeignKey("healthcare_facilities.id"), nullable=True)
+    ticket_type = Column(String(50), nullable=False)  # INACCURATE_FACILITY_INFO, CONFLICTING_REQUIREMENTS, BOOKING_ISSUE, GENERAL_ASSISTANCE
+    subject = Column(String(200), nullable=False)
+    description = Column(Text, nullable=False)
+    status = Column(String(30), default="OPEN")       # OPEN, UNDER_REVIEW, RESOLVED
+    resolution_notes = Column(Text, nullable=True)
+    created_at = Column(DateTime, default=func.now())
+    updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
+
+    patient = relationship("Patient", back_populates="support_tickets")
+
 

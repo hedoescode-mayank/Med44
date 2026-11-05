@@ -1,9 +1,11 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import {
-  Key, Wifi, Bell, Database, Eye, EyeOff, RefreshCw, CheckCircle2, AlertCircle, Moon
+  Key, Wifi, Bell, Database, Eye, EyeOff, RefreshCw, CheckCircle2, AlertCircle, Moon,
+  LifeBuoy, Send, ShieldAlert, Clock, CheckCircle
 } from 'lucide-react'
 import { useChatStore } from '../store/chatStore'
+import { supportApi } from '../services/api'
 import toast from 'react-hot-toast'
 
 export default function SettingsPage() {
@@ -19,6 +21,47 @@ export default function SettingsPage() {
     emergencyAlerts: true,
   })
   const [darkMode, setDarkMode] = useState(false)
+
+  // PS3 Module 8: Support & Human Escalation Tickets
+  const [tickets, setTickets] = useState<any[]>([])
+  const [ticketType, setTicketType] = useState('INACCURATE_FACILITY_INFO')
+  const [ticketSubject, setTicketSubject] = useState('')
+  const [ticketDesc, setTicketDesc] = useState('')
+  const [ticketSubmitting, setTicketSubmitting] = useState(false)
+
+  useEffect(() => {
+    loadTickets()
+  }, [])
+
+  const loadTickets = async () => {
+    try {
+      const res = await supportApi.getTickets()
+      setTickets(res.data || [])
+    } catch (err) {
+      console.error('Failed to load support tickets:', err)
+    }
+  }
+
+  const handleCreateTicket = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!ticketSubject.trim() || !ticketDesc.trim()) return
+    try {
+      setTicketSubmitting(true)
+      await supportApi.createTicket({
+        ticket_type: ticketType,
+        subject: ticketSubject.trim(),
+        description: ticketDesc.trim(),
+      })
+      toast.success('Support ticket created. A care coordinator will review shortly.')
+      setTicketSubject('')
+      setTicketDesc('')
+      await loadTickets()
+    } catch (err) {
+      toast.error('Failed to submit ticket')
+    } finally {
+      setTicketSubmitting(false)
+    }
+  }
 
   const handleSaveKey = () => {
     if (!groqKey.trim()) {
@@ -227,6 +270,111 @@ export default function SettingsPage() {
               Clear all local data →
             </button>
           </div>
+        </div>
+
+        {/* PS3 Module 8: Human Escalation & Inaccuracy Reporting */}
+        <div className="card mt-6">
+          <h3 className="text-lg font-bold text-textDark mb-1 flex items-center gap-2">
+            <LifeBuoy size={18} className="text-primary" />
+            Human Escalation & Support Tickets
+          </h3>
+          <p className="text-sm text-textMuted mb-5">
+            Report inaccurate facility information, raise conflicting healthcare requirements, or connect with a human care coordinator.
+          </p>
+
+          <form onSubmit={handleCreateTicket} className="space-y-4 bg-background p-4 rounded-xl border border-borderSoft">
+            <div>
+              <label className="block text-xs font-bold text-textSecondary uppercase tracking-wider mb-1">
+                Issue Category
+              </label>
+              <select
+                value={ticketType}
+                onChange={(e) => setTicketType(e.target.value)}
+                className="input-field text-sm"
+              >
+                <option value="INACCURATE_FACILITY_INFO">Report Inaccurate Facility Information</option>
+                <option value="CONFLICTING_REQUIREMENTS">Conflicting Healthcare Requirements</option>
+                <option value="BOOKING_ISSUE">Appointment or Booking Issue</option>
+                <option value="GENERAL_ASSISTANCE">Request Human Care Coordinator Help</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-textSecondary uppercase tracking-wider mb-1">
+                Subject
+              </label>
+              <input
+                type="text"
+                placeholder="Brief summary of the issue..."
+                value={ticketSubject}
+                onChange={(e) => setTicketSubject(e.target.value)}
+                className="input-field text-sm"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-textSecondary uppercase tracking-wider mb-1">
+                Detailed Description
+              </label>
+              <textarea
+                rows={3}
+                placeholder="Explain the discrepancy or specific assistance required..."
+                value={ticketDesc}
+                onChange={(e) => setTicketDesc(e.target.value)}
+                className="input-field text-sm py-2"
+                required
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={ticketSubmitting}
+              className="btn-primary text-xs w-full py-2.5 flex items-center justify-center gap-2"
+            >
+              <Send size={14} />
+              <span>{ticketSubmitting ? 'Submitting Ticket...' : 'Submit Support Ticket'}</span>
+            </button>
+          </form>
+
+          {/* Past tickets list */}
+          {tickets.length > 0 && (
+            <div className="mt-6 space-y-3">
+              <h4 className="text-xs font-bold text-textDark uppercase tracking-wider">
+                My Support Tickets ({tickets.length})
+              </h4>
+              <div className="space-y-2">
+                {tickets.map((t) => (
+                  <div
+                    key={t.id}
+                    className="p-3.5 rounded-xl border border-borderSoft bg-surface text-xs space-y-1.5"
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-textDark text-sm">{t.subject}</span>
+                      <span
+                        className={`px-2 py-0.5 rounded-full font-bold text-[10px] uppercase ${
+                          t.status === 'RESOLVED'
+                            ? 'bg-emerald-100 text-emerald-800'
+                            : 'bg-amber-100 text-amber-800'
+                        }`}
+                      >
+                        {t.status}
+                      </span>
+                    </div>
+                    <p className="text-textSecondary">{t.description}</p>
+                    {t.resolution_notes && (
+                      <p className="text-[11px] text-primary bg-surfaceSoft p-2 rounded-lg font-medium">
+                        Coordinator: {t.resolution_notes}
+                      </p>
+                    )}
+                    <span className="text-[10px] text-textMuted block pt-1">
+                      Filed: {new Date(t.created_at).toLocaleString()}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </motion.div>
     </div>

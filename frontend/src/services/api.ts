@@ -85,4 +85,73 @@ export const profileApi = {
   update: (data: Record<string, unknown>) => api.put('/api/profile', data),
 }
 
+// ─── Facilities & Providers (PS3 Module 1) ──────────────────────────────────
+export const facilityApi = {
+  getAll: (params?: {
+    q?: string
+    facility_type?: string
+    service?: string
+    language?: string
+    accessibility?: string
+    lat?: number
+    lon?: number
+  }) => api.get('/api/facilities', { params }),
+  getById: (id: number) => api.get(`/api/facilities/${id}`),
+}
+
+// ─── Documents & Referrals (PS3 Module 4, 5, 11) ─────────────────────────────
+export const documentApi = {
+  getAll: () => api.get('/api/documents'),
+  upload: (data: {
+    category: string
+    title: string
+    file_name: string
+    file_base64: string
+  }) => api.post('/api/documents/upload', data),
+  verify: (id: number, verifiedData?: Record<string, unknown>) =>
+    api.put(`/api/documents/${id}/verify`, { verified_data: verifiedData || {} }),
+  delete: (id: number) => api.delete(`/api/documents/${id}`),
+}
+
+// ─── Interactive Care Journey (PS3 Module 6, 9, 10, 13) ──────────────────────
+export const journeyApi = {
+  getTemplates: () => api.get('/api/journey/templates'),
+  getTemplate: (id: string) => api.get(`/api/journey/templates/${id}`),
+  getMyProgress: () => api.get('/api/journey/my-progress'),
+  selectTemplate: (templateId: string) =>
+    api.post('/api/journey/select-template', { template_id: templateId }),
+  toggleNode: (nodeId: string) =>
+    api.post('/api/journey/toggle-node', { node_id: nodeId }),
+  toggleChecklist: (checklistItem: string) =>
+    api.post('/api/journey/toggle-checklist', { checklist_item: checklistItem }),
+  selectBranch: (nodeId: string, branchChoice: string) =>
+    api.post('/api/journey/select-branch', { node_id: nodeId, branch_choice: branchChoice }),
+}
+
+// ─── Recovery & Symptom Tracker (PS3 Module 12) ──────────────────────────────
+export const progressApi = {
+  getJournal: () => api.get('/api/progress/journal'),
+  logSymptom: (data: {
+    severity_scale: number
+    symptoms_reported: string[]
+    perceived_change: string
+    daily_notes?: string
+    care_plan_tasks_completed?: number
+    care_plan_tasks_total?: number
+  }) => api.post('/api/progress/journal', data),
+  getSummary: () => api.get('/api/progress/summary'),
+}
+
+// ─── Human Escalation & Support Tickets (PS3 Module 8) ───────────────────────
+export const supportApi = {
+  getTickets: () => api.get('/api/support/tickets'),
+  createTicket: (data: {
+    ticket_type: string
+    subject: string
+    description: string
+    facility_id?: number
+  }) => api.post('/api/support/tickets', data),
+  getTicket: (id: number) => api.get(`/api/support/tickets/${id}`),
+}
+
 export default api

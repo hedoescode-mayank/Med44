@@ -13,6 +13,9 @@ import {
   X,
   Bell,
   Sparkles,
+  Compass,
+  FileCheck,
+  Activity,
 } from 'lucide-react'
 import { useAuthStore } from '../store/authStore'
 import OfflineIndicator from './OfflineIndicator'
@@ -21,10 +24,13 @@ import UserAvatar from './avatars/UserAvatar'
 const navItems = [
   { to: '/dashboard', icon: Home, label: 'Home' },
   { to: '/chat', icon: MessageCircle, label: 'AI Chat' },
-  { to: '/appointments', icon: Calendar, label: 'Appointments' },
+  { to: '/journey', icon: Compass, label: 'Care Journey' },
+  { to: '/appointments', icon: Calendar, label: 'Appointments & Care' },
+  { to: '/documents', icon: FileCheck, label: 'Health Records & OCR' },
+  { to: '/progress', icon: Activity, label: 'Recovery Tracker' },
   { to: '/medications', icon: Pill, label: 'Medications' },
   { to: '/profile', icon: UserIcon, label: 'Profile' },
-  { to: '/settings', icon: Settings, label: 'Settings' },
+  { to: '/settings', icon: Settings, label: 'Settings & Support' },
 ]
 
 interface LayoutProps {
@@ -46,10 +52,13 @@ export default function Layout({ children }: LayoutProps) {
   const currentTitle = () => {
     const p = location.pathname
     if (p.includes('/chat')) return 'AI Health Nurse'
-    if (p.includes('/appointments')) return 'Appointments & Doctors'
+    if (p.includes('/journey')) return 'Interactive Care Journey'
+    if (p.includes('/appointments')) return 'Appointments & Facilities'
+    if (p.includes('/documents')) return 'Health Records & OCR'
+    if (p.includes('/progress')) return 'Recovery Tracker & Symptom Journal'
     if (p.includes('/medications')) return 'Medications & Prescriptions'
     if (p.includes('/profile')) return 'Patient Health Profile'
-    if (p.includes('/settings')) return 'Settings & Connectivity'
+    if (p.includes('/settings')) return 'Settings & Support'
     return 'Patient Dashboard'
   }
 

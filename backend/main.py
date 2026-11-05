@@ -11,7 +11,19 @@ from fastapi.middleware.cors import CORSMiddleware
 from backend.config import settings
 from backend.db.database import init_db
 from backend.db.seed import seed_database
-from backend.routers import auth, chat, appointments, medications, profile, admin
+from backend.routers import (
+    auth,
+    chat,
+    appointments,
+    medications,
+    profile,
+    admin,
+    facilities,
+    documents,
+    journey,
+    progress,
+    support,
+)
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("med44")
@@ -44,7 +56,19 @@ app.add_middleware(
 )
 
 # Include API routers (both /api prefix and root for seamless client compatibility)
-all_routers = [auth.router, chat.router, appointments.router, medications.router, profile.router, admin.router]
+all_routers = [
+    auth.router,
+    chat.router,
+    appointments.router,
+    medications.router,
+    profile.router,
+    admin.router,
+    facilities.router,
+    documents.router,
+    journey.router,
+    progress.router,
+    support.router,
+]
 for r in all_routers:
     app.include_router(r, prefix="/api")
     app.include_router(r)

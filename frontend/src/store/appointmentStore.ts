@@ -29,6 +29,9 @@ export interface Appointment {
   time?: string
   status: 'CONFIRMED' | 'PENDING' | 'CANCELLED' | 'COMPLETED' | 'confirmed' | 'pending' | 'cancelled' | 'completed'
   notes?: string
+  queue_token?: string
+  facility_id?: number
+  facility_name?: string
   is_synced?: boolean
   isOfflineQueued?: boolean
 }
