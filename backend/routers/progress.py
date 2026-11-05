@@ -152,12 +152,30 @@ async def get_progress_summary(
     latest = entries[0]
     trend = latest.perceived_change
 
+    from datetime import datetime
     return {
         "care_plan_completion_rate": completion_rate,
         "symptom_trend": trend,
+        "patient_reported_symptom_trend": trend,
         "latest_severity": latest.severity_scale,
         "clinician_review_status": latest.clinician_review_status,
+        "follow_up_status": "Scheduled Care on Track",
         "followup_status": "Scheduled Care on Track",
         "total_entries": len(entries),
+        "recent_journals": [
+            {
+                "id": e.id,
+                "entry_date": e.entry_date.isoformat() if e.entry_date else datetime.utcnow().isoformat(),
+                "severity_scale": e.severity_scale,
+                "symptoms_reported": json.loads(e.symptoms_reported_json) if e.symptoms_reported_json else [],
+                "perceived_change": e.perceived_change,
+                "daily_notes": e.daily_notes,
+                "care_plan_tasks_completed": e.care_plan_tasks_completed,
+                "care_plan_tasks_total": e.care_plan_tasks_total,
+                "clinician_review_status": e.clinician_review_status,
+                "escalation_triggered": e.escalation_triggered,
+            }
+            for e in entries
+        ],
         "safety_note": "Task completion tracks adherence to your clinician-approved plan. It is NOT an AI cure score.",
     }
