@@ -57,7 +57,7 @@ export default function MedicationsPage() {
   const hasInteractions = medications.some((m) => m.interactions && m.interactions.length > 0)
 
   return (
-    <div className="p-6 lg:p-8 max-w-6xl mx-auto">
+    <div className="mx-auto w-full max-w-6xl px-4 space-y-6">
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
         {/* Header */}
         <div className="flex items-center justify-between mb-6">

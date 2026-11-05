@@ -226,9 +226,9 @@ export default function SurveyPage() {
 
   return (
     <div className="min-h-screen bg-background py-8 px-4 sm:px-6 lg:px-8 flex items-center justify-center font-sans">
-      <div className="max-w-4xl w-full grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      <div className="w-full max-w-4xl grid grid-cols-1 md:grid-cols-12 gap-6 lg:gap-8 items-start">
         {/* Left Side: Mascot & Step Tracker */}
-        <div className="lg:col-span-4 card text-center border border-borderSoft bg-surface flex flex-col items-center">
+        <div className="md:col-span-4 card text-center border border-borderSoft bg-surface flex flex-col items-center p-6">
           <BabyNurse size={150} isScanning={step > 1} subtitle={`Step ${step} of 5`} />
           <h3 className="font-bold text-textDark text-base mt-4">Med44 AI Nurse</h3>
           <p className="text-xs text-textSecondary mt-1 leading-relaxed px-2">
@@ -277,7 +277,7 @@ export default function SurveyPage() {
         </div>
 
         {/* Right Side: Step Questionnaire */}
-        <div className="lg:col-span-8 card border border-borderSoft bg-surface p-6 sm:p-8">
+        <div className="md:col-span-8 card border border-borderSoft bg-surface p-6 sm:p-8 w-full">
           {/* Progress Bar */}
           <div className="w-full bg-surfaceSoft h-2 rounded-full mb-6 overflow-hidden">
             <motion.div

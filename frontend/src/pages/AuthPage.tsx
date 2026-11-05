@@ -96,7 +96,7 @@ export default function AuthPage() {
 
   return (
     <div
-      className="min-h-screen relative flex items-center justify-center p-4 font-sans"
+      className="min-h-screen relative flex items-center justify-center px-4 py-8 font-sans"
       style={{
         backgroundImage: 'url(/bg1.jpg)',
         backgroundSize: 'cover',
@@ -114,7 +114,7 @@ export default function AuthPage() {
         initial={{ opacity: 0, scale: 0.96, y: 15 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         transition={{ duration: 0.35 }}
-        className="relative z-10 w-full max-w-md card p-8 border border-borderSoft bg-surface/95 backdrop-blur-lg shadow-2xl space-y-6"
+        className="relative z-10 w-full max-w-md card p-8 sm:p-10 border border-borderSoft bg-surface/95 backdrop-blur-lg shadow-2xl space-y-6"
       >
         {/* Brand Logo: Clean fixed container, object-contain, never stretched or clipped */}
         <div className="flex flex-col items-center text-center">
@@ -159,57 +159,57 @@ export default function AuthPage() {
         <form onSubmit={handleSubmit} className="space-y-4">
           {tab === 'register' && (
             <div>
-              <label className="block text-xs font-bold text-textSecondary uppercase tracking-wider mb-1">
+              <label className="block text-xs font-bold text-textSecondary uppercase tracking-wider mb-1.5">
                 Full Name
               </label>
               <div className="relative">
-                <User size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-textMuted" />
+                <User size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-textMuted" />
                 <input
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="e.g. Mayank Sharma"
-                  className="input pl-10 text-xs"
+                  className="input pl-11 h-11 sm:h-12 text-sm"
                 />
               </div>
             </div>
           )}
 
           <div>
-            <label className="block text-xs font-bold text-textSecondary uppercase tracking-wider mb-1">
+            <label className="block text-xs font-bold text-textSecondary uppercase tracking-wider mb-1.5">
               Email Address
             </label>
             <div className="relative">
-              <Mail size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-textMuted" />
+              <Mail size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-textMuted" />
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="patient@med44.ai"
-                className="input pl-10 text-xs"
+                className="input pl-11 h-11 sm:h-12 text-sm"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-textSecondary uppercase tracking-wider mb-1">
+            <label className="block text-xs font-bold text-textSecondary uppercase tracking-wider mb-1.5">
               Password
             </label>
             <div className="relative">
-              <Lock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-textMuted" />
+              <Lock size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-textMuted" />
               <input
                 type={showPass ? 'text' : 'password'}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="input pl-10 pr-10 text-xs"
+                className="input pl-11 pr-11 h-11 sm:h-12 text-sm"
               />
               <button
                 type="button"
                 onClick={() => setShowPass(!showPass)}
                 className="absolute right-3.5 top-1/2 -translate-y-1/2 text-textMuted hover:text-textDark"
               >
-                {showPass ? <EyeOff size={16} /> : <Eye size={16} />}
+                {showPass ? <EyeOff size={17} /> : <Eye size={17} />}
               </button>
             </div>
           </div>
@@ -217,7 +217,7 @@ export default function AuthPage() {
           <button
             type="submit"
             disabled={loading}
-            className="button-primary w-full text-xs py-3 justify-center shadow-soft"
+            className="button-primary w-full text-sm font-semibold h-11 min-h-[44px] justify-center shadow-soft"
           >
             {loading ? 'Authenticating...' : tab === 'register' ? 'Register Account' : 'Sign In'}
           </button>
@@ -234,14 +234,14 @@ export default function AuthPage() {
         <button
           type="button"
           onClick={handleDemoLogin}
-          className="button-secondary w-full text-xs py-2.5 justify-center border-dashed"
+          className="button-secondary w-full text-sm font-semibold h-11 min-h-[44px] justify-center border-dashed"
         >
-          <Sparkles size={14} className="text-primary" />
+          <Sparkles size={15} className="text-primary" />
           <span>One-Click Demo Access</span>
         </button>
 
         <div className="pt-2 flex items-center justify-center gap-1.5 text-[11px] text-textMuted text-center">
-          <ShieldCheck size={13} className="text-primary" />
+          <ShieldCheck size={14} className="text-primary" />
           <span>Clinical privacy guaranteed · Local SQLite encryption</span>
         </div>
       </motion.div>

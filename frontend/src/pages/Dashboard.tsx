@@ -108,7 +108,7 @@ export default function Dashboard() {
   ]
 
   return (
-    <div className="space-y-8">
+    <div className="mx-auto w-full max-w-6xl px-4 space-y-8">
       <motion.div variants={container} initial="hidden" animate="show" className="space-y-8">
         {/* Welcome Hero Banner */}
         <motion.div
