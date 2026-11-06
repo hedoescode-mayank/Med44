@@ -13,13 +13,14 @@ export interface Message {
   language?: Language
   urgency?: string
   metadata?: any
+  docAttachment?: { title: string; category?: string }
 }
 
 export interface ChatSession {
   id: string
   title: string
   messages: Message[]
-  createdAt: Date | string
+  createdAt: string
 }
 
 interface ChatState {
@@ -32,6 +33,7 @@ interface ChatState {
   createSession: () => string
   setActiveSession: (id: string) => void
   deleteSession: (id: string) => void
+  renameSession: (id: string, newTitle: string) => void
   addMessage: (sessionId: string, message: Message) => void
   setMode: (mode: ChatMode) => void
   setLanguage: (lang: Language) => void
@@ -45,7 +47,7 @@ export const useChatStore = create<ChatState>()(
     (set, get) => ({
       sessions: [],
       activeSessionId: null,
-      mode: 'offline',
+      mode: 'online', // Default to online conversational assistant if available
       language: 'en',
       isTyping: false,
       emergencyDetected: false,
@@ -54,9 +56,9 @@ export const useChatStore = create<ChatState>()(
         const id = `session-${Date.now()}`
         const session: ChatSession = {
           id,
-          title: `Chat ${new Date().toLocaleDateString()}`,
+          title: 'New Health Consultation',
           messages: [],
-          createdAt: new Date(),
+          createdAt: new Date().toISOString(),
         }
         set((state) => ({
           sessions: [session, ...state.sessions],
@@ -79,13 +81,35 @@ export const useChatStore = create<ChatState>()(
           }
         }),
 
-      addMessage: (sessionId, message) =>
+      renameSession: (id, newTitle) =>
         set((state) => ({
           sessions: state.sessions.map((s) =>
-            s.id === sessionId
-              ? { ...s, messages: [...s.messages, message] }
-              : s
+            s.id === id ? { ...s, title: newTitle.trim() || s.title } : s
           ),
+        })),
+
+      addMessage: (sessionId, message) =>
+        set((state) => ({
+          sessions: state.sessions.map((s) => {
+            if (s.id !== sessionId) return s
+
+            // Auto-title from first user message (Problem #10)
+            let updatedTitle = s.title
+            const isFirstUserMsg =
+              message.role === 'user' &&
+              s.messages.filter((m) => m.role === 'user').length === 0
+
+            if (isFirstUserMsg) {
+              const snippet = message.content.replace(/\n/g, ' ').trim()
+              updatedTitle = snippet.length > 40 ? `${snippet.slice(0, 37)}...` : snippet
+            }
+
+            return {
+              ...s,
+              title: updatedTitle,
+              messages: [...s.messages, message],
+            }
+          }),
         })),
 
       setMode: (mode) => set({ mode }),
@@ -97,8 +121,8 @@ export const useChatStore = create<ChatState>()(
     {
       name: 'med44-chat',
       partialize: (state) => ({
-        sessions: state.sessions.slice(0, 20),
-        language: state.language,
+        sessions: state.sessions.slice(0, 25),
+        activeSessionId: state.activeSessionId,
         mode: state.mode,
       }),
     }

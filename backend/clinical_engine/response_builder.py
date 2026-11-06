@@ -58,6 +58,95 @@ def build_offline_response(
                 f"🚨 EMERGENCY DETECTED: {flag_actions}. "
                 "Please seek immediate emergency medical care or call 112. Do not delay."
             )
+    elif not matched_symptoms_canonical and not kb_symptom_matches:
+        # §7 Distinct Intent Routing: Greetings & Medicine Inquiries
+        msg_clean = message.lower().strip()
+        is_greeting = any(
+            g in msg_clean
+            for g in ["hi", "hello", "hey", "namaste", "vanakkam", "good morning", "good evening", "kaise ho", "namaskar"]
+        ) and len(msg_clean.split()) <= 4
+
+        is_medicine_query = any(
+            p in msg_clean
+            for p in ["which medicine", "what medicine", "doctor give", "my prescription", "prescribed medicine", "konsi dawa", "kya dawa"]
+        )
+
+        if is_greeting:
+            urgency = "GREEN"
+            if language == "hi":
+                clinical_advice = (
+                    "नमस्ते! मैं आपकी Med44 AI हेल्थ नर्स हूँ। आप आज कैसा महसूस कर रहे हैं? "
+                    "कृपया अपने लक्षणों का थोड़ा और विस्तार से वर्णन करें (describe your symptoms in more detail) ताकि मैं आपकी बेहतर सहायता कर सकूँ।"
+                )
+            elif language == "ta":
+                clinical_advice = (
+                    "வணக்கம்! நான் உங்கள் Med44 AI சுகாதார செவிலியர். நீங்கள் இன்று எப்படி உணர்கிறீர்கள்? "
+                    "தயவுசெய்து உங்கள் அறிகுறிகளை விவரிக்கவும் (describe your symptoms in more detail)."
+                )
+            else:
+                clinical_advice = (
+                    "Hello! I am your Med44 AI Health Nurse. How are you feeling today? "
+                    "Please describe your symptoms in more detail so I can assist you better, or ask about your records."
+                )
+            return {
+                "conversation_id": 1,
+                "matched_symptoms": [],
+                "urgency": urgency,
+                "red_flags": [],
+                "clinical_advice": clinical_advice,
+                "followup_questions": [
+                    {"question": "What is bothering you today?", "options": ["Headache", "Fever", "Cough", "Stomach pain"]},
+                ],
+                "articles": [],
+                "disclaimer": DISCLAIMER,
+                "mode": "offline",
+                "language": language,
+            }
+
+        elif is_medicine_query:
+            urgency = "GREEN"
+            clinical_advice = (
+                "Med44 does not prescribe, recommend, or modify medications. "
+                "To understand which medicine your doctor gave you and why, please attach your prescription document using the paperclip button 📎. "
+                "Med44 will extract the doctor's verified clinical notes and instructions for your review. "
+                "Always consult your prescribing doctor or pharmacist before taking or altering any medicine."
+            )
+            return {
+                "conversation_id": 1,
+                "matched_symptoms": [],
+                "urgency": urgency,
+                "red_flags": [],
+                "clinical_advice": clinical_advice,
+                "followup_questions": [
+                    {"question": "Would you like to attach a prescription now?", "options": ["Attach Document 📎", "Ask symptom question", "Find doctors"]},
+                ],
+                "articles": [],
+                "disclaimer": DISCLAIMER,
+                "mode": "offline",
+                "language": language,
+            }
+        else:
+            # Unclear input: ask 1-2 clarifying follow-up questions instead of generic apology (§7)
+            urgency = "GREEN"
+            clinical_advice = (
+                "I want to make sure I understand how you are feeling. Please describe your symptoms in more detail "
+                "and how long they have been bothering you. If you are having chest pain or trouble breathing, call 112 immediately."
+            )
+            return {
+                "conversation_id": 1,
+                "matched_symptoms": [],
+                "urgency": urgency,
+                "red_flags": [],
+                "clinical_advice": clinical_advice,
+                "followup_questions": [
+                    {"question": "What kind of symptom are you experiencing?", "options": ["Headache", "Fever", "Cough", "Stomach ache", "Fatigue"]},
+                    {"question": "How long have you had this?", "options": ["Less than 24 hours", "1-3 days", "More than a week"]},
+                ],
+                "articles": [],
+                "disclaimer": DISCLAIMER,
+                "mode": "offline",
+                "language": language,
+            }
     else:
         # Use Knowledge Base educational guidance if conditions or symptoms are found
         if kb_symptom_matches or matched_conditions:

@@ -189,8 +189,8 @@ class OfflineClinicalKnowledgeBase:
                 "If you are experiencing any severe discomfort, chest pain, or shortness of breath, please dial 112 immediately."
             )
 
-        # Primary condition match
-        primary_cond = matched_conditions[0] if matched_conditions else None
+        # Primary condition match - only when at least 2 corroborating symptoms exist (§7 Rule #3)
+        primary_cond = matched_conditions[0] if (matched_conditions and len(matched_symptoms) >= 2) else None
         sym_names = [s["canonical_name"] for s in matched_symptoms]
         sym_names_str = ", ".join(sym_names)
 
@@ -243,21 +243,25 @@ class OfflineClinicalKnowledgeBase:
             if primary_cond:
                 advice = (
                     f"Observed Symptoms: {sym_names_str}.\n\n"
-                    f"Educational Reference Match: {primary_cond.get('name')}.\n"
+                    f"Common reasons people notice these symptoms (information only, not a diagnosis): {primary_cond.get('name')}.\n"
                     f"{primary_cond.get('plain_language_summary', '')}\n\n"
                     f"Recommended Self-Care & Hydration:\n"
                     f"• {primary_cond.get('safe_next_step', 'Rest and ensure adequate fluid intake.')}\n\n"
-                    f"⚠️ Escalation Guidelines (When to Seek Medical Care):\n"
+                    f"⚠️ When to Seek Medical Care:\n"
                     f"• {primary_cond.get('escalation_note', 'Seek medical review if symptoms persist or worsen.')}\n\n"
-                    f"Note: This is non-diagnostic clinical triage guidance based on verified Med44 protocols. Always consult a qualified physician."
+                    f"Note: Med44 gives general information, not medical advice or a diagnosis. For emergencies call 112."
                 )
             else:
                 advice = (
-                    f"Observed Symptoms: {sym_names_str}.\n\n"
-                    f"Recommended Action:\n"
+                    f"Observed Symptom: {sym_names_str}.\n\n"
+                    f"Common reasons people notice this symptom (information only, not a diagnosis):\n"
+                    f"• Mild tension, fatigue, lack of sleep, or slight dehydration\n"
+                    f"• Early immune or environmental response\n\n"
+                    f"Recommended Self-Care:\n"
                     f"• Rest, stay well-hydrated, and monitor symptoms over the next 24–48 hours.\n"
                     f"• Do not start unprescribed antibiotics or prescription medicines.\n"
-                    f"• If your condition worsens or high fever/difficulty breathing develops, consult a doctor immediately."
+                    f"• If your condition worsens or high fever/difficulty breathing develops, consult a doctor immediately.\n\n"
+                    f"Note: Med44 gives general information, not medical advice or a diagnosis. For emergencies call 112."
                 )
 
         urgency = "YELLOW" if (primary_cond and "severe" in advice.lower()) else "GREEN"

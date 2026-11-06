@@ -225,12 +225,12 @@ export default function SurveyPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background py-8 sm:py-12 px-4 sm:px-6 lg:px-8 flex flex-col items-center justify-start font-sans">
-      <div className="w-full max-w-6xl mb-4 flex items-center justify-between">
+    <div className="w-full space-y-6">
+      <div className="w-full flex items-center justify-between">
         <button
           type="button"
           onClick={() => navigate('/dashboard')}
-          className="inline-flex items-center gap-1.5 text-xs font-bold text-textSecondary hover:text-textDark bg-surface hover:bg-surfaceSoft px-3.5 py-2 rounded-xl border border-borderSoft transition-colors shadow-soft"
+          className="inline-flex items-center gap-1.5 text-xs font-bold text-textSecondary hover:text-textDark bg-white hover:bg-surfaceSoft px-3.5 py-2 rounded-xl border border-borderSoft transition-colors shadow-soft"
         >
           <ChevronLeft size={16} />
           <span>← Back to Dashboard</span>
@@ -240,7 +240,7 @@ export default function SurveyPage() {
         </span>
       </div>
 
-      <div className="w-full max-w-6xl grid grid-cols-1 md:grid-cols-12 gap-6 lg:gap-8 items-start">
+      <div className="w-full grid grid-cols-1 md:grid-cols-12 gap-6 lg:gap-8 items-start">
         {/* Left Side: Mascot & Step Tracker */}
         <div className="md:col-span-4 card text-center border border-borderSoft bg-surface flex flex-col items-center p-6">
           <BabyNurse size={150} isScanning={step > 1} subtitle={`Step ${step} of 5`} />

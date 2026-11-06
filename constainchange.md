@@ -207,4 +207,37 @@ This document provides a complete, exhaustive record of all changes, architectur
 - **Backend**: Live on `http://127.0.0.1:8000` (`/api/health` returns status `online`, mode `TEST`).
 - **Frontend**: Live on `http://localhost:5173` (Vite dev server running clean, production build compiles with 0 errors).
 - **Test Suite**: `python -m pytest backend/tests/` passes 25/25 tests (100%).
+- **Vitest Frontend Suite**: `npx vitest run` passes 4 test files, 9 tests (100%).
+
+---
+
+## 9. Phase 0 UI Fix & Design Guide Implementation (AI Health Nurse & Shell Rebuild)
+
+### 9.1 Semantic Design Tokens & shadcn Architecture
+- **Tokens**: Mapped Med44 brand colors (`#287B55` primary, `#194B35` primary deep, `#FAF9F6` background, `#26382E` foreground, `#5F6E66` muted foreground with AA-compliant 5:1 contrast) to CSS variables in `frontend/src/index.css` and `frontend/tailwind.config.js`.
+- **Red Rules Enforced**: Red is strictly reserved for real urgency and destructive actions. Exactly ONE solid red element per screen (the "112 Emergency" button). Simulation and test data are styled in violet (`--test-soft`, `--test-border`, `--test-text`), never red or amber.
+- **Fluid Layout**: Added CSS grid app shell (`.app-shell`, `.chat-ws`) with `minmax(0, 1fr)` and fluid typography (`html { font-size: clamp(15px, 0.85rem + 0.3vw, 18px); }`). Eliminates narrow fixed wrappers and tiny island appearance on high-DPI/widescreen displays.
+
+### 9.2 Shared Shell (`Layout.tsx`)
+- **Fixed Desktop Sidebar**: 248px wide, grouped into `MAIN`, `HEALTH`, and `MONITORING`. Removed all dev/hackathon tags (`ACTIVE`, `OCR`, `C10`, `v2.0`). Active state conveyed via background tint and 3px left border.
+- **Clinical Safety Guardrails**: Grounded as a fixed footer card with `min-height` and `shrink-0`, never absolutely positioned or cut off.
+- **Top Bar**: Fixed 64px header with single global language dropdown (`EN`, `हिन्दी`, `தமிழ்`), unified `ConnectivityChip`, solid red 112 Emergency action, and user profile avatar menu.
+- **Emergency Confirmation Dialog**: Accessible dialog triggered by 112 button confirming immediate ambulance connection.
+
+### 9.3 AI Health Nurse Chat Rebuild (`ChatPage.tsx`)
+- **Full Width Workspace**: Fluid 2-column layout (`chat-ws`) filling up to 1760px on wide screens with message bubbles capped at `min(78ch, 85%)` for readable lines.
+- **Unified Connectivity**: Integrated `<ConnectivityChip variant="chat" />` reflecting exact same status as top bar ("Online · AI Assistant" / "Offline · Built-in Guidance Only").
+- **Grouped Chat History**: Consultations automatically grouped into `Today`, `Yesterday`, and `Earlier`, with first user message auto-titling (truncated to 40 chars) and date formatting.
+- **Dismissible Allergy Banner**: Displays patient survey allergies once per conversation at the top as an alert; removed redundant allergy paragraphs from every bot reply.
+- **Markdown Message Bubbles**: Implemented `<MessageBubble />` using `react-markdown` and `remark-gfm` with structured sections (understood, general info, self-care, when to seek care, document grounding chips, and collapsible safety note).
+- **Composer & Document Attachment**: Auto-growing textarea, solid primary green send button (44px touch target), paperclip button wired to local IndexedDB document picker dialog with file upload, and quick symptom chips with red-tinted outline for urgent symptoms.
+
+### 9.4 Clinical Engine & Intent Routing Fixes
+- **Fuzzy Symptom Matcher** (`backend/clinical_engine/symptom_matcher.py`): Levenshtein distance matching (edit distance <= 2) for typos (e.g. `heache` -> `headache`) and Romanized Hinglish/Tamil aliases (`sar dard`, `bukhar`, `pet dard`, `chhati me dard`).
+- **Intent Routing** (`backend/clinical_engine/response_builder.py`):
+  - Greetings/small talk: Welcoming conversational triage reply rather than canned symptom acknowledgment.
+  - Medication questions: Routes patient to attach their prescription for OCR grounding with non-prescribing medical disclaimer.
+  - Single symptom vs multi-symptom: Replaces "Educational Reference Match" with "Common reasons people notice this symptom (information only, not a diagnosis)" and only evaluates candidate conditions when at least 2 corroborating symptoms exist.
+- **Selective Inline Allergy Safeguards** (`backend/routers/chat.py`): Inline allergy warnings only triggered when conversation explicitly touches a medication keyword.
+
 

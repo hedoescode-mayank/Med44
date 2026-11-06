@@ -102,7 +102,7 @@ async def chat(
                 f"\"{d_title}\" ({d_ver}). Review verified dosage and clinical notes with your provider."
             )
 
-    # Personalization: Inject survey-informed allergy & chronic condition checks
+    # Personalization: Inject survey-informed allergy checks ONLY when medicine is mentioned (§7 Rule #4 & §1 Rule #6)
     ctx = req.patient_context or {}
     allergies = ctx.get("allergies")
     if allergies:
@@ -111,10 +111,13 @@ async def chat(
         else:
             allergies_str = str(allergies)
 
-        if allergies_str and allergies_str.lower() != "none reported" and allergies_str.lower() != "none":
-            # Append personalized allergy guardrail
+        if allergies_str and allergies_str.lower() not in ["none reported", "none", "no known allergies"]:
             adv = result.get("clinical_advice", "")
-            if "Allergy Warning" not in adv:
+            combined_text = (req.message + " " + adv).lower()
+            medicine_keywords = ["medicine", "medication", "drug", "pill", "tablet", "aspirin", "nsaid", "ibuprofen", "antibiotic", "prescription", "dose"]
+            touches_medicine = any(kw in combined_text for kw in medicine_keywords)
+
+            if touches_medicine and "Allergy Warning" not in adv and "Personalized Safeguard" not in adv:
                 result["clinical_advice"] = (
                     f"{adv}\n\n🛡️ Personalized Safeguard: You have noted an allergy to [{allergies_str}]. "
                     f"Ensure any OTC remedy or prescription is verified as allergen-free by your doctor."

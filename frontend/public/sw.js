@@ -4,7 +4,7 @@
  * - Offline queue stored in IDB, replayed on sync or reconnect message
  */
 
-const CACHE_NAME = 'med44-v4';
+const CACHE_NAME = 'med44-v5';
 const APP_SHELL = [
   '/',
   '/index.html',

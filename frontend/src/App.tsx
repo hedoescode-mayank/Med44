@@ -37,7 +37,9 @@ export default function App() {
           path="/survey"
           element={
             <ProtectedRoute>
-              <SurveyPage />
+              <Layout>
+                <SurveyPage />
+              </Layout>
             </ProtectedRoute>
           }
         />
