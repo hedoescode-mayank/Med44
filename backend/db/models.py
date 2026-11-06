@@ -530,3 +530,22 @@ class NotificationLog(Base):
     sent_at = Column(DateTime, default=func.now())
 
 
+# ---------------------------------------------------------------------------
+# OAuth Token Storage (Google OAuth 2.0 Web Application & Gmail API)
+# ---------------------------------------------------------------------------
+class OAuthToken(Base):
+    __tablename__ = "oauth_tokens"
+
+    id = Column(Integer, primary_key=True, index=True)
+    provider = Column(String(50), default="google", index=True)
+    user_email = Column(String(150), nullable=False)
+    access_token = Column(Text, nullable=True)
+    refresh_token = Column(Text, nullable=True)
+    token_type = Column(String(30), default="Bearer")
+    scope = Column(String(255), default="https://www.googleapis.com/auth/gmail.send")
+    expires_at = Column(DateTime, nullable=True)
+    created_at = Column(DateTime, default=func.now())
+    updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
+
+
+

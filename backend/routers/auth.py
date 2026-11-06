@@ -192,3 +192,59 @@ async def me(current_user: Optional[Patient] = Depends(get_current_user)):
         "allergies": current_user.allergies,
         "has_completed_survey": True,
     }
+
+
+# ---------------------------------------------------------------------------
+# Google OAuth 2.0 Web Application & Gmail API Endpoints
+# ---------------------------------------------------------------------------
+from fastapi.responses import RedirectResponse
+from backend.services.gmail_service import (
+    get_google_authorization_url,
+    exchange_code_for_tokens,
+    get_oauth_integration_status,
+)
+
+
+@router.get("/google/login")
+async def google_login(state: Optional[str] = "med44_oauth"):
+    """
+    Redirects user or returns Google OAuth 2.0 consent URL for Gmail API send scope.
+    """
+    auth_url = get_google_authorization_url(state=state or "med44_oauth")
+    return RedirectResponse(url=auth_url)
+
+
+@router.get("/google/callback")
+async def google_callback(
+    code: Optional[str] = None,
+    error: Optional[str] = None,
+    state: Optional[str] = None,
+    db: AsyncSession = Depends(get_db),
+):
+    """
+    Handles Google OAuth redirect with authorization code.
+    Exchanges code for tokens, securely stores refresh token, and redirects back to React frontend.
+    """
+    if error:
+        logger.warning("Google OAuth callback error: %s", error)
+        return RedirectResponse(url=f"http://localhost:5173/simulation?oauth_error={error}")
+
+    if not code:
+        raise HTTPException(status_code=400, detail="Missing authorization code from Google")
+
+    try:
+        await exchange_code_for_tokens(code=code, db=db)
+        return RedirectResponse(url="http://localhost:5173/simulation?google_oauth=connected")
+    except Exception as e:
+        logger.error("Failed to exchange OAuth code: %s", e)
+        return RedirectResponse(url=f"http://localhost:5173/simulation?oauth_error={urllib.parse.quote(str(e))}")
+
+
+@router.get("/google/status")
+async def google_status(db: AsyncSession = Depends(get_db)):
+    """
+    Returns public OAuth configuration and connection status.
+    Never exposes client secrets or tokens to the frontend.
+    """
+    return await get_oauth_integration_status(db=db)
+

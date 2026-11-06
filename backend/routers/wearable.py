@@ -22,6 +22,7 @@ from backend.db.models import (
     NotificationLog,
 )
 from backend.routers.auth import get_current_user
+from backend.services.gmail_service import send_gmail_alert, get_oauth_integration_status
 
 router = APIRouter(prefix="/wearable", tags=["wearable"])
 
@@ -205,21 +206,19 @@ async def ingest_observations(
                         f"- Details: {alert['message']}\n\n"
                         f"Patient consent is verified. This message is an administrative notification for review.\n"
                     )
-                    status_val = "SIMULATED" if settings.is_test_mode else "SENT"
-                    notif = NotificationLog(
-                        patient_id=patient_id,
-                        recipient_email=doc.email,
-                        recipient_role="DOCTOR",
-                        notification_type="DOCTOR_ALERT",
+                    # Dispatch alert through Gmail API service (logs to NotificationLog)
+                    gmail_res = await send_gmail_alert(
+                        to_emails=[doc.email],
                         subject=subject,
                         body_text=body,
-                        status=status_val,
+                        patient_id=patient_id,
+                        db=db,
                     )
-                    db.add(notif)
                     triggered_notifications.append({
                         "recipient": doc.email,
                         "subject": subject,
-                        "status": status_val,
+                        "status": gmail_res.get("status", "SIMULATED"),
+                        "message_id": gmail_res.get("message_id"),
                     })
 
     await db.commit()
@@ -229,6 +228,50 @@ async def ingest_observations(
         "saved_count": saved_count,
         "alerts_triggered": alerts,
         "notifications_dispatched": triggered_notifications,
+    }
+
+
+class TestEmailAlertRequest(BaseModel):
+    recipients: Optional[List[str]] = None
+    subject: Optional[str] = None
+    body: Optional[str] = None
+
+
+@router.post("/alerts/email/test")
+async def test_email_alert(
+    req: Optional[TestEmailAlertRequest] = None,
+    db: AsyncSession = Depends(get_db),
+    current_user: Optional[Patient] = Depends(get_current_user),
+):
+    """
+    Test email alert dispatch to configured demo addresses.
+    Default recipients: mayankmayank9444@gmail.com, md6074@srmist.edu.in
+    """
+    patient_id = current_user.id if current_user else 1
+    recipients = (req and req.recipients) or [e.strip() for e in settings.DEMO_ALERT_EMAILS.split(",") if e.strip()]
+    subject = (req and req.subject) or f"[Med44 Vital Alert] Tachycardia Detected for Patient #{patient_id}"
+    body = (req and req.body) or (
+        f"Med44 Clinical Telemetry Intelligence Alert\n\n"
+        f"Patient ID: MED44-{patient_id} (Mayank Sharma)\n"
+        f"Severity: HIGH\n"
+        f"Condition: Elevated resting heart rate (136 bpm, SpO2: 96%)\n"
+        f"Timestamp: {datetime.datetime.now().strftime('%d %b %Y, %I:%M:%S %p')}\n"
+        f"Authorized Sender: {settings.AUTHORIZED_GMAIL_USER}\n\n"
+        f"Deterministic safeguards evaluated: 0 false alarms. Clinician notification dispatched.\n"
+        f"Med44 Telemetry Intelligence Engine."
+    )
+    result = await send_gmail_alert(
+        to_emails=recipients,
+        subject=subject,
+        body_text=body,
+        patient_id=patient_id,
+        db=db,
+    )
+    return {
+        "status": "success",
+        "dispatch_result": result,
+        "recipients": recipients,
+        "subject": subject,
     }
 
 

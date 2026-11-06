@@ -271,5 +271,36 @@ This document provides a complete, exhaustive record of all changes, architectur
 - **Deterministic Offline Document Parser (`backend/clinical_engine/response_builder.py`)**:
   - Added deterministic fallback parser extracting and formatting doctor prescription records even when Groq is offline or unavailable.
 
+---
+
+## 11. Google OAuth 2.0 Web Application & Gmail API Alert System
+
+### 11.1 Architecture & Configuration (`backend/config.py`)
+- Configured Google OAuth 2.0 Web Application settings:
+  - Frontend origin: `http://localhost:5173`
+  - Authorized Redirect URI: `http://localhost:8000/api/auth/google/callback`
+  - Gmail API Scope: `https://www.googleapis.com/auth/gmail.send`
+  - Authorized Account: `mayankmayank9444@gmail.com`
+  - Demo Alert Recipients: `mayankmayank9444@gmail.com`, `md6074@srmist.edu.in`
+- Strict security: Client secrets and OAuth refresh tokens are strictly maintained server-side and never leaked to React.
+
+### 11.2 Secure Token Storage & Models (`backend/db/models.py`)
+- Created `OAuthToken` database model supporting:
+  - `provider` (`google`), `user_email`, `access_token`, `refresh_token`, `token_type`, `scope`, and `expires_at`.
+  - Secure persistence in SQLite with automated access-token refresh.
+
+### 11.3 Gmail Service & Endpoints (`backend/services/gmail_service.py` & `backend/routers/auth.py`, `wearable.py`)
+- Implemented:
+  - `get_google_authorization_url()`: Generates Google OAuth consent URL with offline access prompt.
+  - `exchange_code_for_tokens()`: Performs authorization code exchange with `https://oauth2.googleapis.com/token`.
+  - `get_valid_access_token()`: Transparent token refresh when expired or nearing expiration.
+  - `send_gmail_alert()`: Builds RFC 2822 email payload and sends via Google REST API (`POST https://gmail.googleapis.com/gmail/v1/users/me/messages/send`).
+- Endpoints:
+  - `GET /api/auth/google/login`: Consent screen redirect.
+  - `GET /api/auth/google/callback`: Code exchange, token storage, and redirect back to frontend.
+  - `GET /api/auth/google/status`: Public status endpoint (returns connection status, authorized user, and scope without secrets).
+  - `POST /api/wearable/alerts/email/test`: Dispatches test clinical telemetry alerts to `mayankmayank9444@gmail.com` and `md6074@srmist.edu.in`.
+
+
 
 

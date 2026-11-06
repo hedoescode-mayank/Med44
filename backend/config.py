@@ -31,8 +31,14 @@ class Settings(BaseSettings):
     OCR_MAX_PAGES: int = 10
     OCR_TEMP_TTL_SECONDS: int = 300
 
-    # Email
-    EMAIL_PROVIDER: str = "gmail_smtp"
+    # Email & Google OAuth 2.0 Web Application (Gmail API)
+    EMAIL_PROVIDER: str = "gmail_api"
+    GOOGLE_CLIENT_ID: Optional[str] = None
+    GOOGLE_CLIENT_SECRET: Optional[str] = None
+    GOOGLE_REDIRECT_URI: str = "http://localhost:8000/api/auth/google/callback"
+    GMAIL_API_SCOPE: str = "https://www.googleapis.com/auth/gmail.send"
+    AUTHORIZED_GMAIL_USER: str = "mayankmayank9444@gmail.com"
+    DEMO_ALERT_EMAILS: str = "mayankmayank9444@gmail.com,md6074@srmist.edu.in"
     GMAIL_SMTP_USER: Optional[str] = None
     GMAIL_SMTP_APP_PASSWORD: Optional[str] = None
     GMAIL_OAUTH_CLIENT_ID: Optional[str] = None
