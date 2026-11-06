@@ -23,6 +23,8 @@ from backend.routers import (
     journey,
     progress,
     support,
+    ocr,
+    wearable,
 )
 
 logging.basicConfig(level=logging.INFO)
@@ -35,7 +37,7 @@ async def lifespan(app: FastAPI):
     await init_db()
     logger.info("Checking & applying synthetic seed data...")
     await seed_database()
-    logger.info("Med44 clinical backend ready.")
+    logger.info("Med44 clinical backend ready. Mode: %s", settings.MED44_MODE)
     yield
 
 
@@ -46,16 +48,16 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-# CORS configuration
+# CORS — restricted origins in PRODUCTION, permissive in TEST
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=settings.cors_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Include API routers (both /api prefix and root for seamless client compatibility)
+# Include API routers under /api ONLY (dual-mount removed — was bug)
 all_routers = [
     auth.router,
     chat.router,
@@ -68,22 +70,25 @@ all_routers = [
     journey.router,
     progress.router,
     support.router,
+    ocr.router,
+    wearable.router,
 ]
 for r in all_routers:
     app.include_router(r, prefix="/api")
-    app.include_router(r)
 
 
 @app.get("/api/health")
-@app.get("/health")
 async def health_check():
     from backend.ai.groq_client import groq_client
+    from backend.services.ocr.engine import get_ocr_engine_status
     return {
         "status": "online",
         "app": settings.APP_NAME,
         "version": settings.APP_VERSION,
+        "mode": settings.MED44_MODE,
         "groq_available": groq_client.is_available,
         "demo_mode": settings.DEMO_MODE,
+        "ocr": get_ocr_engine_status(),
     }
 
 

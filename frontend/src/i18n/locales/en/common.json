@@ -1,0 +1,161 @@
+{
+  "appName": "Med44",
+  "tagline": "Your AI Health Nurse",
+  "nav": {
+    "home": "Home",
+    "chat": "AI Chat",
+    "journey": "Care Journey",
+    "appointments": "Appointments",
+    "documents": "Records",
+    "progress": "Recovery",
+    "medications": "Medications",
+    "profile": "Profile",
+    "settings": "Settings",
+    "signOut": "Sign Out"
+  },
+  "auth": {
+    "login": "Sign In",
+    "register": "Create Account",
+    "email": "Email Address",
+    "password": "Password",
+    "name": "Full Name",
+    "forgotPassword": "Forgot Password?",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "orContinueWith": "or continue with",
+    "secureNote": "Your health data is encrypted and stored locally"
+  },
+  "dashboard": {
+    "greeting": {
+      "morning": "Good Morning",
+      "afternoon": "Good Afternoon",
+      "evening": "Good Evening"
+    },
+    "askNurse": "Ask AI Health Nurse",
+    "findDoctors": "Find Doctors",
+    "generateReport": "Generate Report Card",
+    "consultations": "Consultations",
+    "upcomingCare": "Upcoming Care",
+    "medications": "Medications",
+    "healthScore": "Health Score",
+    "upcomingAppointments": "Upcoming Appointments",
+    "quickTools": "Quick Healthcare Tools",
+    "noAppointments": "No appointments scheduled",
+    "scheduleWhenNeeded": "Schedule When Needed"
+  },
+  "chat": {
+    "placeholder": "Type your symptom or health question...",
+    "send": "Send",
+    "newChat": "New Chat",
+    "language": "Language",
+    "mode": {
+      "online": "Online (Groq AI)",
+      "offline": "Offline (Local Engine)"
+    },
+    "emergency": {
+      "title": "Emergency Detected",
+      "call": "Call 112"
+    },
+    "disclaimer": "AI health guidance only. Not a substitute for professional medical advice.",
+    "reportCard": "Health Report"
+  },
+  "appointments": {
+    "title": "Appointments & Facility Discovery",
+    "book": "Book Appointment",
+    "cancel": "Cancel",
+    "reschedule": "Reschedule",
+    "status": {
+      "confirmed": "Confirmed",
+      "pending": "Pending",
+      "cancelled": "Cancelled",
+      "completed": "Completed"
+    },
+    "search": "Search doctors or facilities...",
+    "nearby": "Find Nearby",
+    "noSlots": "No slots available",
+    "selectDate": "Select Date",
+    "selectSlot": "Select Time Slot"
+  },
+  "documents": {
+    "title": "Health Records",
+    "upload": "Upload Document",
+    "categories": {
+      "prescription": "Prescription",
+      "referral": "Referral",
+      "labReport": "Lab Report",
+      "discharge": "Discharge Summary",
+      "insurance": "Insurance"
+    },
+    "status": {
+      "uploaded": "Uploaded",
+      "processing": "Processing",
+      "verified": "Verified",
+      "needsReview": "Needs Review",
+      "failed": "Failed"
+    },
+    "ocrNote": "OCR extraction is a draft — verify against original",
+    "browserStorageNote": "Stored only in this browser. Export a backup to keep it safe."
+  },
+  "medications": {
+    "title": "Medications",
+    "search": "Search medications...",
+    "active": "Active",
+    "interactions": "Drug Interactions",
+    "safety": "Safety Notes",
+    "dosage": "Dosage"
+  },
+  "journey": {
+    "title": "Care Journey",
+    "nextStep": "Next Step",
+    "referrals": "Referrals",
+    "followUps": "Follow-ups",
+    "checklist": "Document Checklist"
+  },
+  "profile": {
+    "title": "Medical Profile",
+    "edit": "Edit Profile",
+    "save": "Save Changes",
+    "bloodGroup": "Blood Group",
+    "allergies": "Allergies",
+    "conditions": "Chronic Conditions",
+    "vaccinations": "Vaccinations",
+    "emergencyContact": "Emergency Contact",
+    "privacy": "Privacy Controls",
+    "localOnly": "Local-only Mode",
+    "localOnlyDesc": "Your data never leaves this device"
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "theme": "Theme",
+    "notifications": "Notifications",
+    "accessibility": "Accessibility",
+    "dataPrivacy": "Data & Privacy"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "retry": "Retry",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "confirm": "Confirm",
+    "back": "Back",
+    "next": "Next",
+    "done": "Done",
+    "or": "or",
+    "viewAll": "View all",
+    "online": "Online",
+    "offline": "Offline",
+    "simulated": "Demo mode",
+    "adminOnly": "Administrative navigation only — not medical advice"
+  },
+  "nudge": {
+    "streak": "day streak",
+    "xp": "XP",
+    "checkInComplete": "Daily check-in complete! 🎉",
+    "medicineLogged": "Medicines logged. Keep up the great streak!",
+    "seeYouTomorrow": "Thanks for checking in. See you tomorrow!"
+  }
+}
+

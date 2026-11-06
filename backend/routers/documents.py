@@ -22,8 +22,18 @@ class DocumentUploadRequest(BaseModel):
     title: str
     category: str  # Prescription, Referral, Lab Report, Discharge Summary, Insurance
     file_type: Optional[str] = "image"
-    file_url: Optional[str] = "/sample_prescription.jpg"
+    file_name: Optional[str] = None
+    file_url: Optional[str] = None
+    mime_type: Optional[str] = None
+    size_bytes: Optional[int] = None
+    content_sha256: Optional[str] = None
+    storage_ref: Optional[str] = None
     notes: Optional[str] = None
+    ocr_extracted_text: Optional[str] = None
+    ocr_status: Optional[str] = "NOT_PROCESSED"
+    ocr_engine_used: Optional[str] = None
+    ocr_confidence_avg: Optional[float] = None
+    uncertain_fields: Optional[List[dict]] = None
     raw_ocr_simulation: Optional[str] = None
 
 
@@ -81,11 +91,17 @@ async def get_patient_documents(
             "id": d.id,
             "title": d.title,
             "category": d.category,
-            "file_url": d.file_url or "/sample_prescription.jpg",
+            "file_name": d.file_name or d.title,
+            "file_url": d.file_url,
             "file_type": d.file_type or "image",
+            "storage_ref": d.storage_ref,
+            "size_bytes": d.size_bytes,
+            "content_sha256": d.content_sha256,
             "status": d.status,
             "ocr_extracted_text": d.ocr_extracted_text,
             "ocr_status": d.ocr_status,
+            "ocr_engine_used": d.ocr_engine_used,
+            "ocr_confidence_avg": d.ocr_confidence_avg,
             "uncertain_fields": uncertain_fields,
             "verified_by_patient": d.verified_by_patient,
             "notes": d.notes,
@@ -108,47 +124,28 @@ async def upload_document(
 ):
     patient_id = current_user.id if current_user else 1
 
-    # Simulated OCR extraction based on category
-    if req.raw_ocr_simulation:
-        ocr_text = req.raw_ocr_simulation
-    elif req.category == "Prescription":
-        ocr_text = (
-            f"CLINICAL PRESCRIPTION DRAFT — {req.title.upper()}\n"
-            f"Patient ID: MED44-{patient_id} | Date: {datetime.date.today().strftime('%d/%m/%Y')}\n\n"
-            "Rx (Draft OCR Extraction — Requires Verification):\n"
-            "1. Paracetamol 650mg — 1 Tab SOS after meals (Max 3/day)\n"
-            "2. Cetirizine 10mg — 1 Tab at bedtime for 3 days\n"
-            "⚠️ Attention: Field [Dosage line 1] is handwritten; patient verification required before setting active reminders."
-        )
-    elif req.category == "Referral":
-        ocr_text = (
-            f"OFFICIAL REFERRAL LETTER DRAFT\n"
-            f"Patient: {current_user.name if current_user else 'Patient'}\n"
-            "Referred To: Secondary/Tertiary Speciality Clinic\n"
-            f"Clinical Note: {req.notes or 'Evaluation of symptoms and specialist review.'}"
-        )
-    else:
-        ocr_text = f"DOCUMENT DRAFT EXTRACTION\nTitle: {req.title}\nCategory: {req.category}\nNotes: {req.notes or 'Document archived in patient records.'}"
+    # Real OCR text handling (NO fabricated fake prescription text)
+    ocr_text = req.ocr_extracted_text or req.raw_ocr_simulation
+    ocr_status = req.ocr_status or ("DRAFT" if ocr_text else "NOT_PROCESSED")
 
-    # Flag uncertain items for prescription
-    uncertain_fields = []
-    if req.category == "Prescription":
-        uncertain_fields.append({
-            "field": "Dosage frequency line 1",
-            "extracted": "1 Tab SOS",
-            "confidence": "0.84",
-            "flag": "Handwritten abbreviation — check original photo before saving reminder",
-        })
+    uncertain_fields = req.uncertain_fields or []
 
     new_doc = PatientDocument(
         patient_id=patient_id,
         title=req.title,
         category=req.category,
-        file_url=req.file_url or "/sample_prescription.jpg",
+        file_name=req.file_name or req.title,
+        mime_type=req.mime_type or "image/jpeg",
+        size_bytes=req.size_bytes or 0,
+        content_sha256=req.content_sha256,
+        storage_ref=req.storage_ref,
+        file_url=req.file_url,
         file_type=req.file_type or "image",
         status="UPLOADED",
         ocr_extracted_text=ocr_text,
-        ocr_status="DRAFT",
+        ocr_status=ocr_status,
+        ocr_engine_used=req.ocr_engine_used,
+        ocr_confidence_avg=req.ocr_confidence_avg,
         uncertain_fields_json=json.dumps(uncertain_fields),
         verified_by_patient=False,
         notes=req.notes,
@@ -159,10 +156,11 @@ async def upload_document(
 
     return {
         "status": "success",
-        "message": "Document uploaded and draft OCR text generated. Please verify accuracy against the original source.",
+        "message": "Document registered in patient record." if not ocr_text else "Document uploaded with draft OCR text. Please verify accuracy against the original source.",
         "document_id": new_doc.id,
-        "ocr_status": "DRAFT",
+        "ocr_status": new_doc.ocr_status,
         "uncertain_fields_count": len(uncertain_fields),
+        "storage_ref": new_doc.storage_ref,
     }
 
 

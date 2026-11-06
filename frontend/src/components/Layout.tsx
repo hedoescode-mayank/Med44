@@ -26,6 +26,7 @@ const navItems = [
   { to: '/appointments', icon: Calendar, label: 'Appointments' },
   { to: '/documents', icon: FileCheck, label: 'Records' },
   { to: '/progress', icon: Activity, label: 'Recovery' },
+  { to: '/simulation', icon: Activity, label: 'Telemetry' },
   { to: '/medications', icon: Pill, label: 'Medications' },
   { to: '/profile', icon: UserIcon, label: 'Profile' },
   { to: '/settings', icon: Settings, label: 'Settings' },

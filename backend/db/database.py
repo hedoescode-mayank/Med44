@@ -57,6 +57,16 @@ async def init_db():
                     ("has_completed_survey", "BOOLEAN DEFAULT 0"),
                     ("avatar", "VARCHAR(50)"),
                 ],
+                "patient_documents": [
+                    ("file_name", "VARCHAR(255)"),
+                    ("mime_type", "VARCHAR(100)"),
+                    ("size_bytes", "INTEGER"),
+                    ("content_sha256", "VARCHAR(64)"),
+                    ("storage_ref", "VARCHAR(300)"),
+                    ("ocr_engine_used", "VARCHAR(50)"),
+                    ("ocr_confidence_avg", "FLOAT"),
+                    ("ocr_language_detected", "VARCHAR(10)"),
+                ],
             }
             for table, cols in cols_map.items():
                 try:

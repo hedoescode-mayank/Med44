@@ -113,6 +113,15 @@ export const documentApi = {
   delete: (id: number) => api.delete(`/api/documents/${id}`),
 }
 
+// ─── Real OCR Engine (Phase 1) ────────────────────────────────────────────────
+export const ocrApi = {
+  health: () => api.get('/api/ocr/health'),
+  process: (formData: FormData) =>
+    api.post('/api/ocr/process', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    }),
+}
+
 // ─── Interactive Care Journey (PS3 Module 6, 9, 10, 13) ──────────────────────
 export const journeyApi = {
   getTemplates: () => api.get('/api/journey/templates'),
@@ -152,6 +161,29 @@ export const supportApi = {
     facility_id?: number
   }) => api.post('/api/support/tickets', data),
   getTicket: (id: number) => api.get(`/api/support/tickets/${id}`),
+}
+
+// ─── Wearable Sensors, Telemetry & Alerts (Phase 4 & 5) ──────────────────────
+export const wearableApi = {
+  getObservations: (limit: number = 30) =>
+    api.get('/api/wearable/observations', { params: { limit } }),
+  ingest: (data: {
+    device_id?: string
+    observations: Array<{ sensor_type: string; value: number; unit: string; source?: string }>
+  }) => api.post('/api/wearable/ingest', data),
+  simulate: (scenario: string) =>
+    api.post('/api/wearable/simulate', { scenario }),
+  getDoctors: () => api.get('/api/wearable/doctors'),
+  linkDoctor: (data: {
+    doctor_name: string
+    doctor_email: string
+    specialty?: string
+    hospital_name?: string
+    can_receive_alerts?: boolean
+  }) => api.post('/api/wearable/doctors/link', data),
+  revokeDoctor: (linkId: number) =>
+    api.delete(`/api/wearable/doctors/link/${linkId}`),
+  getNotifications: () => api.get('/api/wearable/notifications'),
 }
 
 export default api

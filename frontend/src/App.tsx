@@ -11,6 +11,7 @@ import SettingsPage from './pages/SettingsPage'
 import JourneyPage from './pages/JourneyPage'
 import DocumentsPage from './pages/DocumentsPage'
 import ProgressPage from './pages/ProgressPage'
+import SimulationPage from './pages/SimulationPage'
 import Layout from './components/Layout'
 import { useAuthStore } from './store/authStore'
 
@@ -144,6 +145,18 @@ export default function App() {
             <ProtectedRoute>
               <Layout>
                 <SettingsPage />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Simulation Lab & Vitals Telemetry (Phase 4 & 5) */}
+        <Route
+          path="/simulation"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <SimulationPage />
               </Layout>
             </ProtectedRoute>
           }

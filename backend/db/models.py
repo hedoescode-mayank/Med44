@@ -330,9 +330,17 @@ class PatientDocument(Base):
     category = Column(String(50), nullable=False)  # Prescription, Referral, Lab Report, Discharge Summary, Insurance
     file_url = Column(String(500), nullable=True)
     file_type = Column(String(20), default="image")
+    file_name = Column(String(255), nullable=True)
+    mime_type = Column(String(100), nullable=True)
+    size_bytes = Column(Integer, nullable=True)
+    content_sha256 = Column(String(64), nullable=True)
+    storage_ref = Column(String(300), nullable=True)
     status = Column(String(30), default="UPLOADED")  # PENDING, UPLOADED, VERIFIED, FLAGGED_FOR_REVIEW
     ocr_extracted_text = Column(Text, nullable=True)
-    ocr_status = Column(String(30), default="NOT_PROCESSED")  # NOT_PROCESSED, DRAFT, VERIFIED
+    ocr_status = Column(String(30), default="NOT_PROCESSED")  # NOT_PROCESSED, DRAFT, VERIFIED, UNAVAILABLE
+    ocr_engine_used = Column(String(50), nullable=True)
+    ocr_confidence_avg = Column(Float, nullable=True)
+    ocr_language_detected = Column(String(10), nullable=True)
     uncertain_fields_json = Column(Text, nullable=True)       # JSON list of handwritten/uncertain terms
     verified_by_patient = Column(Boolean, default=False)
     notes = Column(Text, nullable=True)
@@ -436,5 +444,89 @@ class SupportTicket(Base):
     updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
 
     patient = relationship("Patient", back_populates="support_tickets")
+
+
+# ---------------------------------------------------------------------------
+# Doctor Contact & Patient Linking (Phase 4)
+# ---------------------------------------------------------------------------
+class DoctorContact(Base):
+    __tablename__ = "doctor_contacts"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String(150), nullable=False)
+    email = Column(String(150), nullable=False, index=True)
+    phone = Column(String(30), nullable=True)
+    specialty = Column(String(100), nullable=True)
+    hospital_name = Column(String(200), nullable=True)
+    registration_number = Column(String(50), nullable=True)
+    created_at = Column(DateTime, default=func.now())
+
+
+class DoctorPatientLink(Base):
+    __tablename__ = "doctor_patient_links"
+
+    id = Column(Integer, primary_key=True, index=True)
+    patient_id = Column(Integer, ForeignKey("patients.id"), nullable=False)
+    doctor_contact_id = Column(Integer, ForeignKey("doctor_contacts.id"), nullable=False)
+    status = Column(String(30), default="ACTIVE")  # ACTIVE, PENDING, REVOKED
+    can_receive_alerts = Column(Boolean, default=True)
+    linked_at = Column(DateTime, default=func.now())
+
+
+class PatientConsent(Base):
+    __tablename__ = "patient_consents"
+
+    id = Column(Integer, primary_key=True, index=True)
+    patient_id = Column(Integer, ForeignKey("patients.id"), nullable=False)
+    consent_type = Column(String(60), nullable=False)  # WEARABLE_DATA_SHARING, DOCTOR_ALERT_EMAIL, EMERGENCY_ESCALATION
+    is_granted = Column(Boolean, default=True)
+    granted_at = Column(DateTime, default=func.now())
+    revoked_at = Column(DateTime, nullable=True)
+
+
+# ---------------------------------------------------------------------------
+# Wearable Observations & Sensor Telemetry (Phase 4)
+# ---------------------------------------------------------------------------
+class WearableObservation(Base):
+    __tablename__ = "wearable_observations"
+
+    id = Column(Integer, primary_key=True, index=True)
+    patient_id = Column(Integer, ForeignKey("patients.id"), nullable=False)
+    device_id = Column(String(100), default="med44-sim-v1")
+    sensor_type = Column(String(50), nullable=False)  # HEART_RATE, SPO2, BLOOD_PRESSURE_SYS, BLOOD_PRESSURE_DIA, STEPS, GLUCOSE
+    value = Column(Float, nullable=False)
+    unit = Column(String(20), nullable=False)
+    recorded_at = Column(DateTime, default=func.now())
+    source = Column(String(30), default="SIMULATED")  # SIMULATED, DEVICE, MANUAL
+    confidence = Column(Float, default=1.0)
+
+
+class SimulationSession(Base):
+    __tablename__ = "simulation_sessions"
+
+    id = Column(Integer, primary_key=True, index=True)
+    session_name = Column(String(100), nullable=False)
+    patient_id = Column(Integer, ForeignKey("patients.id"), nullable=False)
+    scenario_type = Column(String(50), default="NORMAL_REST")  # NORMAL_REST, TACHYCARDIA, HYPOXEMIA, HYPERTENSIVE_CRISIS
+    is_active = Column(Boolean, default=True)
+    created_at = Column(DateTime, default=func.now())
+
+
+# ---------------------------------------------------------------------------
+# Notification & Alert Outbox (Phase 5)
+# ---------------------------------------------------------------------------
+class NotificationLog(Base):
+    __tablename__ = "notification_logs"
+
+    id = Column(Integer, primary_key=True, index=True)
+    patient_id = Column(Integer, ForeignKey("patients.id"), nullable=False)
+    recipient_email = Column(String(150), nullable=False)
+    recipient_role = Column(String(30), default="DOCTOR")  # DOCTOR, PATIENT, EMERGENCY_CONTACT
+    notification_type = Column(String(50), nullable=False)  # DOCTOR_ALERT, ESCALATION, APPOINTMENT_CONFIRMATION
+    subject = Column(String(200), nullable=False)
+    body_text = Column(Text, nullable=True)
+    status = Column(String(30), default="SIMULATED")  # SENT, SIMULATED, FAILED
+    error_message = Column(Text, nullable=True)
+    sent_at = Column(DateTime, default=func.now())
 
 

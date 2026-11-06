@@ -25,6 +25,7 @@ class ChatRequest(BaseModel):
     answered_fields: Optional[List[str]] = None
     history: Optional[List[Dict[str, str]]] = None
     patient_context: Optional[Dict[str, Any]] = None
+    doc_context: Optional[Dict[str, Any]] = None
 
 
 class ChatResponse(BaseModel):
@@ -70,13 +71,36 @@ async def chat(
     )
     db.add(user_msg)
 
-    # Process query through clinical/AI pipeline
+    # Process query through clinical/AI pipeline (with document grounding if provided)
+    effective_message = req.message
+    if req.doc_context and req.doc_context.get("text"):
+        d_title = req.doc_context.get("title", "Attached Document")
+        d_cat = req.doc_context.get("category", "Record")
+        d_ver = "Patient-Verified" if req.doc_context.get("is_verified") else "Draft OCR"
+        d_text = str(req.doc_context.get("text", ""))[:1200]
+        effective_message = (
+            f"{req.message}\n\n"
+            f"[Attached Document Context: {d_title} ({d_cat}, {d_ver})]\n"
+            f"Document Extracted Content:\n{d_text}"
+        )
+
     result = await supervisor.process_user_query(
-        message=req.message,
+        message=effective_message,
         language=req.language or "en",
         answered_fields=req.answered_fields,
         history=req.history,
     )
+
+    # Document grounding citation
+    if req.doc_context and req.doc_context.get("title"):
+        d_title = req.doc_context.get("title")
+        d_ver = "Verified" if req.doc_context.get("is_verified") else "Unverified Draft"
+        adv = result.get("clinical_advice", "")
+        if "Source Reference:" not in adv:
+            result["clinical_advice"] = (
+                f"{adv}\n\n📎 Grounded Reference: Assessed in the context of your attached document "
+                f"\"{d_title}\" ({d_ver}). Review verified dosage and clinical notes with your provider."
+            )
 
     # Personalization: Inject survey-informed allergy & chronic condition checks
     ctx = req.patient_context or {}

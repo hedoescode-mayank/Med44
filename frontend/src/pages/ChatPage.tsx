@@ -16,9 +16,13 @@ import {
   WifiOff,
   Cpu,
   ChevronLeft,
+  Paperclip,
+  X,
+  FileCheck,
 } from 'lucide-react'
 import { useChatStore, type Language, type Message } from '../store/chatStore'
 import { useAuthStore } from '../store/authStore'
+import { getDocStore, type LocalDocument } from '../lib/docstore'
 import ChatMessage from '../components/ChatMessage'
 import EmergencyBanner from '../components/EmergencyBanner'
 import BabyNurse from '../components/BabyNurse'
@@ -46,8 +50,22 @@ export default function ChatPage() {
   const navigate = useNavigate()
   const [input, setInput] = useState('')
   const [showReport, setShowReport] = useState(false)
+  const [attachedDoc, setAttachedDoc] = useState<LocalDocument | null>(null)
+  const [docPickerOpen, setDocPickerOpen] = useState(false)
+  const [availableDocs, setAvailableDocs] = useState<LocalDocument[]>([])
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
+
+  const openDocPicker = async () => {
+    try {
+      const store = await getDocStore()
+      const docs = await store.list(String(user?.id || '1'))
+      setAvailableDocs(docs)
+      setDocPickerOpen(true)
+    } catch {
+      toast.error('Could not access local documents vault')
+    }
+  }
 
   const {
     sessions,
@@ -118,7 +136,7 @@ export default function ChatPage() {
     addMessage(sessionId, userMsg)
     setTyping(true)
 
-    // Build personalized payload including patient survey context
+    // Build personalized payload including patient survey context & attached document
     const patientContext = {
       allergies: user?.allergies,
       chronic_conditions: user?.chronicConditions,
@@ -126,6 +144,16 @@ export default function ChatPage() {
       age: user?.age,
       gender: user?.gender,
     }
+
+    const docContext = attachedDoc
+      ? {
+          doc_id: attachedDoc.id,
+          title: attachedDoc.originalName,
+          category: attachedDoc.category,
+          text: attachedDoc.ocrText || '',
+          is_verified: attachedDoc.verificationStatus === 'patient_verified',
+        }
+      : undefined
 
     try {
       const res = await api.post('/chat', {
@@ -136,7 +164,11 @@ export default function ChatPage() {
           content: m.content,
         })),
         patient_context: patientContext,
+        doc_context: docContext,
       })
+
+      // Clear attached document after successful send
+      setAttachedDoc(null)
 
       const data = res.data
       const isRedFlag = data.urgency === 'RED' || (data.red_flags && data.red_flags.length > 0)
@@ -379,8 +411,36 @@ export default function ChatPage() {
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Bottom Fixed Area: Symptom Chips + Rounded Input Bar */}
+        {/* Bottom Fixed Area: Attached Document Pill + Symptom Chips + Rounded Input Bar */}
         <div className="p-3 sm:p-4 border-t border-borderSoft bg-surface flex-shrink-0 space-y-2.5">
+          {/* Attached Document Pill (if selected) */}
+          {attachedDoc && (
+            <div className="flex items-center justify-between px-3 py-1.5 rounded-xl bg-emerald-50 border border-emerald-200 text-xs">
+              <div className="flex items-center gap-2 overflow-hidden">
+                <Paperclip size={13} className="text-emerald-700 flex-shrink-0" />
+                <span className="font-semibold text-emerald-950 truncate max-w-[260px] sm:max-w-md">
+                  {attachedDoc.originalName}
+                </span>
+                <span
+                  className={`text-[10px] font-bold px-1.5 py-0.2 rounded-full ${
+                    attachedDoc.verificationStatus === 'patient_verified'
+                      ? 'bg-emerald-200 text-emerald-900'
+                      : 'bg-amber-200 text-amber-900'
+                  }`}
+                >
+                  {attachedDoc.verificationStatus === 'patient_verified' ? 'Verified' : 'Draft OCR'}
+                </span>
+              </div>
+              <button
+                onClick={() => setAttachedDoc(null)}
+                className="p-1 text-emerald-700 hover:text-emerald-950 rounded-lg"
+                title="Remove attachment"
+              >
+                <X size={13} />
+              </button>
+            </div>
+          )}
+
           {/* Quick Symptom Chips */}
           <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar text-xs">
             {SYMPTOM_CHIPS.map((chip) => (
@@ -400,8 +460,21 @@ export default function ChatPage() {
               e.preventDefault()
               handleSend()
             }}
-            className="flex items-center gap-2 rounded-full border border-borderSoft bg-white p-1 pl-4 shadow-sm focus-within:ring-2 focus-within:ring-primary/25 focus-within:border-primary transition"
+            className="flex items-center gap-2 rounded-full border border-borderSoft bg-white p-1 pl-3 shadow-sm focus-within:ring-2 focus-within:ring-primary/25 focus-within:border-primary transition"
           >
+            <button
+              type="button"
+              onClick={openDocPicker}
+              className={`p-2 rounded-full transition ${
+                attachedDoc
+                  ? 'bg-emerald-100 text-emerald-800'
+                  : 'text-stone-400 hover:text-stone-700 hover:bg-stone-100'
+              }`}
+              title="Attach document from local vault"
+            >
+              <Paperclip size={16} />
+            </button>
+
             <input
               ref={inputRef}
               type="text"
@@ -412,6 +485,8 @@ export default function ChatPage() {
                   ? 'अपने लक्षण बताएं (उदा. मुझे सिरदर्द और बुखार है)...'
                   : language === 'ta'
                   ? 'உங்கள் அறிகுறிகளை இங்கே விவரிக்கவும்...'
+                  : attachedDoc
+                  ? `Ask questions about ${attachedDoc.originalName}...`
                   : 'Describe your symptoms...'
               }
               className="outline-none bg-transparent flex-1 text-xs sm:text-sm text-textDark placeholder-textMuted py-2"
@@ -432,6 +507,78 @@ export default function ChatPage() {
           </p>
         </div>
       </div>
+
+      {/* Document Picker Modal */}
+      {docPickerOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+          <div className="bg-white rounded-2xl border border-stone-200 max-w-md w-full p-5 shadow-xl space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-stone-100">
+              <div className="flex items-center gap-2">
+                <FileCheck className="w-5 h-5 text-emerald-600" />
+                <h3 className="font-bold text-base text-stone-900">Attach Document from Vault</h3>
+              </div>
+              <button
+                onClick={() => setDocPickerOpen(false)}
+                className="text-stone-400 hover:text-stone-700 p-1"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="space-y-2 max-h-72 overflow-y-auto">
+              {availableDocs.length === 0 ? (
+                <div className="text-center py-6 text-xs text-stone-400">
+                  No documents in your local vault yet. Go to Records tab to upload prescriptions or reports.
+                </div>
+              ) : (
+                availableDocs.map((d) => (
+                  <div
+                    key={d.id}
+                    onClick={() => {
+                      setAttachedDoc(d)
+                      setDocPickerOpen(false)
+                      toast.success(`Attached: ${d.originalName}`)
+                    }}
+                    className="p-3 rounded-xl border border-stone-200 hover:border-emerald-400 hover:bg-emerald-50/50 cursor-pointer transition flex items-center justify-between gap-3"
+                  >
+                    <div className="overflow-hidden">
+                      <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-stone-100 text-stone-600">
+                        {d.category}
+                      </span>
+                      <p className="font-semibold text-xs text-stone-900 mt-1 truncate">
+                        {d.originalName}
+                      </p>
+                      <p className="text-[10px] text-stone-400">
+                        {new Date(d.uploadedAt).toLocaleDateString()}
+                      </p>
+                    </div>
+
+                    <span
+                      className={`text-[10px] font-bold px-2 py-0.5 rounded-full flex-shrink-0 ${
+                        d.verificationStatus === 'patient_verified'
+                          ? 'bg-emerald-100 text-emerald-800'
+                          : 'bg-amber-100 text-amber-800'
+                      }`}
+                    >
+                      {d.verificationStatus === 'patient_verified' ? 'Verified' : 'Draft'}
+                    </span>
+                  </div>
+                ))
+              )}
+            </div>
+
+            <div className="flex justify-end pt-2 border-t border-stone-100">
+              <button
+                type="button"
+                onClick={() => setDocPickerOpen(false)}
+                className="px-4 py-2 rounded-xl border border-stone-200 text-xs font-semibold text-stone-700 hover:bg-stone-50"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Health Report Card Modal */}
       <HealthReportModal

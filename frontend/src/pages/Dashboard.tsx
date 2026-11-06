@@ -21,6 +21,7 @@ import { useMedicationStore } from '../store/medicationStore'
 import UserAvatar from '../components/avatars/UserAvatar'
 import BabyNurse from '../components/BabyNurse'
 import HealthReportModal from '../components/HealthReportModal'
+import NudgeWidget from '../components/NudgeWidget'
 import api from '../services/api'
 
 const container = {
@@ -176,6 +177,11 @@ export default function Dashboard() {
               <p className="text-[11px] text-textSecondary font-medium mt-1">{sub}</p>
             </div>
           ))}
+        </motion.div>
+
+        {/* Duolingo-style Daily Nudge Check-in Widget */}
+        <motion.div variants={item}>
+          <NudgeWidget />
         </motion.div>
 
         {/* Health Score Calculation Transparency Card */}
