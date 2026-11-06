@@ -25,3 +25,4 @@
 | **Doctor Alert Outbox & Email Dispatch** | `SIMULATED` | In TEST mode, logs email dispatches to `notification_logs`; real SMTP activated via `.env` credentials |
 | **Interactive Care Journey** | `REAL` | Dynamic tree nodes, branching logic, step checkboxes, stage progression |
 | **Patient Health Report Card** | `REAL` | Dynamic generation based on real survey vitals, chronic conditions, and appointment history |
+

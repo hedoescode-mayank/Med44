@@ -435,3 +435,4 @@ async def get_notification_logs(
         }
         for l in logs
     ]
+

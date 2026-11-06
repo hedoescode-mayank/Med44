@@ -73,3 +73,4 @@
 - Click **"⚡ Tachycardia Spike"** or **"🫁 Hypoxemia Drop"**.
 - Watch the **Deterministic Alert Engine** instantly trigger critical alert status.
 - Show the **Alert Outbox & Doctor Email Dispatch** log verifying consent and physician alert dispatch.
+

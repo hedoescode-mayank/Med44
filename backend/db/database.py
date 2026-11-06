@@ -35,8 +35,6 @@ async def init_db():
 
         # Run safe auto-migrations for SQLite to ensure all model columns exist
         def _migrate(sync_conn):
-            import sqlite3
-            cursor = sync_conn.connection.cursor()
             cols_map = {
                 "appointments": [
                     ("facility_id", "INTEGER"),
@@ -70,12 +68,13 @@ async def init_db():
             }
             for table, cols in cols_map.items():
                 try:
-                    existing = [c[1] for c in cursor.execute(f"PRAGMA table_info({table})").fetchall()]
+                    res = sync_conn.exec_driver_sql(f"PRAGMA table_info({table})").fetchall()
+                    existing = [r[1] for r in res]
                     for col_name, col_type in cols:
                         if col_name not in existing:
-                            cursor.execute(f"ALTER TABLE {table} ADD COLUMN {col_name} {col_type}")
-                except Exception:
-                    pass
+                            sync_conn.exec_driver_sql(f"ALTER TABLE {table} ADD COLUMN {col_name} {col_type}")
+                except Exception as e:
+                    print(f"Migration error for {table}: {e}")
 
         await conn.run_sync(_migrate)
 

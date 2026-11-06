@@ -67,3 +67,4 @@ In **TEST mode**, a built-in Physiological Scenario Simulator generates realisti
   1. The patient must have granted explicit consent (`DOCTOR_ALERT_EMAIL`).
   2. The doctor must be formally linked with an active status (`DoctorPatientLink.status == 'ACTIVE'`).
   3. All dispatches are recorded in `notification_logs` for clinical transparency.
+
