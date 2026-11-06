@@ -59,7 +59,7 @@ export default function Layout({ children }: LayoutProps) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setSidebarOpen(false)}
-            className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm lg:hidden"
+            className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm md:hidden"
           />
         )}
       </AnimatePresence>
@@ -69,7 +69,7 @@ export default function Layout({ children }: LayoutProps) {
         initial={false}
         animate={{ x: sidebarOpen ? 0 : -320 }}
         transition={{ type: 'spring', damping: 25, stiffness: 280 }}
-        className="fixed left-0 top-0 bottom-0 z-50 w-72 flex flex-col bg-surface border-r border-borderSoft shadow-xl lg:hidden h-full"
+        className="fixed left-0 top-0 bottom-0 z-50 w-72 flex flex-col bg-surface border-r border-borderSoft shadow-xl md:hidden h-full"
       >
         {/* Mobile Sidebar Header */}
         <div className="flex items-center justify-between p-4 border-b border-borderSoft flex-shrink-0">
@@ -134,10 +134,10 @@ export default function Layout({ children }: LayoutProps) {
       <header className="sticky top-0 z-50 h-16 bg-white border-b border-borderSoft w-full shadow-sm">
         <div className="max-w-7xl xl:max-w-[1536px] w-full mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center justify-between gap-4">
           {/* Left: Med44 Logo (same as login, h-8 w-auto, click to dashboard) + Mobile hamburger */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 flex-shrink-0">
             <button
               onClick={() => setSidebarOpen(true)}
-              className="lg:hidden p-1.5 text-textSecondary hover:text-textDark hover:bg-surfaceSoft rounded-lg"
+              className="md:hidden p-1.5 text-textSecondary hover:text-textDark hover:bg-surfaceSoft rounded-lg"
               aria-label="Open navigation"
             >
               <Menu size={20} />
@@ -151,13 +151,13 @@ export default function Layout({ children }: LayoutProps) {
           </div>
 
           {/* Center: Existing App Nav Links */}
-          <nav className="hidden lg:flex items-center gap-1 xl:gap-2">
+          <nav className="hidden md:flex items-center gap-1 xl:gap-2 overflow-x-auto no-scrollbar flex-1 justify-center px-2">
             {navItems.map(({ to, label }) => (
               <NavLink
                 key={to}
                 to={to}
                 className={({ isActive }) =>
-                  `px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
+                  `px-2.5 xl:px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors whitespace-nowrap ${
                     isActive
                       ? 'bg-primary-light text-primary-dark font-bold'
                       : 'text-textSecondary hover:text-textDark hover:bg-surfaceSoft'

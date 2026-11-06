@@ -4,7 +4,7 @@
  * - Offline queue stored in IDB, replayed on sync or reconnect message
  */
 
-const CACHE_NAME = 'med44-v2';
+const CACHE_NAME = 'med44-v4';
 const APP_SHELL = [
   '/',
   '/index.html',
@@ -112,17 +112,19 @@ self.addEventListener('fetch', (event) => {
       })
     );
   } else {
+    // Network-first for app shell and assets: ensures browser always receives fresh code
     event.respondWith(
-      caches.match(event.request).then((cached) => {
-        if (cached) return cached;
-        return fetch(event.request).then((response) => {
+      fetch(event.request)
+        .then((response) => {
           if (response.ok) {
             const clone = response.clone();
             caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
           }
           return response;
-        }).catch(() => caches.match('/index.html'));
-      })
+        })
+        .catch(() => {
+          return caches.match(event.request).then((cached) => cached || caches.match('/index.html'));
+        })
     );
   }
 });

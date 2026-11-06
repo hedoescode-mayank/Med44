@@ -207,3 +207,4 @@ This document provides a complete, exhaustive record of all changes, architectur
 - **Backend**: Live on `http://127.0.0.1:8000` (`/api/health` returns status `online`, mode `TEST`).
 - **Frontend**: Live on `http://localhost:5173` (Vite dev server running clean, production build compiles with 0 errors).
 - **Test Suite**: `python -m pytest backend/tests/` passes 25/25 tests (100%).
+
