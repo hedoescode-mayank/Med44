@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
-import '@testing-library/jest-dom'
+import '@testing-library/jest-dom/vitest'
 import { EmergencyBanner } from '../components/med44/EmergencyBanner'
 
 describe('EmergencyBanner Component', () => {
@@ -23,3 +23,4 @@ describe('EmergencyBanner Component', () => {
     expect(docLink).toHaveAttribute('href', 'tel:+919876543210')
   })
 })
+

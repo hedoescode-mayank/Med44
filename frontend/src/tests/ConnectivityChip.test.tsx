@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
-import '@testing-library/jest-dom'
+import '@testing-library/jest-dom/vitest'
 import { ConnectivityChip } from '../components/med44/ConnectivityChip'
 
 describe('ConnectivityChip Component', () => {
@@ -14,3 +14,4 @@ describe('ConnectivityChip Component', () => {
     expect(screen.getByText(/AI assistant|guidance only/i)).toBeInTheDocument()
   })
 })
+

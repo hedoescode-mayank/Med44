@@ -186,22 +186,22 @@ export const DocumentsPage: React.FC = () => {
         formData.append('document_id', String(savedDoc.id))
 
         const ocrRes = await ocrApi.process(formData)
-        if (ocrRes.data?.status === 'success') {
-          extractedText = ocrRes.data.extracted_text || ''
-          ocrEngine = ocrRes.data.engine || 'pymupdf'
+        if (ocrRes.data?.status === 'success' || ocrRes.data?.status === 'COMPLETED') {
+          extractedText = ocrRes.data.extracted_text || ocrRes.data.full_text || ''
+          ocrEngine = ocrRes.data.engine || 'native_ocr'
           ocrStatus = 'draft'
-          uncertainFields = (ocrRes.data.uncertain_fields || []).map((u: any) => ({
+          uncertainFields = (ocrRes.data.uncertain_fields || ocrRes.data.uncertain_regions || []).map((u: any) => ({
             field: u.field || 'Uncertain region',
-            extracted: u.extracted || '',
+            extracted: u.extracted || u.text || '',
             confidence: String(u.confidence || '0.70'),
-            flag: u.flag || 'Low confidence text',
+            flag: u.flag || u.reason || 'Low confidence text',
           }))
           toast.success('Document uploaded and OCR extracted!')
         } else if (ocrRes.data?.status === 'OCR_UNAVAILABLE') {
           ocrStatus = 'unavailable'
           ocrEngine = 'unavailable'
-          extractedText = 'Tesseract binary is not installed on the server. Scanned document stored locally; manual transcription available.'
-          toast('Document stored. Optical character recognition engine is currently unavailable.', {
+          extractedText = 'Optical character recognition engine is currently unavailable for this format.'
+          toast('Document stored locally in your private vault.', {
             icon: 'ℹ️',
           })
         }
@@ -219,12 +219,15 @@ export const DocumentsPage: React.FC = () => {
         uncertainFields,
       })
 
-      // 4. Register metadata with backend (does NOT send entire file or fabricate fake text)
+      // 4. Register metadata with backend (including extracted OCR text)
       try {
         const regRes = await documentApi.upload({
           category: newCategory,
           title: newTitle,
           file_name: selectedFile.name,
+          ocr_extracted_text: extractedText,
+          ocr_status: ocrStatus === 'draft' ? 'DRAFT' : 'NOT_PROCESSED',
+          ocr_engine_used: ocrEngine,
           file_base64: '', // Empty: file is in local OPFS/Dexie
         })
         if (regRes.data?.document_id) {

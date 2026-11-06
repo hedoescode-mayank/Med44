@@ -75,8 +75,10 @@ all_routers = [
 ]
 for r in all_routers:
     app.include_router(r, prefix="/api")
+    app.include_router(r)
 
 
+@app.get("/health")
 @app.get("/api/health")
 async def health_check():
     from backend.ai.groq_client import groq_client

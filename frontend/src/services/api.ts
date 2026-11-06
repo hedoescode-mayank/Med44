@@ -107,6 +107,9 @@ export const documentApi = {
     title: string
     file_name: string
     file_base64: string
+    ocr_extracted_text?: string
+    ocr_status?: string
+    ocr_engine_used?: string
   }) => api.post('/api/documents/upload', data),
   verify: (id: number, verifiedData?: Record<string, unknown>) =>
     api.put(`/api/documents/${id}/verify`, { verified_data: verifiedData || {} }),

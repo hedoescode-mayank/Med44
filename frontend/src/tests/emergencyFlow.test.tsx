@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
-import '@testing-library/jest-dom'
+import '@testing-library/jest-dom/vitest'
 import { EmergencyBanner } from '../components/med44/EmergencyBanner'
 
 describe('Emergency Flow e2e component test', () => {
@@ -27,3 +27,4 @@ describe('Emergency Flow e2e component test', () => {
     ).toBeInTheDocument()
   })
 })
+

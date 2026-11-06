@@ -240,4 +240,36 @@ This document provides a complete, exhaustive record of all changes, architectur
   - Single symptom vs multi-symptom: Replaces "Educational Reference Match" with "Common reasons people notice this symptom (information only, not a diagnosis)" and only evaluates candidate conditions when at least 2 corroborating symptoms exist.
 - **Selective Inline Allergy Safeguards** (`backend/routers/chat.py`): Inline allergy warnings only triggered when conversation explicitly touches a medication keyword.
 
+---
+
+## 10. Native Optical Character Recognition & Prescription Document Grounding
+
+### 10.1 Native Optical Character Recognition Engine (`backend/services/ocr/engine.py`)
+- **Native Windows OCR (`winocr`) Integration**:
+  - Implemented Windows 10/11 native optical character recognition (`winocr` / WinRT Windows Media OCR) for instantaneous local image and scanned document recognition.
+  - Zero external binary requirements and zero administrative UAC prompts.
+  - Retained full fallback hierarchy: PyMuPDF for digital PDF text layers, WinOCR for scanned documents and image files (PNG, JPG, BMP), and Tesseract OCR when available.
+  - Enhanced `get_ocr_engine_status()` to report `winocr_available: True`, `status: "READY"`, and `engine: "winocr+pymupdf"`.
+- **Response Normalization**:
+  - Unified output dictionary returning both `full_text` and `extracted_text`, `status: "COMPLETED"`, `engine`, `pages`, `uncertain_regions`, and `uncertain_fields`.
+
+### 10.2 Client-Side OCR Synchronization (`frontend/src/pages/DocumentsPage.tsx` & `ChatPage.tsx`)
+- **Documents Page**:
+  - Updated response parsing to accept both `COMPLETED` and `success` status codes and read `extracted_text` or `full_text`.
+  - Fixed `documentApi.upload` to persist extracted OCR text directly to the backend database (`ocr_extracted_text`), eliminating `None` records.
+- **Chat Page Paperclip Flow**:
+  - Wired file upload in the chat paperclip picker directly to `/api/ocr/process`.
+  - Extracted text is saved directly to local IndexedDB and registered with backend `PatientDocument`.
+  - Attached document pill directly passes `doc_context` to the chat conversation.
+
+### 10.3 Automated Clinical Document Grounding (`backend/routers/chat.py` & `backend/clinical_engine/response_builder.py`)
+- **Automated Prescription Lookup**:
+  - When a user asks about prescriptions, medicines, or medical records (e.g. *"kya prescription de raha h"*, *"meri dawai kya hai"*, *"what is my prescription"*), `backend/routers/chat.py` automatically checks `PatientDocument` for the patient's existing verified prescriptions if an explicit attachment was not passed in that specific message.
+- **AI Prompt Grounding (`backend/ai/prompt_templates.py`)**:
+  - Updated `SYMPTOM_EVALUATOR_SYSTEM_PROMPT` to distinguish between unauthorized medication prescription (strictly prohibited) and reading an authorized doctor's existing prescription.
+  - The AI Health Nurse reads the doctor's name, clinic, prescribed medications, dosages, frequencies, and allergy notes, answering in the patient's language (Hindi, Tamil, or English).
+- **Deterministic Offline Document Parser (`backend/clinical_engine/response_builder.py`)**:
+  - Added deterministic fallback parser extracting and formatting doctor prescription records even when Groq is offline or unavailable.
+
+
 

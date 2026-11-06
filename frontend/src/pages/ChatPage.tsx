@@ -23,7 +23,7 @@ import { ConnectivityChip } from '../components/med44/ConnectivityChip'
 import { EmergencyBanner } from '../components/med44/EmergencyBanner'
 import { MessageBubble } from '../components/med44/MessageBubble'
 import BabyNurse from '../components/BabyNurse'
-import api from '../services/api'
+import api, { ocrApi, documentApi } from '../services/api'
 import toast from 'react-hot-toast'
 
 // Quick chips per §5: outline buttons, urgent ones get red-tinted outline & icon
@@ -105,6 +105,19 @@ export default function ChatPage() {
     if (!file) return
 
     try {
+      toast.loading(`Scanning & extracting text from ${file.name}...`, { id: 'chat-doc-ocr' })
+      let extractedText = ''
+      try {
+        const formData = new FormData()
+        formData.append('file', file)
+        const ocrRes = await ocrApi.process(formData)
+        if (ocrRes.data?.status === 'COMPLETED' || ocrRes.data?.status === 'success') {
+          extractedText = ocrRes.data.full_text || ocrRes.data.extracted_text || ''
+        }
+      } catch (ocrErr) {
+        console.warn('OCR processing fallback:', ocrErr)
+      }
+
       const store = await getDocStore()
       const newDoc = await store.save(
         {
@@ -113,16 +126,31 @@ export default function ChatPage() {
           category: 'Prescription',
           mime: file.type || 'application/octet-stream',
           size: file.size,
-          ocrStatus: 'verified',
-          ocrText: `Extracted medical record text from ${file.name}. Validated by patient.`,
+          ocrStatus: extractedText ? 'verified' : 'draft',
+          ocrText: extractedText || `Medical record: ${file.name}`,
           verificationStatus: 'patient_verified',
         },
         file
       )
+
+      // Register with backend database
+      try {
+        await documentApi.upload({
+          category: 'Prescription',
+          title: file.name,
+          file_name: file.name,
+          ocr_extracted_text: extractedText,
+          ocr_status: extractedText ? 'VERIFIED' : 'DRAFT',
+          file_base64: '',
+        })
+      } catch {}
+
       setAttachedDoc(newDoc)
       setDocPickerOpen(false)
-      toast.success(`Attached: ${file.name}`)
+      toast.dismiss('chat-doc-ocr')
+      toast.success(extractedText ? `Attached & OCR extracted: ${file.name}` : `Attached: ${file.name}`)
     } catch {
+      toast.dismiss('chat-doc-ocr')
       toast.error('Failed to attach document')
     }
   }

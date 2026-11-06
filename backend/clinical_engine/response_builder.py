@@ -44,6 +44,61 @@ def build_offline_response(
     # Evaluate standard rules
     urgency, rule_name, clinical_advice = evaluate_rules(matched_symptoms_canonical)
 
+    # Check if document context was attached/injected into the query
+    if "[Attached Document Context:" in message:
+        doc_header = ""
+        doc_content = ""
+        try:
+            parts = message.split("[Attached Document Context:")
+            if len(parts) > 1:
+                doc_header = parts[1].split("]")[0].strip()
+            if "Document Extracted Content:" in message:
+                content_part = message.split("Document Extracted Content:")[1].split("[Instruction:")[0]
+                doc_content = content_part.strip()
+        except Exception:
+            pass
+
+        if doc_content:
+            urgency = "GREEN"
+            if language == "hi":
+                clinical_advice = (
+                    f"मैं आपकी अपलोड की गई डॉक्टर की पर्ची ({doc_header}) का विवरण नीचे प्रस्तुत कर रहा हूँ:\n\n"
+                    f"📋 **दस्तावेज़ से प्राप्त विवरण (Extracted Record):**\n"
+                    f"{doc_content}\n\n"
+                    "⚠️ **महत्वपूर्ण सुरक्षा निर्देश (Safety Note):**\n"
+                    "यह विवरण आपके डॉक्टर द्वारा दिए गए रिकॉर्ड पर आधारित है। Med44 दवाएँ नहीं बदलता या स्वयं नहीं लिखता। किसी भी दवा में बदलाव करने से पहले कृपया अपने डॉक्टर से परामर्श अवश्य लें।"
+                )
+            elif language == "ta":
+                clinical_advice = (
+                    f"மருத்துவர் வழங்கிய மருந்துச் சீட்டின் ({doc_header}) விவரங்கள் கீழே கொடுக்கப்பட்டுள்ளன:\n\n"
+                    f"📋 **பதிவேற்றப்பட்ட குறிப்புகள்:**\n"
+                    f"{doc_content}\n\n"
+                    "⚠️ **பாதுகாப்பு குறிப்பு:**\n"
+                    "இந்தத் தகவல் உங்கள் மருத்துவரின் சீட்டின் அடிப்படையில் பெறப்பட்டது. மருந்தை மாற்றும் முன் உங்கள் மருத்துவரிடம் ஆலோசிக்கவும்."
+                )
+            else:
+                clinical_advice = (
+                    f"I have retrieved your uploaded clinician's prescription ({doc_header}):\n\n"
+                    f"📋 **Document Extracted Content:**\n"
+                    f"{doc_content}\n\n"
+                    "⚠️ **Safety & Clinical Note:**\n"
+                    "This summary is read directly from your treating doctor's written prescription. Med44 does not prescribe or alter medications. Always consult your healthcare provider before changing any medication."
+                )
+            return {
+                "conversation_id": 1,
+                "matched_symptoms": [],
+                "urgency": urgency,
+                "red_flags": [],
+                "clinical_advice": clinical_advice,
+                "followup_questions": [
+                    {"question": "Do you need clarification on dosage or instructions?", "options": ["Explain dosage", "Check allergy safeguards", "Find clinic"]},
+                ],
+                "articles": [],
+                "disclaimer": DISCLAIMER,
+                "mode": "offline",
+                "language": language,
+            }
+
     # Red flags always escalate to RED
     if red_flags:
         urgency = "RED"
@@ -68,7 +123,11 @@ def build_offline_response(
 
         is_medicine_query = any(
             p in msg_clean
-            for p in ["which medicine", "what medicine", "doctor give", "my prescription", "prescribed medicine", "konsi dawa", "kya dawa"]
+            for p in [
+                "which medicine", "what medicine", "doctor give", "my prescription",
+                "prescribed medicine", "konsi dawa", "kya dawa", "kya prescription",
+                "prescription", "parchi", "dawai", "kya likha", "kya de raha", "doctor ne"
+            ]
         )
 
         if is_greeting:

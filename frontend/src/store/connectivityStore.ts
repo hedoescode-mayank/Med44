@@ -41,3 +41,4 @@ if (typeof window !== 'undefined') {
     useConnectivityStore.setState({ isOnline: false, isBackendReachable: false, lastChecked: Date.now() })
   })
 }
+

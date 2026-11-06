@@ -12,7 +12,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.ai.agent_supervisor import supervisor
 from backend.db.database import get_db
-from backend.db.models import Conversation, ConversationMessage, AuditLog, Patient
+from backend.db.models import Conversation, ConversationMessage, AuditLog, Patient, PatientDocument
 from backend.routers.auth import get_current_user
 
 router = APIRouter(prefix="/chat", tags=["chat"])
@@ -71,17 +71,50 @@ async def chat(
     )
     db.add(user_msg)
 
-    # Process query through clinical/AI pipeline (with document grounding if provided)
+    # Process query through clinical/AI pipeline (with document grounding if provided or queried)
     effective_message = req.message
+
+    # Auto-retrieval: If doc_context was not provided, check if user is asking about prescription/medicines/records
+    if not (req.doc_context and req.doc_context.get("text")):
+        lower_msg = req.message.lower()
+        doc_keywords = [
+            "prescription", "parchi", "dawai", "dawa", "medicine", "medication",
+            "doctor", "kya likha", "kya de raha", "kya prescription", "report", "documents"
+        ]
+        if any(kw in lower_msg for kw in doc_keywords):
+            stmt = (
+                select(PatientDocument)
+                .where(PatientDocument.patient_id == patient_id)
+                .order_by(PatientDocument.uploaded_at.desc())
+            )
+            res = await db.execute(stmt)
+            existing_docs = res.scalars().all()
+            # Prioritize Prescription with OCR text
+            presc_doc = next((d for d in existing_docs if d.category == "Prescription" and d.ocr_extracted_text), None)
+            if not presc_doc:
+                presc_doc = next((d for d in existing_docs if d.ocr_extracted_text), None)
+
+            if presc_doc:
+                req.doc_context = {
+                    "doc_id": presc_doc.id,
+                    "title": presc_doc.title,
+                    "category": presc_doc.category,
+                    "text": presc_doc.ocr_extracted_text,
+                    "is_verified": presc_doc.verified_by_patient,
+                }
+
     if req.doc_context and req.doc_context.get("text"):
         d_title = req.doc_context.get("title", "Attached Document")
         d_cat = req.doc_context.get("category", "Record")
         d_ver = "Patient-Verified" if req.doc_context.get("is_verified") else "Draft OCR"
-        d_text = str(req.doc_context.get("text", ""))[:1200]
+        d_text = str(req.doc_context.get("text", ""))[:1500]
         effective_message = (
             f"{req.message}\n\n"
             f"[Attached Document Context: {d_title} ({d_cat}, {d_ver})]\n"
-            f"Document Extracted Content:\n{d_text}"
+            f"Document Extracted Content:\n{d_text}\n"
+            f"[Instruction: The patient is asking about their uploaded medical document / doctor's prescription above. "
+            f"Read the extracted document text, clearly list the doctor's name, prescribed medicines with dosages and frequencies, "
+            f"and clinical instructions. Note any allergy warnings recorded in the document.]"
         )
 
     result = await supervisor.process_user_query(

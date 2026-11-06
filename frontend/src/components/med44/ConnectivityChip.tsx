@@ -76,3 +76,4 @@ export function ConnectivityChip({ variant = 'topbar', className }: Connectivity
 }
 
 export default ConnectivityChip
+

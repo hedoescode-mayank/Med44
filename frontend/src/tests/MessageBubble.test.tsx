@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
-import '@testing-library/jest-dom'
+import '@testing-library/jest-dom/vitest'
 import { MessageBubble } from '../components/med44/MessageBubble'
 
 describe('MessageBubble Component', () => {
@@ -34,3 +34,4 @@ describe('MessageBubble Component', () => {
     expect(screen.getByText(/Attached: Blood_Test_Report.pdf/i)).toBeInTheDocument()
   })
 })
+
